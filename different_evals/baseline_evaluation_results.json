@@ -1,0 +1,199 @@
+{
+  "validation_metrics": {
+    "valid_json_accuracy": 1.0,
+    "exact_match_accuracy": 0.2
+  },
+  "enum_field_metrics": {
+    "action": {
+      "macro_precision": 0.4,
+      "macro_recall": 0.5,
+      "macro_f1": 0.4444444444444445,
+      "micro_precision": 0.8,
+      "micro_recall": 0.8,
+      "micro_f1": 0.8000000000000002,
+      "accuracy": 0.8,
+      "per_class": {
+        "CODE_GENERATION": {
+          "precision": 0.8,
+          "recall": 1.0,
+          "f1": 0.888888888888889,
+          "support": 4,
+          "correct": 4,
+          "tp": 4,
+          "fp": 1,
+          "fn": 0
+        },
+        "NOT_FOUND": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1,
+          "correct": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    "subAction": {
+      "macro_precision": 1.0,
+      "macro_recall": 1.0,
+      "macro_f1": 1.0,
+      "micro_precision": 1.0,
+      "micro_recall": 1.0,
+      "micro_f1": 1.0,
+      "accuracy": 1.0,
+      "per_class": {
+        "CODING": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 4,
+          "correct": 4,
+          "tp": 4,
+          "fp": 0,
+          "fn": 0
+        },
+        "ERROR": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1,
+          "correct": 1,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0
+        }
+      }
+    },
+    "platform": {
+      "macro_precision": 0.625,
+      "macro_recall": 0.5833333333333333,
+      "macro_f1": 0.5416666666666666,
+      "micro_precision": 0.6,
+      "micro_recall": 0.6,
+      "micro_f1": 0.6,
+      "accuracy": 0.6,
+      "per_class": {
+        "NOT_FOUND": {
+          "precision": 1.0,
+          "recall": 0.3333333333333333,
+          "f1": 0.5,
+          "support": 3,
+          "correct": 1,
+          "tp": 1,
+          "fp": 0,
+          "fn": 2
+        },
+        "DYNAMIC_MOBILE_APP": {
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "support": 1,
+          "correct": 1,
+          "tp": 1,
+          "fp": 1,
+          "fn": 0
+        },
+        "DYNAMIC_WEB_APPLICATION": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1,
+          "correct": 1,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0
+        },
+        "STATIC_WEB_APPLICATION": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0,
+          "correct": 0,
+          "tp": 0,
+          "fp": 1,
+          "fn": 0
+        }
+      }
+    },
+    "framework": {
+      "macro_precision": 0.5,
+      "macro_recall": 0.5,
+      "macro_f1": 0.4444444444444444,
+      "micro_precision": 0.6,
+      "micro_recall": 0.6,
+      "micro_f1": 0.6,
+      "accuracy": 0.6,
+      "per_class": {
+        "NOT_FOUND": {
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "support": 4,
+          "correct": 2,
+          "tp": 2,
+          "fp": 0,
+          "fn": 2
+        },
+        "FLUTTER": {
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "support": 1,
+          "correct": 1,
+          "tp": 1,
+          "fp": 1,
+          "fn": 0
+        },
+        "REACT": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0,
+          "correct": 0,
+          "tp": 0,
+          "fp": 1,
+          "fn": 0
+        }
+      }
+    },
+    "languageType": {
+      "macro_precision": 0.5,
+      "macro_recall": 0.4,
+      "macro_f1": 0.4444444444444445,
+      "micro_precision": 0.8,
+      "micro_recall": 0.8,
+      "micro_f1": 0.8000000000000002,
+      "accuracy": 0.8,
+      "per_class": {
+        "NOT_FOUND": {
+          "precision": 1.0,
+          "recall": 0.8,
+          "f1": 0.888888888888889,
+          "support": 5,
+          "correct": 4,
+          "tp": 4,
+          "fp": 0,
+          "fn": 1
+        },
+        "REACT_JAVASCRIPT": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 0,
+          "correct": 0,
+          "tp": 0,
+          "fp": 1,
+          "fn": 0
+        }
+      }
+    }
+  },
+  "summary": {
+    "average_enum_macro_f1": 0.575,
+    "average_enum_macro_precision": 0.605,
+    "average_enum_macro_recall": 0.5966666666666666,
+    "total_examples": 5
+  }
+}

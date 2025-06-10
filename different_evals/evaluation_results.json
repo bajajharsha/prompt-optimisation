@@ -1,0 +1,45 @@
+{
+  "validation_metrics": {
+    "valid_json_accuracy": 1.0,
+    "exact_match_accuracy": 0.0
+  },
+  "enum_field_metrics": {
+    "sentiment": {
+      "macro_precision": 1.0,
+      "macro_recall": 0.5833333333333333,
+      "macro_f1": 0.7333333333333334,
+      "micro_precision": 1.0,
+      "micro_recall": 0.6,
+      "micro_f1": 0.7499999999999999,
+      "accuracy": 0.6,
+      "per_class": {
+        "positive": {
+          "precision": 1.0,
+          "recall": 0.6666666666666666,
+          "f1": 0.8,
+          "support": 3,
+          "correct": 2,
+          "tp": 2,
+          "fp": 0,
+          "fn": 1
+        },
+        "negative": {
+          "precision": 1.0,
+          "recall": 0.5,
+          "f1": 0.6666666666666666,
+          "support": 2,
+          "correct": 1,
+          "tp": 1,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    }
+  },
+  "summary": {
+    "average_enum_macro_f1": 0.7333333333333334,
+    "average_enum_macro_precision": 1.0,
+    "average_enum_macro_recall": 0.5833333333333333,
+    "total_examples": 5
+  }
+}

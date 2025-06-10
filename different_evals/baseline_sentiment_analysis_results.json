@@ -1,0 +1,21 @@
+{
+  "validation_metrics": {
+    "valid_json_accuracy": 0.0,
+    "exact_match_accuracy": 0.0
+  },
+  "enum_field_metrics": {
+    "review": {
+      "macro_precision": 0.0,
+      "macro_recall": 0.0,
+      "macro_f1": 0.0,
+      "micro_precision": 0.0,
+      "micro_recall": 0.0,
+      "micro_f1": 0.0,
+      "accuracy": 0.0
+    }
+  },
+  "summary": {
+    "average_enum_macro_f1": 0.0,
+    "total_examples": 2
+  }
+}

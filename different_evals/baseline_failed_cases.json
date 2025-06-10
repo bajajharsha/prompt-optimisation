@@ -1,0 +1,94 @@
+{
+  "invalid_json": [],
+  "schema_violations": [],
+  "missing_fields": [],
+  "wrong_classifications": [
+    {
+      "example_idx": 0,
+      "input_prompt": "create a signup screen for ecommerce app(query)",
+      "ground_truth": {
+        "action": "CODE_GENERATION",
+        "platform": "NOT_FOUND",
+        "framework": "NOT_FOUND",
+        "subAction": "CODING",
+        "languageType": "NOT_FOUND"
+      },
+      "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_MOBILE_APP\",\n  \"framework\": \"FLUTTER\",\n  \"languageType\": \"NOT_FOUND\"\n}\n```",
+      "timestamp": "2025-06-10T16:30:44.112128",
+      "wrong_fields": [
+        {
+          "field": "platform",
+          "predicted_value": "DYNAMIC_MOBILE_APP",
+          "expected_value": "NOT_FOUND"
+        },
+        {
+          "field": "framework",
+          "predicted_value": "FLUTTER",
+          "expected_value": "NOT_FOUND"
+        }
+      ]
+    },
+    {
+      "example_idx": 2,
+      "input_prompt": "Create a page for convert png to jpeg(query)",
+      "ground_truth": {
+        "action": "CODE_GENERATION",
+        "platform": "NOT_FOUND",
+        "framework": "NOT_FOUND",
+        "subAction": "CODING",
+        "languageType": "NOT_FOUND"
+      },
+      "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"STATIC_WEB_APPLICATION\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}\n```",
+      "timestamp": "2025-06-10T16:30:44.112225",
+      "wrong_fields": [
+        {
+          "field": "platform",
+          "predicted_value": "STATIC_WEB_APPLICATION",
+          "expected_value": "NOT_FOUND"
+        }
+      ]
+    }
+  ],
+  "exact_match_failures": [
+    {
+      "example_idx": 0,
+      "input_prompt": "create a signup screen for ecommerce app(query)",
+      "ground_truth": {
+        "action": "CODE_GENERATION",
+        "platform": "NOT_FOUND",
+        "framework": "NOT_FOUND",
+        "subAction": "CODING",
+        "languageType": "NOT_FOUND"
+      },
+      "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_MOBILE_APP\",\n  \"framework\": \"FLUTTER\",\n  \"languageType\": \"NOT_FOUND\"\n}\n```",
+      "timestamp": "2025-06-10T16:30:44.112128",
+      "parsed_prediction": {
+        "action": "CODE_GENERATION",
+        "subAction": "CODING",
+        "platform": "DYNAMIC_MOBILE_APP",
+        "framework": "FLUTTER",
+        "languageType": "NOT_FOUND"
+      }
+    },
+    {
+      "example_idx": 2,
+      "input_prompt": "Create a page for convert png to jpeg(query)",
+      "ground_truth": {
+        "action": "CODE_GENERATION",
+        "platform": "NOT_FOUND",
+        "framework": "NOT_FOUND",
+        "subAction": "CODING",
+        "languageType": "NOT_FOUND"
+      },
+      "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"STATIC_WEB_APPLICATION\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}\n```",
+      "timestamp": "2025-06-10T16:30:44.112225",
+      "parsed_prediction": {
+        "action": "CODE_GENERATION",
+        "subAction": "CODING",
+        "platform": "STATIC_WEB_APPLICATION",
+        "framework": "NOT_FOUND",
+        "languageType": "NOT_FOUND"
+      }
+    }
+  ]
+}

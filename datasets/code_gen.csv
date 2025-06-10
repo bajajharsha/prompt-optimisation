@@ -1,0 +1,226 @@
+inputs_input,outputs_label_action,outputs_label_subAction,outputs_label_platform,outputs_label_framework,outputs_label_languageType
+Create one page for dollar to indian ruppe(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+create a groq like llm hosting and inferencing inteface in web(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+Create only UI of login screen with username and password. (query),CODE_GENERATION,VISUAL_EDITS,STATIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+"Hello, How are you?(query)",NOT_FOUND,GENERAL,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"Getting Error : import { api } from '../../utils/api';
+
+not able to Find this file and its breaking code(query)",CODE_GENERATION,ERROR,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Add Attendance part where can see employee daily attendant and in-out time(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Add EmployeeItems in route and add urls(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create new screen for the laptop and other items assigned to every employee. show in table with accordion UI(query),CODE_GENERATION,VISUAL_EDITS,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create login web application for cats(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+Create login app(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"/home/ubuntu/app/wine_showcase/src/pages/WineShowcase/components/FoodPairing.jsx: Unexpected token, expected "","" (291:94)
+  294 |     wineType: 'Red',
+/home/ubuntu/app/wine_showcase/src/pages/WineShowcase/components/FoodPairing.jsx:291:94(query)",CODE_GENERATION,ERROR,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+"/home/ubuntu/app/wine_showcase/src/pages/WineShowcase/components/FoodPairing.jsx: Unexpected t
+oken, expected "","" (291:94)(query)",CODE_GENERATION,ERROR,NOT_FOUND,REACT,REACT_JAVASCRIPT
+"not working proper 
+ugin:vite:react-babel] /home/ubuntu/app/employee_display/src/pages/SalaryScreen/index.jsx: Expecting Unicode escape sequence \uXXXX. (792:73)
+  795 |                 <button(query)",CODE_GENERATION,ERROR,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+Add Salary Screen for employee wise bigfurgation(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"You have code, please check it, its was working proper(query)",CODE_GENERATION,ERROR,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"now not able to see employee list, button is clickable but page is not loading(query)",NOT_FOUND,ERROR,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"not able to find signup screen, how can find it(query)",NOT_FOUND,GENERAL,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"its not default login screen, not able to see login signup screen(query)",NOT_FOUND,ERROR,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Add Login and Signup Screens(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Single page wine web app(query),CODE_GENERATION,CODING,STATIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+"Its mobile First Ui, I need Web First approach(query)",CODE_GENERATION,VISUAL_EDITS,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"import Dashboard from ""pages/Dashboard"";
+
+Dashboard is not compoent(query)",CODE_GENERATION,ERROR,NOT_FOUND,REACT,REACT_JAVASCRIPT
+"Error in code, Please solve it : Failed to resolve import ""pages/Dashboard"" from ""src/Routes.jsx"". Does the file exist?(query)",CODE_GENERATION,ERROR,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+"Getting some mash in UI, please fix it and add dashboard page(query)",CODE_GENERATION,VISUAL_EDITS,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Please do change code(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+You have code my friend(query),NOT_FOUND,GENERAL,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Please create a typing speed test application like MonkeyType. Just give me a login screen for now.(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"Employee Directory not opening as default, please add this page as default route(query)",CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Add a splash screen as well(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Flutter simple login screen with social login options(query),CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+create flutter fb splash screen ui(query),CODE_GENERATION,VISUAL_EDITS,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+Create Signup page(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Login Screen for HRMS system(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Please create a typing speed test application like MonkeyType(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+add a sign up screen as well(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+User list/grid view screen for HR system in react app(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+create flutter stop watch ui(query),CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+generate a login screen using dart(query),CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+Can you generate a login screen for my bakery app?(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Add a dashboard(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create login page for dogs of another universe in web(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+ADD SUPABASE IN THIS CODE(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Add another option for login through mobile number. when i click on login through mobile number then ask for opt(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+create a login screen for ecommerce app(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"Solve Error: /home/ubuntu/app/coloring_book_creator/src/index.css:35:3: The `text-white` class does not exist. If `text-white` is a custom class, make sure it is defined within a `@layer` directive.(query)",CODE_GENERATION,ERROR,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+create a login page for gym web.(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+"/home/ubuntu/app/coloring_book_creator/src/index.css:35:3: The `text-white` class does not exist. If `text-white` is a custom class, make sure it is defined within a `@layer` directive.(query)",CODE_GENERATION,ERROR,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"A real-time supply chain orchestrator for global enterprises.
+Tracks shipments, predicts delays, and optimizes routes—logistics chaos, terminated.(query)",CODE_GENERATION,GENERAL,NOT_FOUND,NOT_FOUND,NOT_FOUND
+create login page for ecommerce web(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+create an ecommerce web app(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+Create only UI Dashboard screen in WEB(query),CODE_GENERATION,VISUAL_EDITS,STATIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+Load initially login screen(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+create flutter timer page ui only(query),CODE_GENERATION,VISUAL_EDITS,STATIC_MOBILE_APP,FLUTTER,NOT_FOUND
+Please add a signup screen as well(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create template of only UI of login screen with username and password. with logic (query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create only forgot password UI screen and add the route when click on Forgot password from login screen(query),CODE_GENERATION,VISUAL_EDITS,NOT_FOUND,NOT_FOUND,NOT_FOUND
+create animated register page in react(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+Create only UI login screen in React.(query),CODE_GENERATION,VISUAL_EDITS,STATIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+"I want to build an app where i upload an 
+ and it automatically converts it into a colouring book drawing and gives me an option to download it into a pdf. I want only the black outlines in the result. The inner area should be white for a kid to colour the same.(query)",CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create template of only UI of login screen with username and password. (query),CODE_GENERATION,VISUAL_EDITS,STATIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+Can you generate a login screen for my Ninis Kitchen bakery app?(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create only UI login screen in Flutter(query),CODE_GENERATION,VISUAL_EDITS,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+create only ui login screen in flutter(query),CODE_GENERATION,VISUAL_EDITS,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+Create single login screen. only UI in react with username and password template (query),CODE_GENERATION,VISUAL_EDITS,STATIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+"Solve this error : Failed to resolve import ""react-table"" from ""src/pages/users/UserManagement.jsx"". Does the file exist?(query)",CODE_GENERATION,ERROR,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+"[plugin:vite:import-analysis] Failed to resolve import ""react-table"" from ""src/pages/users/UserManagement.jsx"". Does the file exist?(query)",NOT_FOUND,ERROR,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+Create single login screen. only UI in rect with username and password tmeplate (query),CODE_GENERATION,VISUAL_EDITS,NOT_FOUND,REACT,REACT_JAVASCRIPT
+"<textarea name=""message"" rows=""4"" class=""block text-emphasis-high relative z-1 resize-none overflow-auto p-5 w-full bg-transparent placeholder:text-emphasis-low text-sm focus:outline-none"" placeholder=""Tell me about your new idea..."">Create only UI login screen in Flutter</textarea>(query)",CODE_GENERATION,VISUAL_EDITS,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+Add Proect list page(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create only UI LOGIN screen in FLUTTER(query),CODE_GENERATION,VISUAL_EDITS,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+User list screen for IT company(query),CODE_GENERATION,GENERAL,NOT_FOUND,NOT_FOUND,NOT_FOUND
+create only login screen for dominos web(query),CODE_GENERATION,CODING,STATIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+create only login screen for dominos(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"Create only Dashboard UI
+ screen in Ecommerce Web(query)",CODE_GENERATION,VISUAL_EDITS,STATIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+create only login screen for e-commerce web(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+"Solve error in code, its not working(query)",CODE_GENERATION,ERROR,NOT_FOUND,NOT_FOUND,NOT_FOUND
+react hello world animated page(query),CODE_GENERATION,CODING,STATIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+hello world react page(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+"create a login screen for e-commerce 
+ web(query)",CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+Now add animation at winning time and restart after 5 sec(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+social auth add in login page(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Add comments in code(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Add signup page(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create Flutter app for tic tac game(query),CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+Wine web app - single page app(query),CODE_GENERATION,CODING,STATIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+login page for e-comm(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+create single screen timer app.(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+add login page(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"Wine single
+ page website(query)",CODE_GENERATION,GENERAL,STATIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+Wine one page website(query),CODE_GENERATION,CODING,STATIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+Create a single screen for rupee to dollar converter in web(query),CODE_GENERATION,CODING,STATIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+create login app for tutor app(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+create login screen for currency converter.(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+create tutor web application(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+Login scree in react for converter app(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+"Create react single page app with convert dollar to inr with 85 as multiplier, only generate this(query)",CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+Add code comments(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"Create only currency convert from dollar to INR in react, please only generare in single screen with static login of 85 as multiplier(query)",CODE_GENERATION,CODING,STATIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+Create only UI login screen in web(query),CODE_GENERATION,VISUAL_EDITS,STATIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+Create a single screen for rupee to doller converter in web(query),CODE_GENERATION,CODING,STATIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+Create single login screen(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create new app currency converter from dollar to Indian ruppe(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Are you capable to develop dhiwise >(query),CODE_GENERATION,GENERAL,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"Create a basic, simple login page in React(query)",CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+Create new function for currency converter(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Generate Dashboard screen for it(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create add function in main dart file(query),CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+Create one login page(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+create login app for zomato(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Currently it is showing this popup in every 4-5 seconds but I want it after game complete(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"Second should show like 5 then 4 like timer and show some animated
+ popups(query)",CODE_GENERATION,VISUAL_EDITS,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Second should show like 5 then 4 like timer and show some animation GIf like popups(query),CODE_GENERATION,VISUAL_EDITS,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"Good Job but It shoud show running Sec 
+and Now show some animation when winner(query)",CODE_GENERATION,VISUAL_EDITS,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Add restart option and after win wait for 5 sec and restart the game or Give button(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"Error: Failed to resolve import ""framer-motion"" from ""src/pages/sessions/SessionPlayer.jsx"". Does the file exist?(query)",CODE_GENERATION,ERROR,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+Create mobile app of scanning xray(query),CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,NOT_FOUND,NOT_FOUND
+Getting Error : Cannot read properties of undefined (reading GlobalWidgetsLocalizations')(query),CODE_GENERATION,ERROR,NOT_FOUND,REACT,REACT_JAVASCRIPT
+create image converter of JPEG to PNG(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"Create a web app that promotes employee wellness by offering guided yoga sessions, mindfulness exercises, and holistic health content tailored to the workplace. It includes live and recorded sessions, personalized wellness plans, habit tracking, team challenges, mental health check-ins, wearables integration, and corporate wellness leaderboards. HR teams can also monitor participation metrics and offer wellness incentives.(query)",CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+"Create a web page that presents products with rich visuals and optimized content to maximize user engagement and conversions. Features include 360° product views, variant selection, customer reviews, real-time inventory updates, sticky ""Add to Cart"" buttons, related products, urgency indicators (""Only 2 left!""), and quick checkout options.(query)",CODE_GENERATION,VISUAL_EDITS,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+Create web app for check internet speed.(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+add new login screen in existing App(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+create flutter bhavesh portfolio page(query),CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+create react ankit app for portfolio(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+create flutter welcome screen ui only(query),CODE_GENERATION,VISUAL_EDITS,STATIC_MOBILE_APP,FLUTTER,NOT_FOUND
+Create round and cross game in react application(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+"change the name to ""homely"" instead of "" airbnb""(query)",CODE_GENERATION,VISUAL_EDITS,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create an awesome and minimalistic Space traveller webpage in react(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+"Failed to resolve import ""framer-motion"" from ""src/pages/auth/LoginScreen.jsx"". Does the file exist?
+
+Please solve this asap(query)",CODE_GENERATION,ERROR,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+Create a page for Space Traveller website.(query),CODE_GENERATION,CODING,STATIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+Create a Login screen for web for Facebook.(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+Login Screen for Saas(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Ceate login page(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create AI assistant who has maintain daily routing life for Mobile app.(query),CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,NOT_FOUND,NOT_FOUND
+design an airbnb clone for 2 web screens atleast(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+create todo App in flutter(query),CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+Add List view and Map view in listing section(query),CODE_GENERATION,VISUAL_EDITS,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Change name(query),NOT_FOUND,GENERAL,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create forgot password.(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create signup(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"change the name to ""homely"" instead of ""
+airbnb""(query)",CODE_GENERATION,VISUAL_EDITS,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"when i say clone, you should use another name and not ""airbnb"". Please give this app a new name.(query)",CODE_GENERATION,VISUAL_EDITS,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Add login page(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Space Traveller for space travel Single Webpage in React.JS(query),CODE_GENERATION,CODING,STATIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+"Create web
+ app for check internet speed.(query)",CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+Space Traveller  for space travel Single Webpage in React.JS(query),CODE_GENERATION,CODING,STATIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+make an airbnb clone (home page only) for desktop view(query),CODE_GENERATION,CODING,STATIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+Create mobile app for check internet speed.(query),CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,NOT_FOUND,NOT_FOUND
+Space Traveller  Single Webpage(query),CODE_GENERATION,GENERAL,STATIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+"Create UI login screen in 
+Flutter(query)",CODE_GENERATION,VISUAL_EDITS,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+mock code(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"lib/widgets/animated_background.dart:115:47: Error: The getter 'currentPoint' isn't defined for the class 'Path'. - 'Path' is from 'dart:ui'. Try correcting the name to the name of an existing getter, or defining a getter or field named 'currentPoint'. path.quadraticBezierTo(controlX, path.currentPoint!.dy, x, y); ^^^^^^^^^^^^ lib/widgets/animated_background.dart:135:59: Error: The getter 'currentPoint' isn't defined for the class 'Path'. - 'Path' is from 'dart:ui'. Try correcting the name to the name of an existing getter, or defining a getter or field named 'currentPoint'. secondPath.quadraticBezierTo(controlX, secondPath.currentPoint!.dy, x, y); ^^^^^^^^^^^^
+Flutter process exited unexpectedly with code 1
+
+GETTING ERROR(query)",CODE_GENERATION,ERROR,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+updte the home page(query),CODE_GENERATION,VISUAL_EDITS,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"Not albe to see preview, it showing error(query)",NOT_FOUND,ERROR,NOT_FOUND,NOT_FOUND,NOT_FOUND
+create a welcome back page(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Login screen in flutter app for trading app(query),CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+create app  to check internet speed in mobile(query),CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,NOT_FOUND,NOT_FOUND
+create app in flutter to check internet speed(query),CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+create app to check internet speed in flutter(query),CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+create react welcome page(query),CODE_GENERATION,CODING,STATIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+Create a Airbnb login screen in flutter.(query),CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+Create a app for convert a dollar to Indian rupee(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"We are creating a design for B2B Diamond Trading Platform for customers. There will be more than 40,000 diamonds on the platform so design it in a way that a user can experience the platform in a best possible way. **1. Registration & Login** - **Quick Registration:** Simple form with basic details - **Country-Specific KYC:** Based on regional compliance requirements - **Login Options:** - Registered user login - Guest login (limited features) - **Login Security:** - Password protection - 2FA (Optional) **2. Diamond Parameters** Each diamond listed must include the following: - Packet No - Shape - Carat - Color - Clarity - Cut - Polish (Pol) - Symmetry (Sym) - Fluorescence (Fls) - Rapaport Price (Rap.$) - Discount % (Disc %) - Price per Carat (Price/ct) - Total Amount (Amount) - Measurement (Length, Width, Height) - Ratio - Depth % - Table % - Crown Angle - Crown Height % - Pavilion Angle - Pavilion Height % - Girdle % - Lab - Report Number - Comments - Key To Symbols - Shade - H&A - Luster - Eye Clean - Table Inclusion (TI) - Side Inclusion (SI) - Table Black (TB) - Side Black (SB) - Table Open Inclusion (TO) - Side Open Inclusion (SO) **3. Buyer activities to be performed on platform** - Search Diamonds: Customer can search with basic and advance filters to get diamonds of their choice - Watchlist: Customer can add diamonds to watch list and get notified if there's a change in price - Cart: Customer can add selected diamonds to cart - Enquiry: Customer can place inquiry for a diamond(s) - Quote: Customer can quote diamonds with its price - Bid: Customers can bid on a diamond when bid is live - Appointment: Customer can book an appointment to physically view diamonds - Hold: Customer can request for a diamond hold if it doesn't want others to purchase it. - Order: Customer can place an order for diamonds - Compare: Customer can compare two or more diamonds to check its parameters - Share: Customers can share excel with all diamonds data, images and certificates with anyone via Email or WhatsApp - Download Diamonds Data Excel, Images and Certificates - Print: Customer can print the list of diamonds - Add Notes: Customer can add notes for internal references - Final Calculations: Show final calculation based on discount and payment terms - Modify Search: Customers can modify the search criteria - Reminders: Customers can set a reminder on specific diamonds with notes - Sort by multiple criteria: Customers can sort diamonds based on multiple criterias - Notification system for order status **4. Analytics & Reporting** - Customer can see all activities they perfomed - Order and transaction summary - Top listed/viewed diamonds - View other related analyticals **5. Settings** - Profile management - Diamond view sequence management - Email/SMS notifications management(query)",CODE_GENERATION,VISUAL_EDITS,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+check internet speed App(query),CODE_GENERATION,GENERAL,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create a page for convert png to jpeg(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+create image convertor(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+hi create todo App in flutter(query),CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+"Add signup page.
+Allow full form based signup and also allow social signup and signin(query)",CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+hi create todo App(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+also make sign up screen while user is not logged in(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create a login screen for a React app focused on IT hardware file management(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+Signup page(query),CODE_GENERATION,GENERAL,NOT_FOUND,NOT_FOUND,NOT_FOUND
+nsdf(query),NOT_FOUND,GENERAL,NOT_FOUND,NOT_FOUND,NOT_FOUND
+fix this code(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+CRM dashboard(query),NOT_FOUND,GENERAL,NOT_FOUND,NOT_FOUND,NOT_FOUND
+create app for JPG image to PNG image converter in React(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+create app for JPG image to PNG image converter(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create a page for jpeg to png image converter(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"React app, login screen for IT hardware file management(query)",CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+Create UI login screen in Flutter(query),CODE_GENERATION,VISUAL_EDITS,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+Generate pages for above requirement(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Next step(query),NOT_FOUND,GENERAL,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create Substraction function in Home/index.jsx(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+Create UI login screen in react js(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+Create a login page in React(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,REACT,REACT_JAVASCRIPT
+image converter from png to jpg(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+"Create a web app for building and maintaining daily habits through customizable trackers, reminders, goal-setting, and visual progress analytics. The app empowers users to develop positive routines and stay consistent in their personal growth journeys. Core features include streak tracking, habit stacking, daily reflections, and motivational nudges. Users can join social challenges, set custom habit frequencies, receive AI-generated habit suggestions, and sync their progress across multiple devices for seamless habit building.(query)",CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+"Add substratction function in
+ splash_screen.dart(query)",CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+splash_screen.dart(query),CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+create a signup screen for ecommerce app(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+add subtraction  function in main.dart(query),CODE_GENERATION,CODING,DYNAMIC_MOBILE_APP,FLUTTER,NOT_FOUND
+Create bug fix(query),CODE_GENERATION,ERROR,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Bug Fix(query),NOT_FOUND,ERROR,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Create dashboard page(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+Generate Signup Screen(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+real estate application with 4 screens only(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+create login screen for stock trading web(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND
+create login screen for stock trading(query),CODE_GENERATION,CODING,NOT_FOUND,NOT_FOUND,NOT_FOUND
+create login web for tinder(query),CODE_GENERATION,CODING,DYNAMIC_WEB_APPLICATION,NOT_FOUND,NOT_FOUND

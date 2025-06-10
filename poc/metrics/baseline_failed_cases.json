@@ -1,0 +1,139 @@
+{
+  "invalid_json": [],
+  "schema_violations": [],
+  "missing_fields": [],
+  "wrong_classifications": [
+    {
+      "example_idx": 0,
+      "input_prompt": "create a signup screen for ecommerce app(query)",
+      "ground_truth": {
+        "action": "CODE_GENERATION",
+        "platform": "NOT_FOUND",
+        "framework": "NOT_FOUND",
+        "subAction": "CODING",
+        "languageType": "NOT_FOUND"
+      },
+      "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_MOBILE_APP\",\n  \"framework\": \"FLUTTER\",\n  \"languageType\": \"NOT_FOUND\"\n}\n```",
+      "timestamp": "2025-06-10T17:20:08.074341",
+      "wrong_fields": [
+        {
+          "field": "platform",
+          "predicted_value": "DYNAMIC_MOBILE_APP",
+          "expected_value": "NOT_FOUND"
+        },
+        {
+          "field": "framework",
+          "predicted_value": "FLUTTER",
+          "expected_value": "NOT_FOUND"
+        }
+      ]
+    },
+    {
+      "example_idx": 1,
+      "input_prompt": "create login web for tinder(query)",
+      "ground_truth": {
+        "action": "CODE_GENERATION",
+        "platform": "DYNAMIC_WEB_APPLICATION",
+        "framework": "NOT_FOUND",
+        "subAction": "CODING",
+        "languageType": "NOT_FOUND"
+      },
+      "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"REACT\",\n  \"languageType\": \"REACT_JAVASCRIPT\"\n}\n```",
+      "timestamp": "2025-06-10T17:20:08.074391",
+      "wrong_fields": [
+        {
+          "field": "framework",
+          "predicted_value": "REACT",
+          "expected_value": "NOT_FOUND"
+        },
+        {
+          "field": "languageType",
+          "predicted_value": "REACT_JAVASCRIPT",
+          "expected_value": "NOT_FOUND"
+        }
+      ]
+    },
+    {
+      "example_idx": 2,
+      "input_prompt": "Create a page for convert png to jpeg(query)",
+      "ground_truth": {
+        "action": "CODE_GENERATION",
+        "platform": "NOT_FOUND",
+        "framework": "NOT_FOUND",
+        "subAction": "CODING",
+        "languageType": "NOT_FOUND"
+      },
+      "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}\n```",
+      "timestamp": "2025-06-10T17:20:08.074416",
+      "wrong_fields": [
+        {
+          "field": "platform",
+          "predicted_value": "DYNAMIC_WEB_APPLICATION",
+          "expected_value": "NOT_FOUND"
+        }
+      ]
+    }
+  ],
+  "exact_match_failures": [
+    {
+      "example_idx": 0,
+      "input_prompt": "create a signup screen for ecommerce app(query)",
+      "ground_truth": {
+        "action": "CODE_GENERATION",
+        "platform": "NOT_FOUND",
+        "framework": "NOT_FOUND",
+        "subAction": "CODING",
+        "languageType": "NOT_FOUND"
+      },
+      "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_MOBILE_APP\",\n  \"framework\": \"FLUTTER\",\n  \"languageType\": \"NOT_FOUND\"\n}\n```",
+      "timestamp": "2025-06-10T17:20:08.074341",
+      "parsed_prediction": {
+        "action": "CODE_GENERATION",
+        "subAction": "CODING",
+        "platform": "DYNAMIC_MOBILE_APP",
+        "framework": "FLUTTER",
+        "languageType": "NOT_FOUND"
+      }
+    },
+    {
+      "example_idx": 1,
+      "input_prompt": "create login web for tinder(query)",
+      "ground_truth": {
+        "action": "CODE_GENERATION",
+        "platform": "DYNAMIC_WEB_APPLICATION",
+        "framework": "NOT_FOUND",
+        "subAction": "CODING",
+        "languageType": "NOT_FOUND"
+      },
+      "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"REACT\",\n  \"languageType\": \"REACT_JAVASCRIPT\"\n}\n```",
+      "timestamp": "2025-06-10T17:20:08.074391",
+      "parsed_prediction": {
+        "action": "CODE_GENERATION",
+        "subAction": "CODING",
+        "platform": "DYNAMIC_WEB_APPLICATION",
+        "framework": "REACT",
+        "languageType": "REACT_JAVASCRIPT"
+      }
+    },
+    {
+      "example_idx": 2,
+      "input_prompt": "Create a page for convert png to jpeg(query)",
+      "ground_truth": {
+        "action": "CODE_GENERATION",
+        "platform": "NOT_FOUND",
+        "framework": "NOT_FOUND",
+        "subAction": "CODING",
+        "languageType": "NOT_FOUND"
+      },
+      "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}\n```",
+      "timestamp": "2025-06-10T17:20:08.074416",
+      "parsed_prediction": {
+        "action": "CODE_GENERATION",
+        "subAction": "CODING",
+        "platform": "DYNAMIC_WEB_APPLICATION",
+        "framework": "NOT_FOUND",
+        "languageType": "NOT_FOUND"
+      }
+    }
+  ]
+}
