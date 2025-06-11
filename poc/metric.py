@@ -61,7 +61,7 @@ class JSONGenerationEvaluator:
             "schema_violations": [],      # Cases with invalid enum values
             "missing_fields": [],         # Cases with missing required fields
             "wrong_classifications": [],  # Cases with wrong but valid enum values
-            "exact_match_failures": []    # Cases that failed exact match
+            # "exact_match_failures": []    # Cases that failed exact match
         }
         
         # Field-specific error patterns
@@ -135,11 +135,11 @@ class JSONGenerationEvaluator:
         # 2. Check exact JSON match
         if parsed_pred == ref_json:
             self.tallies["exact_json_match"]["correct"] += 1
-        else:
-            self.failed_cases["exact_match_failures"].append({
-                **example_data,
-                "parsed_prediction": parsed_pred
-            })
+        # else:
+        #     self.failed_cases["exact_match_failures"].append({
+        #         **example_data,
+        #         "parsed_prediction": parsed_pred
+        #     })
         self.tallies["exact_json_match"]["total"] += 1
         
         # 3. Detailed evaluation only if JSON is valid
@@ -294,7 +294,7 @@ class JSONGenerationEvaluator:
             "schema_violations_count": len(self.failed_cases["schema_violations"]),
             "missing_fields_count": len(self.failed_cases["missing_fields"]),
             "wrong_classifications_count": total_wrong_classifications,
-            "exact_match_failures_count": len(self.failed_cases["exact_match_failures"])
+            # "exact_match_failures_count": len(self.failed_cases["exact_match_failures"])
         }
         
         # Field-specific insights

@@ -138,7 +138,7 @@ def test_baseline_with_langfuse():
         ground_truth_jsons = []
         
         for i, item in enumerate(dataset.items):
-            if i >= 3:  # Test with 3 items
+            if i >= 15:
                 break
                 
             input_prompts.append(item.input)
