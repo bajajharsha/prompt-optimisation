@@ -21,15 +21,13 @@ class BaseOptimizer(ABC):
     @abstractmethod
     async def optimize(
         self, 
-        context: OptimizationContext,
-        base_prompt: str
+        context: OptimizationContext
     ) -> OptimizerResult:
         """
         Optimize a prompt based on the given context
         
         Args:
             context: Complete optimization context with metrics, failed cases, etc.
-            base_prompt: The current prompt to optimize
             
         Returns:
             OptimizerResult with the optimized prompt and metadata

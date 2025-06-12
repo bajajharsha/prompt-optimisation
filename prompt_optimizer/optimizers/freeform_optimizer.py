@@ -20,9 +20,11 @@ class FreeformOptimizer(BaseOptimizer):
     """
     
     def __init__(self, claude_client: ClaudeClient = None):
-        super().__init__()
-        self.claude_client = claude_client or ClaudeClient()
-        self.optimizer_name = "freeform"
+        super().__init__(
+            name="freeform",
+            description="Intelligent freeform prompt optimizer using Claude to analyze context and improve prompts"
+        )
+        self.claude_client = claude_client
     
     async def optimize(self, context: OptimizationContext) -> OptimizerResult:
         """
@@ -61,7 +63,7 @@ class FreeformOptimizer(BaseOptimizer):
             execution_time = time.time() - start_time
             
             return OptimizerResult(
-                optimizer_name=self.optimizer_name,
+                optimizer_name=self.name,
                 candidate_prompt=optimized_prompt,
                 reasoning=reasoning,
                 confidence=confidence,
@@ -77,7 +79,7 @@ class FreeformOptimizer(BaseOptimizer):
             print(f"❌ Claude API error in freeform optimizer: {e}")
             
             return OptimizerResult(
-                optimizer_name=self.optimizer_name,
+                optimizer_name=self.name,
                 candidate_prompt=context.base_prompt,  # Return original on error
                 reasoning=f"Claude API error: {str(e)}",
                 confidence=0.0,
@@ -94,7 +96,7 @@ class FreeformOptimizer(BaseOptimizer):
             print(f"❌ Unexpected error in freeform optimizer: {e}")
             
             return OptimizerResult(
-                optimizer_name=self.optimizer_name,
+                optimizer_name=self.name,
                 candidate_prompt=context.base_prompt,
                 reasoning=f"Unexpected error: {str(e)}",
                 confidence=0.0,
@@ -230,10 +232,3 @@ Focus on making prompts that are:
         
         return guidance
     
-    def get_name(self) -> str:
-        """Return the optimizer name"""
-        return self.optimizer_name
-    
-    def get_description(self) -> str:
-        """Return a description of this optimizer"""
-        return "Intelligent freeform prompt optimizer that analyzes context, failed cases, and target model characteristics to create optimized prompts" 
