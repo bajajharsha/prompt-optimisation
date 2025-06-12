@@ -1,0 +1,307 @@
+"""
+Context Manager - Smart context assembly and management for optimization
+"""
+
+import json
+from typing import Dict, List, Optional, Any, Union
+from datetime import datetime
+import copy
+import sys
+import os
+
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+sys.path.insert(0, project_root)
+# Add parent directory to path for imports when running standalone
+from prompt_optimizer.models.types import (
+    OptimizationContext, 
+    EvaluationMetrics, 
+    PromptHistory,
+    ModelConfiguration
+)
+
+from prompt_optimizer.utils.claude_client import ClaudeClient, ClaudeAPIError
+from poc.intent_analysis.claude_intent_identifier import load_baseline_metrics
+
+
+class ContextManager:
+    """
+    Smart context manager for optimization process
+    Handles assembly, updates, history management, and compression
+    """
+    
+    def __init__(self, claude_client: ClaudeClient = None):
+        self.claude_client = claude_client
+        self._context_history: List[OptimizationContext] = []
+        self._max_history_size = 10  # Keep last 10 contexts
+        self._max_failed_cases = 5  # Limit failed cases for performance
+        self._max_human_feedback = 5  # Keep last 5 feedback items
+    
+    def create_initial_context(
+        self,
+        json_schema: Dict[str, Any],
+        failed_cases_summary: Dict[str, Any],
+        failed_cases: List[Dict[str, Any]],
+        baseline_metrics: Dict[str, Any],
+        intent: Dict[str, Any],
+        base_prompt: str,
+        target_model: ModelConfiguration
+    ) -> OptimizationContext:
+        """
+        Create the initial optimization context with model information
+        """
+        # Create EvaluationMetrics from raw data
+        eval_metrics = EvaluationMetrics(
+            baseline_metrics=baseline_metrics,
+            failed_cases=failed_cases[:self._max_failed_cases],
+            failed_cases_summary=failed_cases_summary,
+            evaluated_with=target_model 
+        )
+        
+        # Create initial context
+        context = OptimizationContext(
+            json_schema=json_schema,
+            failed_cases_summary=failed_cases_summary,
+            failed_cases=failed_cases,  
+            baseline_metrics=baseline_metrics, 
+            intent=intent,
+            base_prompt=base_prompt,
+            target_model=target_model,
+            prompt_history=[],
+            human_feedback=[],
+            iteration_number=1,
+        )
+        
+        # Store in history
+        self._add_to_history(context)
+        
+        print(f"✅ Created initial context for: {intent}")
+        print(f"   Target model: {target_model.to_string()}")
+        print(f"   Failed cases: {len(failed_cases)} (limited to {self._max_failed_cases})")
+        print(f"   Iteration: {context.iteration_number}")
+        
+        return context
+    
+    def update_context_with_results(
+        self,
+        current_context: OptimizationContext,
+        new_prompt: str,
+        new_metrics: Dict[str, Any],
+        optimizer_used: str,
+        human_feedback: Optional[str] = None,
+        new_failed_cases: Optional[List[Dict[str, Any]]] = None
+    ) -> OptimizationContext:
+        """
+        Update context with new optimization results
+        Model information is preserved from the current context
+        """
+        
+        # Create new evaluation metrics with model information
+        new_eval_metrics = EvaluationMetrics(
+            baseline_metrics=new_metrics,
+            failed_cases=new_failed_cases or [],
+            failed_cases_summary={},
+            evaluated_with=current_context.target_model  # Same model as we're optimizing for
+        )
+        
+        # Create new prompt history entry
+        new_history_entry = PromptHistory(
+            prompt=new_prompt,
+            metrics=new_eval_metrics,
+            timestamp=datetime.now(),
+            iteration=current_context.iteration_number,
+            optimizer_used=optimizer_used,
+            tested_with=current_context.target_model  # Track which model this was tested with
+        )
+        
+        # Update prompt history (keep reasonable size)
+        updated_history = current_context.prompt_history + [new_history_entry]
+        if len(updated_history) > 10:  # Keep last 10 attempts
+            updated_history = updated_history[-10:]
+        
+        # Update human feedback (keep recent ones)
+        updated_feedback = current_context.human_feedback.copy()
+        if human_feedback:
+            updated_feedback.append(human_feedback)
+            if len(updated_feedback) > self._max_human_feedback:
+                updated_feedback = updated_feedback[-self._max_human_feedback:]
+        
+        # Update failed cases if provided
+        updated_failed_cases = current_context.failed_cases
+        if new_failed_cases:
+            updated_failed_cases = EvaluationMetrics(
+                baseline_metrics=new_metrics,
+                failed_cases=new_failed_cases[:self._max_failed_cases],
+                failed_cases_summary={},
+                evaluated_with=current_context.target_model
+            )
+        
+        # Create updated context - new metrics become the baseline (natural insights)
+        updated_context = OptimizationContext(
+            intent=current_context.intent,
+            base_prompt=new_prompt,  # Update to new prompt
+            json_schema=current_context.json_schema,
+            target_model=current_context.target_model,  # Preserve target model
+            baseline_metrics=new_eval_metrics,  # Updated metrics become new baseline
+            failed_cases=updated_failed_cases,
+            failed_cases_summary=current_context.failed_cases_summary,
+            prompt_history=updated_history,
+            human_feedback=updated_feedback,
+            iteration_number=current_context.iteration_number + 1
+        )
+        
+        # Store in history
+        self._add_to_history(updated_context)
+        
+        print(f"✅ Updated context - Iteration {updated_context.iteration_number}")
+        print(f"   Target model: {updated_context.target_model.to_string()}")
+        print(f"   New prompt length: {len(new_prompt)} chars")
+        print(f"   History entries: {len(updated_history)}")
+        print(f"   Human feedback items: {len(updated_feedback)}")
+        
+        return updated_context
+    
+    def merge_contexts(
+        self,
+        primary_context: OptimizationContext,
+        additional_data: Dict[str, Any]
+    ) -> OptimizationContext:
+        """
+        Smart merge of additional data into existing context
+        Note: dev_b_insights removed - updated metrics naturally become insights
+        """
+        
+        # Deep copy to avoid modifying original
+        merged_context = copy.deepcopy(primary_context)
+        
+        # Merge additional failed cases
+        if "failed_cases" in additional_data:
+            existing_cases = merged_context.failed_cases.failed_cases if hasattr(merged_context.failed_cases, 'failed_cases') else []
+            new_cases = additional_data["failed_cases"]
+            
+            # Combine and deduplicate (simple string comparison)
+            all_cases = existing_cases + new_cases
+            unique_cases = []
+            seen_inputs = set()
+            
+            for case in all_cases:
+                case_input = case.get("input", "")
+                if case_input not in seen_inputs:
+                    unique_cases.append(case)
+                    seen_inputs.add(case_input)
+            
+            # Limit size and update with model information
+            limited_cases = unique_cases[:self._max_failed_cases]
+            merged_context.failed_cases = EvaluationMetrics(
+                baseline_metrics=merged_context.baseline_metrics.baseline_metrics,
+                failed_cases=limited_cases,
+                failed_cases_summary=merged_context.failed_cases.failed_cases_summary if hasattr(merged_context.failed_cases, 'failed_cases_summary') else {},
+                evaluated_with=merged_context.target_model
+            )
+        
+        # Merge human feedback
+        if "human_feedback" in additional_data:
+            new_feedback = additional_data["human_feedback"]
+            if isinstance(new_feedback, str):
+                new_feedback = [new_feedback]
+            
+            merged_feedback = merged_context.human_feedback + new_feedback
+            # Keep recent feedback only
+            if len(merged_feedback) > self._max_human_feedback:
+                merged_feedback = merged_feedback[-self._max_human_feedback:]
+            merged_context.human_feedback = merged_feedback
+        
+        print(f"✅ Merged additional data into context")
+        print(f"   Failed cases: {len(merged_context.failed_cases.failed_cases)}")
+        print(f"   Human feedback: {len(merged_context.human_feedback)}")
+        
+        return merged_context
+    
+    def get_context_summary(self, context: OptimizationContext) -> Dict[str, Any]:
+        """
+        Get a concise summary of context for optimization
+        """
+        
+        # Extract key accuracy metric
+        accuracy = self._extract_accuracy(context.baseline_metrics.baseline_metrics)
+        
+        return {
+            "intent": context.intent,
+            "target_model": context.target_model.to_string(),
+            "current_accuracy": accuracy,
+            "failed_cases_count": len(context.failed_cases.failed_cases),
+            "iterations_attempted": len(context.prompt_history),
+            "has_human_feedback": len(context.human_feedback) > 0,
+            "optimization_iteration": context.iteration_number
+        }
+    
+    def _extract_accuracy(self, metrics: Dict[str, Any]) -> float:
+        """Extract accuracy from metrics dict"""
+        if "accuracy" in metrics:
+            return float(metrics["accuracy"])
+        elif "acc" in metrics:
+            return float(metrics["acc"])
+        else:
+            # Fallback calculation if accuracy not directly available
+            return 0.0
+    
+    def _add_to_history(self, context: OptimizationContext):
+        """Add context to history with size management"""
+        self._context_history.append(context)
+        if len(self._context_history) > self._max_history_size:
+            self._context_history = self._context_history[-self._max_history_size:]
+    
+    def get_context_history(self) -> List[OptimizationContext]:
+        """Get context history"""
+        return self._context_history.copy()
+    
+    async def close(self):
+        """Cleanup resources"""
+        if self.claude_client:
+            await self.claude_client.close() 
+            
+if __name__ == "__main__":
+    
+    all_metrics = load_baseline_metrics("poc/metrics/enhanced_baseline_results.json")
+    with open("poc/intent_analysis/claude_intent_analysis_results.json", 'r', encoding='utf-8') as f:
+        intent_analysis = json.load(f)
+    base_prompt = """
+    You are an expert code generation classifier. Analyze the user's request and classify it according to the provided schema.
+    Return your response as a valid JSON object with the specified fields.
+    
+    Create a page for jpeg to png image converter.
+    
+    IMPORTANT: Respond with a valid JSON object only. Do not include any explanations or text outside the JSON. Do not add any comments inside the JSON.
+    """
+    
+    context_manager = ContextManager()
+    context = context_manager.create_initial_context(
+        json_schema={
+        "action": ["CODE_GENERATION", "NOT_FOUND"],
+        "subAction": ["CODING", "VISUAL_EDITS", "ERROR", "GENERAL"],
+        "platform": ["DYNAMIC_WEB_APPLICATION", "STATIC_WEB_APPLICATION", 
+                    "DYNAMIC_MOBILE_APP", "STATIC_MOBILE_APP", "NOT_FOUND"],
+        "framework": ["REACT", "FLUTTER", "NOT_FOUND"],
+        "languageType": ["REACT_JAVASCRIPT", "NOT_FOUND"]
+        },
+        failed_cases_summary=all_metrics.get("failed_cases_summary", {}),
+        failed_cases=all_metrics.get("detailed_failed_cases", {}).get("wrong_classifications", []),
+        baseline_metrics={k: v for k, v in all_metrics.items() if k != "detailed_failed_cases"},
+        intent=intent_analysis,
+        base_prompt=base_prompt,
+        target_model=ModelConfiguration(
+            provider="groq",
+            model_name="llama-3.7-70b-versatile",
+        )
+    )
+    
+    print("="*60)
+    print("Context history:")
+    print("="*60)
+    for context in context_manager.get_context_history():
+        print(f"Intent: {context.intent}")
+        print(f"Target model: {context.target_model.to_string()}")
+        print(f"Failed cases: {len(context.failed_cases)}")
+        print(f"Iterations attempted: {len(context.prompt_history)}")
+        print(f"Has human feedback: {len(context.human_feedback) > 0}")
+        print(f"Optimization iteration: {context.iteration_number}")
+        print("="*60)
