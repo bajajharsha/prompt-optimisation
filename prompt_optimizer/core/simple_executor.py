@@ -69,10 +69,10 @@ class SimpleExecutor:
                 tasks.append(task)
             
             # Run all optimizers concurrently
-            results = await asyncio.gather(*tasks, return_exceptions=True)
+            raw_results = await asyncio.gather(*tasks, return_exceptions=True)
             
             # Process results
-            execution_results = self._process_results(results, optimizer_names)
+            execution_results = self._process_results(raw_results, optimizer_names)
             execution_results.execution_time = time.time() - start_time
             
             print(f"✅ Execution completed in {execution_results.execution_time:.2f}s")

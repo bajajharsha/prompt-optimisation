@@ -73,7 +73,6 @@ class EvaluationEngine:
             "evaluation_type": evaluation_type,
             "model_used": self.groq_model,
             "num_samples": len(data),
-            "prompt_length": len(prompt)
         }
         
         print(f"✅ {evaluation_type} evaluation completed:")

@@ -58,7 +58,7 @@ class ContextManager:
             evaluated_with=target_model 
         )
         # randome 5 failed cases
-        failed_cases = random.sample(failed_cases, 5)
+        failed_cases = random.sample(failed_cases, min(5, len(failed_cases)))
         
         
         # Create initial context

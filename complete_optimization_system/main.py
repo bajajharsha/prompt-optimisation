@@ -10,6 +10,7 @@ import sys
 import os
 from datetime import datetime
 from typing import Dict, List, Any, Optional
+import uuid
 
 # Add project root to path
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -19,6 +20,7 @@ from complete_optimization_system.data_manager import DataManager
 from complete_optimization_system.evaluation_engine import EvaluationEngine
 from complete_optimization_system.optimization_controller import OptimizationController
 from complete_optimization_system.human_feedback_integration import HumanFeedbackIntegration
+from complete_optimization_system.request_id import initialize_request_id, get_request_id
 
 class CompleteOptimizationSystem:
     """
@@ -30,12 +32,12 @@ class CompleteOptimizationSystem:
         self.evaluation_engine = EvaluationEngine()
         self.optimization_controller = OptimizationController()
         self.human_feedback = HumanFeedbackIntegration()
-        
+        self.baseline_prompt = """You are a classification model. Classify the input into the correct category. Return the result in JSON format."""
         # Configuration
         self.config = {
             "max_iterations": 5,
             "improvement_threshold": 0.05,  # 5% improvement to continue
-            "dataset_name": "code_gen",
+            "dataset_name": "code_gen_10",
             "target_model": {
                 "provider": "groq",
                 "model_name": "llama-3.3-70b-versatile"
@@ -56,8 +58,12 @@ class CompleteOptimizationSystem:
         """
         Run the complete optimization workflow
         """
+        # Initialize global request ID
+        request_id = initialize_request_id()
+        
         print("🚀 Starting Complete Prompt Optimization System")
         print("=" * 80)
+        print(f"🆔 Request ID: {request_id}")
         
         try:
             # Step 1: Data Preparation
@@ -72,47 +78,86 @@ class CompleteOptimizationSystem:
             print(f"   Dev B: {len(data_splits['dev_b'])} samples (20%)")
             print(f"   Test: {len(data_splits['test'])} samples (20%)")
             
-            # Step 2: Baseline Evaluation
-            print("\n📈 Step 2: Baseline Evaluation")
+            # save data splits to folder with request id
+            os.makedirs(f"complete_optimization_system/intermediate_results/{request_id}", exist_ok=True)
+            with open(f"complete_optimization_system/intermediate_results/{request_id}/data_splits.json", "w") as f:
+                json.dump(data_splits, f, indent=2, default=str)
+                
+            
+            # Step 2: Train Baseline & Intent Analysis
+            print("\n📈 Step 2: Train Baseline Evaluation")
             baseline_prompt = self._get_baseline_prompt()
             
-            baseline_metrics = await self.evaluation_engine.evaluate_prompt(
+            # Get baseline performance on TRAIN data for intent analysis
+            train_baseline_metrics = await self.evaluation_engine.evaluate_prompt(
                 prompt=baseline_prompt,
-                data=data_splits['dev_a'],
+                data=data_splits['train'],
                 schema=self.schema,
-                evaluation_type="baseline"
+                evaluation_type="train_baseline"
             )
             
-            print(f"✅ Baseline evaluation completed:")
-            print(f"   Overall Accuracy: {baseline_metrics['overall_accuracy']:.3f}")
-            print(f"   Average F1: {baseline_metrics['summary']['average_enum_macro_f1']:.3f}")
-            print(f"   Failed Cases: {len(baseline_metrics['detailed_failed_cases']['wrong_classifications'])}")
+            # save train baseline metrics to folder with request id
+            with open(f"complete_optimization_system/intermediate_results/{request_id}/train_baseline_metrics.json", "w") as f:
+                json.dump(train_baseline_metrics, f, indent=2, default=str)
             
-            # Step 3: Intent Analysis
+            print(f"✅ Train baseline evaluation completed:")
+            print(f"   Overall Accuracy: {train_baseline_metrics['overall_accuracy']:.3f}")
+            print(f"   Average F1: {train_baseline_metrics['summary']['average_enum_macro_f1']:.3f}")
+            print(f"   Failed Cases: {len(train_baseline_metrics['detailed_failed_cases']['wrong_classifications'])}")
+            
+            # Step 3: Intent Analysis (based on train data)
             print("\n🎯 Step 3: Intent Analysis")
             intent_analysis = await self.optimization_controller.analyze_intent(
                 schema=self.schema,
-                baseline_metrics=baseline_metrics,
-                train_samples=data_splits['train'][:5],  # Use 5 train samples for context
+                baseline_metrics=train_baseline_metrics,  # Use train metrics for intent
+                train_samples=data_splits['train'][:5],   # Use train samples for context
                 base_prompt=baseline_prompt
             )
             
-            print("✅ Intent analysis completed")
+            # save intent analysis to folder with request id
+            with open(f"complete_optimization_system/intermediate_results/{request_id}/intent_analysis.json", "w") as f:
+                json.dump(intent_analysis, f, indent=2, default=str)
             
-            # Step 4: Optimization Loop
-            print("\n🔄 Step 4: Optimization Loop")
+            print("✅ Intent analysis completed (based on train data)")
+            
+            # Step 4: Dev A Baseline (Hidden Target)
+            print("\n📊 Step 4: Dev A Baseline (Optimization Target)")
+            dev_a_baseline_metrics = await self.evaluation_engine.evaluate_prompt(
+                prompt=baseline_prompt,
+                data=data_splits['dev_a'],
+                schema=self.schema,
+                evaluation_type="dev_a_baseline"
+            )
+            
+            # save dev a baseline metrics to folder with request id
+            with open(f"complete_optimization_system/intermediate_results/{request_id}/dev_a_baseline_metrics.json", "w") as f:
+                json.dump(dev_a_baseline_metrics, f, indent=2, default=str)
+            
+            print(f"✅ Dev A baseline evaluation completed:")
+            print(f"   Overall Accuracy: {dev_a_baseline_metrics['overall_accuracy']:.3f}")
+            print(f"   Average F1: {dev_a_baseline_metrics['summary']['average_enum_macro_f1']:.3f}")
+            print(f"   Failed Cases: {len(dev_a_baseline_metrics['detailed_failed_cases']['wrong_classifications'])}")
+            
+            # Step 5: Optimization Loop
+            print("\n🔄 Step 5: Optimization Loop")
             optimization_results = await self._run_optimization_loop(
                 baseline_prompt=baseline_prompt,
-                baseline_metrics=baseline_metrics,
+                train_baseline_metrics=train_baseline_metrics,
+                dev_a_baseline_metrics=dev_a_baseline_metrics,
                 intent_analysis=intent_analysis,
                 data_splits=data_splits
             )
             
-            # Step 5: Final Test Evaluation
-            print("\n🧪 Step 5: Final Test Evaluation")
+            # save optimization results to folder with request id
+            with open(f"complete_optimization_system/intermediate_results/{request_id}/optimization_results.json", "w") as f:
+                json.dump(optimization_results, f, indent=2, default=str)
+            
+            # Step 6: Final Test Evaluation
+            print("\n🧪 Step 6: Final Test Evaluation")
             final_results = await self._run_final_evaluation(
                 optimization_results=optimization_results,
-                baseline_metrics=baseline_metrics,
+                train_baseline_metrics=train_baseline_metrics,
+                dev_a_baseline_metrics=dev_a_baseline_metrics,
                 test_data=data_splits['test']
             )
             
@@ -132,7 +177,8 @@ class CompleteOptimizationSystem:
     async def _run_optimization_loop(
         self,
         baseline_prompt: str,
-        baseline_metrics: Dict[str, Any],
+        train_baseline_metrics: Dict[str, Any],
+        dev_a_baseline_metrics: Dict[str, Any],
         intent_analysis: Dict[str, Any],
         data_splits: Dict[str, List]
     ) -> Dict[str, Any]:
@@ -140,7 +186,7 @@ class CompleteOptimizationSystem:
         Run the iterative optimization loop
         """
         current_prompt = baseline_prompt
-        current_metrics = baseline_metrics
+        current_metrics = train_baseline_metrics
         iteration = 1
         optimization_history = []
         
@@ -202,7 +248,7 @@ class CompleteOptimizationSystem:
             human_feedback_results = await self.human_feedback.collect_feedback(
                 candidate_prompt=best_candidate['optimized_prompt'],
                 dev_b_results=dev_b_results,
-                baseline_metrics=baseline_metrics
+                baseline_metrics=dev_a_baseline_metrics  # Use dev A baseline for comparison
             )
             
             # Update for next iteration
@@ -272,7 +318,8 @@ class CompleteOptimizationSystem:
     async def _run_final_evaluation(
         self,
         optimization_results: Dict[str, Any],
-        baseline_metrics: Dict[str, Any],
+        train_baseline_metrics: Dict[str, Any],
+        dev_a_baseline_metrics: Dict[str, Any],
         test_data: List[Dict[str, Any]]
     ) -> Dict[str, Any]:
         """
@@ -322,23 +369,15 @@ class CompleteOptimizationSystem:
             "test_improvement": test_improvement,
             "baseline_test_metrics": baseline_test_metrics,
             "optimized_test_metrics": test_metrics,
+            "train_baseline_metrics": train_baseline_metrics,
+            "dev_a_baseline_metrics": dev_a_baseline_metrics,
             "optimization_results": optimization_results
         }
     
     def _get_baseline_prompt(self) -> str:
         """Get the baseline prompt"""
-        return """You are a classification model. Classify the input into the correct category. Return the result in JSON format.
-
-The schema is as follows:
-{
-"action": ["CODE_GENERATION", "NOT_FOUND"],
-"subAction": ["CODING", "VISUAL_EDITS", "ERROR", "GENERAL"],
-"platform": ["DYNAMIC_WEB_APPLICATION", "STATIC_WEB_APPLICATION", "DYNAMIC_MOBILE_APP", "STATIC_MOBILE_APP", "NOT_FOUND"],
-"framework": ["REACT", "FLUTTER", "NOT_FOUND"],
-"languageType": ["REACT_JAVASCRIPT", "NOT_FOUND"]
-}
-
-IMPORTANT: Respond with a valid JSON object only. Do not include any explanations or text outside the JSON. Do not add any comments inside the JSON."""
+        # add schema and this important note, first line of the prompt
+        return self.baseline_prompt + "\n\n" + "The schema is as follows:\n" + json.dumps(self.schema, indent=2) + "\n\nIMPORTANT: Respond with a valid JSON object only. Do not include any explanations or text outside the JSON. Do not add any comments inside the JSON."
 
 
 async def main():
@@ -350,7 +389,8 @@ async def main():
         
         # Save results
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        results_file = f"complete_optimization_system/results/optimization_results_{timestamp}.json"
+        req_id = get_request_id()
+        results_file = f"complete_optimization_system/results/optimization_results_{timestamp}_{req_id}.json"
         
         os.makedirs(os.path.dirname(results_file), exist_ok=True)
         with open(results_file, 'w') as f:

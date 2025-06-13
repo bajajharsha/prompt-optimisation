@@ -1,0 +1,2273 @@
+{
+  "deployment_decision": "KEEP_BASELINE",
+  "recommended_prompt": "You are a classification model. Classify the input into the correct category. Return the result in JSON format.\n\nThe schema is as follows:\n{\n  \"action\": [\n    \"CODE_GENERATION\",\n    \"NOT_FOUND\"\n  ],\n  \"subAction\": [\n    \"CODING\",\n    \"VISUAL_EDITS\",\n    \"ERROR\",\n    \"GENERAL\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\",\n    \"STATIC_WEB_APPLICATION\",\n    \"DYNAMIC_MOBILE_APP\",\n    \"STATIC_MOBILE_APP\",\n    \"NOT_FOUND\"\n  ],\n  \"framework\": [\n    \"REACT\",\n    \"FLUTTER\",\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"REACT_JAVASCRIPT\",\n    \"NOT_FOUND\"\n  ]\n}\n\nIMPORTANT: Respond with a valid JSON object only. Do not include any explanations or text outside the JSON. Do not add any comments inside the JSON.",
+  "test_improvement": 0.0,
+  "baseline_test_metrics": {
+    "validation_metrics": {
+      "valid_json_accuracy": 1.0,
+      "exact_match_accuracy": 0.0,
+      "schema_compliance_accuracy": 0.3333333333333333,
+      "all_fields_present_accuracy": 1.0
+    },
+    "enum_field_metrics": {
+      "action": {
+        "macro_precision": 1.0,
+        "macro_recall": 1.0,
+        "macro_f1": 1.0,
+        "micro_precision": 1.0,
+        "micro_recall": 1.0,
+        "micro_f1": 1.0,
+        "accuracy": 1.0,
+        "per_class": {
+          "CODE_GENERATION": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 1,
+            "correct": 1,
+            "tp": 1,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      },
+      "subAction": {
+        "macro_precision": 1.0,
+        "macro_recall": 1.0,
+        "macro_f1": 1.0,
+        "micro_precision": 1.0,
+        "micro_recall": 1.0,
+        "micro_f1": 1.0,
+        "accuracy": 1.0,
+        "per_class": {
+          "CODING": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 1,
+            "correct": 1,
+            "tp": 1,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      },
+      "platform": {
+        "macro_precision": 0.0,
+        "macro_recall": 0.0,
+        "macro_f1": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0,
+        "accuracy": 0.0,
+        "per_class": {
+          "NOT_FOUND": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 1,
+            "correct": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          },
+          "DYNAMIC_WEB_APPLICATION": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0,
+            "correct": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0
+          }
+        }
+      },
+      "framework": {
+        "macro_precision": 0.0,
+        "macro_recall": 0.0,
+        "macro_f1": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0,
+        "accuracy": 0.0,
+        "per_class": {
+          "NOT_FOUND": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 1,
+            "correct": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          },
+          "REACT": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0,
+            "correct": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0
+          }
+        }
+      },
+      "languageType": {
+        "macro_precision": 0.0,
+        "macro_recall": 0.0,
+        "macro_f1": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0,
+        "accuracy": 0.0,
+        "per_class": {
+          "NOT_FOUND": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 1,
+            "correct": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          },
+          "REACT_JAVASCRIPT": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0,
+            "correct": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0
+          }
+        }
+      }
+    },
+    "failed_cases_summary": {
+      "invalid_json_count": 0,
+      "schema_violations_count": 10,
+      "missing_fields_count": 0,
+      "wrong_classifications_count": 3
+    },
+    "field_insights": {
+      "action": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['CODE_GENERATION']": 2
+        },
+        "most_common_confusions": {},
+        "error_severity": "LOW"
+      },
+      "subAction": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['CODING']": 1,
+          "['VISUAL_EDITS']": 1
+        },
+        "most_common_confusions": {},
+        "error_severity": "LOW"
+      },
+      "platform": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['DYNAMIC_WEB_APPLICATION']": 1,
+          "['STATIC_WEB_APPLICATION']": 1
+        },
+        "most_common_confusions": {
+          "NOT_FOUND -> DYNAMIC_WEB_APPLICATION": 1
+        },
+        "error_severity": "HIGH"
+      },
+      "framework": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['NOT_FOUND']": 1,
+          "['REACT']": 1
+        },
+        "most_common_confusions": {
+          "NOT_FOUND -> REACT": 1
+        },
+        "error_severity": "HIGH"
+      },
+      "languageType": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['NOT_FOUND']": 1,
+          "['REACT_JAVASCRIPT']": 1
+        },
+        "most_common_confusions": {
+          "NOT_FOUND -> REACT_JAVASCRIPT": 1
+        },
+        "error_severity": "HIGH"
+      }
+    },
+    "optimization_opportunities": {
+      "prompt_engineering": [],
+      "schema_clarification": [
+        "Provide clearer enum value definitions and constraints"
+      ],
+      "example_enhancement": [
+        "Provide more examples for 'action' field classifications",
+        "Provide more examples for 'subAction' field classifications",
+        "Provide more examples for 'platform' field classifications",
+        "Provide more examples for 'framework' field classifications",
+        "Provide more examples for 'languageType' field classifications"
+      ],
+      "instruction_refinement": []
+    },
+    "summary": {
+      "average_enum_macro_f1": 0.4,
+      "average_enum_macro_precision": 0.4,
+      "average_enum_macro_recall": 0.4,
+      "total_examples": 3
+    },
+    "detailed_failed_cases": {
+      "invalid_json": [],
+      "schema_violations": [
+        {
+          "example_idx": 0,
+          "input_prompt": "create a groq like llm hosting and inferencing inteface in web(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "```\n{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}\n```",
+          "timestamp": "2025-06-14T00:21:27.043977",
+          "field": "action",
+          "invalid_value": [
+            "CODE_GENERATION"
+          ],
+          "expected_value": "CODE_GENERATION",
+          "valid_options": [
+            "CODE_GENERATION",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 0,
+          "input_prompt": "create a groq like llm hosting and inferencing inteface in web(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "```\n{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}\n```",
+          "timestamp": "2025-06-14T00:21:27.043977",
+          "field": "subAction",
+          "invalid_value": [
+            "CODING"
+          ],
+          "expected_value": "CODING",
+          "valid_options": [
+            "CODING",
+            "VISUAL_EDITS",
+            "ERROR",
+            "GENERAL"
+          ]
+        },
+        {
+          "example_idx": 0,
+          "input_prompt": "create a groq like llm hosting and inferencing inteface in web(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "```\n{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}\n```",
+          "timestamp": "2025-06-14T00:21:27.043977",
+          "field": "platform",
+          "invalid_value": [
+            "DYNAMIC_WEB_APPLICATION"
+          ],
+          "expected_value": "DYNAMIC_WEB_APPLICATION",
+          "valid_options": [
+            "DYNAMIC_WEB_APPLICATION",
+            "STATIC_WEB_APPLICATION",
+            "DYNAMIC_MOBILE_APP",
+            "STATIC_MOBILE_APP",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 0,
+          "input_prompt": "create a groq like llm hosting and inferencing inteface in web(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "```\n{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}\n```",
+          "timestamp": "2025-06-14T00:21:27.043977",
+          "field": "framework",
+          "invalid_value": [
+            "NOT_FOUND"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "REACT",
+            "FLUTTER",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 0,
+          "input_prompt": "create a groq like llm hosting and inferencing inteface in web(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "```\n{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}\n```",
+          "timestamp": "2025-06-14T00:21:27.043977",
+          "field": "languageType",
+          "invalid_value": [
+            "NOT_FOUND"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "REACT_JAVASCRIPT",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 2,
+          "input_prompt": "Create only UI of login screen with username and password. (query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"VISUAL_EDITS\"\n  ],\n  \"platform\": [\n    \"STATIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"REACT\"\n  ],\n  \"languageType\": [\n    \"REACT_JAVASCRIPT\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:21:27.044081",
+          "field": "action",
+          "invalid_value": [
+            "CODE_GENERATION"
+          ],
+          "expected_value": "CODE_GENERATION",
+          "valid_options": [
+            "CODE_GENERATION",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 2,
+          "input_prompt": "Create only UI of login screen with username and password. (query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"VISUAL_EDITS\"\n  ],\n  \"platform\": [\n    \"STATIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"REACT\"\n  ],\n  \"languageType\": [\n    \"REACT_JAVASCRIPT\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:21:27.044081",
+          "field": "subAction",
+          "invalid_value": [
+            "VISUAL_EDITS"
+          ],
+          "expected_value": "VISUAL_EDITS",
+          "valid_options": [
+            "CODING",
+            "VISUAL_EDITS",
+            "ERROR",
+            "GENERAL"
+          ]
+        },
+        {
+          "example_idx": 2,
+          "input_prompt": "Create only UI of login screen with username and password. (query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"VISUAL_EDITS\"\n  ],\n  \"platform\": [\n    \"STATIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"REACT\"\n  ],\n  \"languageType\": [\n    \"REACT_JAVASCRIPT\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:21:27.044081",
+          "field": "platform",
+          "invalid_value": [
+            "STATIC_WEB_APPLICATION"
+          ],
+          "expected_value": "STATIC_WEB_APPLICATION",
+          "valid_options": [
+            "DYNAMIC_WEB_APPLICATION",
+            "STATIC_WEB_APPLICATION",
+            "DYNAMIC_MOBILE_APP",
+            "STATIC_MOBILE_APP",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 2,
+          "input_prompt": "Create only UI of login screen with username and password. (query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"VISUAL_EDITS\"\n  ],\n  \"platform\": [\n    \"STATIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"REACT\"\n  ],\n  \"languageType\": [\n    \"REACT_JAVASCRIPT\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:21:27.044081",
+          "field": "framework",
+          "invalid_value": [
+            "REACT"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "REACT",
+            "FLUTTER",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 2,
+          "input_prompt": "Create only UI of login screen with username and password. (query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"VISUAL_EDITS\"\n  ],\n  \"platform\": [\n    \"STATIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"REACT\"\n  ],\n  \"languageType\": [\n    \"REACT_JAVASCRIPT\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:21:27.044081",
+          "field": "languageType",
+          "invalid_value": [
+            "REACT_JAVASCRIPT"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "REACT_JAVASCRIPT",
+            "NOT_FOUND"
+          ]
+        }
+      ],
+      "missing_fields": [],
+      "wrong_classifications": [
+        {
+          "example_idx": 1,
+          "input_prompt": "Add EmployeeItems in route and add urls(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"REACT\",\n  \"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-14T00:21:27.044041",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        }
+      ]
+    },
+    "overall_accuracy": 0.0,
+    "evaluation_metadata": {
+      "evaluation_type": "baseline_test",
+      "model_used": "llama-3.3-70b-versatile",
+      "num_samples": 3
+    }
+  },
+  "optimized_test_metrics": {
+    "validation_metrics": {
+      "valid_json_accuracy": 1.0,
+      "exact_match_accuracy": 0.0,
+      "schema_compliance_accuracy": 0.3333333333333333,
+      "all_fields_present_accuracy": 1.0
+    },
+    "enum_field_metrics": {
+      "action": {
+        "macro_precision": 1.0,
+        "macro_recall": 1.0,
+        "macro_f1": 1.0,
+        "micro_precision": 1.0,
+        "micro_recall": 1.0,
+        "micro_f1": 1.0,
+        "accuracy": 1.0,
+        "per_class": {
+          "CODE_GENERATION": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 1,
+            "correct": 1,
+            "tp": 1,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      },
+      "subAction": {
+        "macro_precision": 0.0,
+        "macro_recall": 0.0,
+        "macro_f1": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0,
+        "accuracy": 0.0,
+        "per_class": {
+          "VISUAL_EDITS": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 1,
+            "correct": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          },
+          "CODING": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0,
+            "correct": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0
+          }
+        }
+      },
+      "platform": {
+        "macro_precision": 0.0,
+        "macro_recall": 0.0,
+        "macro_f1": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0,
+        "accuracy": 0.0,
+        "per_class": {
+          "STATIC_WEB_APPLICATION": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 1,
+            "correct": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          },
+          "DYNAMIC_WEB_APPLICATION": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0,
+            "correct": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0
+          }
+        }
+      },
+      "framework": {
+        "macro_precision": 0.0,
+        "macro_recall": 0.0,
+        "macro_f1": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0,
+        "accuracy": 0.0,
+        "per_class": {
+          "NOT_FOUND": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 1,
+            "correct": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          },
+          "REACT": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0,
+            "correct": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0
+          }
+        }
+      },
+      "languageType": {
+        "macro_precision": 0.0,
+        "macro_recall": 0.0,
+        "macro_f1": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0,
+        "accuracy": 0.0,
+        "per_class": {
+          "NOT_FOUND": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 1,
+            "correct": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          },
+          "REACT_JAVASCRIPT": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0,
+            "correct": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 0
+          }
+        }
+      }
+    },
+    "failed_cases_summary": {
+      "invalid_json_count": 0,
+      "schema_violations_count": 10,
+      "missing_fields_count": 0,
+      "wrong_classifications_count": 4
+    },
+    "field_insights": {
+      "action": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['CODE_GENERATION']": 2
+        },
+        "most_common_confusions": {},
+        "error_severity": "LOW"
+      },
+      "subAction": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['CODING']": 2
+        },
+        "most_common_confusions": {
+          "VISUAL_EDITS -> CODING": 1
+        },
+        "error_severity": "HIGH"
+      },
+      "platform": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['DYNAMIC_WEB_APPLICATION']": 2
+        },
+        "most_common_confusions": {
+          "STATIC_WEB_APPLICATION -> DYNAMIC_WEB_APPLICATION": 1
+        },
+        "error_severity": "HIGH"
+      },
+      "framework": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['NOT_FOUND']": 1,
+          "['REACT']": 1
+        },
+        "most_common_confusions": {
+          "NOT_FOUND -> REACT": 1
+        },
+        "error_severity": "HIGH"
+      },
+      "languageType": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['NOT_FOUND']": 1,
+          "['REACT_JAVASCRIPT']": 1
+        },
+        "most_common_confusions": {
+          "NOT_FOUND -> REACT_JAVASCRIPT": 1
+        },
+        "error_severity": "HIGH"
+      }
+    },
+    "optimization_opportunities": {
+      "prompt_engineering": [],
+      "schema_clarification": [
+        "Provide clearer enum value definitions and constraints"
+      ],
+      "example_enhancement": [
+        "Provide more examples for 'action' field classifications",
+        "Provide more examples for 'subAction' field classifications",
+        "Provide more examples for 'platform' field classifications",
+        "Provide more examples for 'framework' field classifications",
+        "Provide more examples for 'languageType' field classifications"
+      ],
+      "instruction_refinement": []
+    },
+    "summary": {
+      "average_enum_macro_f1": 0.2,
+      "average_enum_macro_precision": 0.2,
+      "average_enum_macro_recall": 0.2,
+      "total_examples": 3
+    },
+    "detailed_failed_cases": {
+      "invalid_json": [],
+      "schema_violations": [
+        {
+          "example_idx": 0,
+          "input_prompt": "create a groq like llm hosting and inferencing inteface in web(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:21:25.810204",
+          "field": "action",
+          "invalid_value": [
+            "CODE_GENERATION"
+          ],
+          "expected_value": "CODE_GENERATION",
+          "valid_options": [
+            "CODE_GENERATION",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 0,
+          "input_prompt": "create a groq like llm hosting and inferencing inteface in web(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:21:25.810204",
+          "field": "subAction",
+          "invalid_value": [
+            "CODING"
+          ],
+          "expected_value": "CODING",
+          "valid_options": [
+            "CODING",
+            "VISUAL_EDITS",
+            "ERROR",
+            "GENERAL"
+          ]
+        },
+        {
+          "example_idx": 0,
+          "input_prompt": "create a groq like llm hosting and inferencing inteface in web(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:21:25.810204",
+          "field": "platform",
+          "invalid_value": [
+            "DYNAMIC_WEB_APPLICATION"
+          ],
+          "expected_value": "DYNAMIC_WEB_APPLICATION",
+          "valid_options": [
+            "DYNAMIC_WEB_APPLICATION",
+            "STATIC_WEB_APPLICATION",
+            "DYNAMIC_MOBILE_APP",
+            "STATIC_MOBILE_APP",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 0,
+          "input_prompt": "create a groq like llm hosting and inferencing inteface in web(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:21:25.810204",
+          "field": "framework",
+          "invalid_value": [
+            "NOT_FOUND"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "REACT",
+            "FLUTTER",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 0,
+          "input_prompt": "create a groq like llm hosting and inferencing inteface in web(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:21:25.810204",
+          "field": "languageType",
+          "invalid_value": [
+            "NOT_FOUND"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "REACT_JAVASCRIPT",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 1,
+          "input_prompt": "Add EmployeeItems in route and add urls(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\"CODE_GENERATION\"],\n  \"subAction\": [\"CODING\"],\n  \"platform\": [\"DYNAMIC_WEB_APPLICATION\"],\n  \"framework\": [\"REACT\"],\n  \"languageType\": [\"REACT_JAVASCRIPT\"]\n}",
+          "timestamp": "2025-06-14T00:21:25.810224",
+          "field": "action",
+          "invalid_value": [
+            "CODE_GENERATION"
+          ],
+          "expected_value": "CODE_GENERATION",
+          "valid_options": [
+            "CODE_GENERATION",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 1,
+          "input_prompt": "Add EmployeeItems in route and add urls(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\"CODE_GENERATION\"],\n  \"subAction\": [\"CODING\"],\n  \"platform\": [\"DYNAMIC_WEB_APPLICATION\"],\n  \"framework\": [\"REACT\"],\n  \"languageType\": [\"REACT_JAVASCRIPT\"]\n}",
+          "timestamp": "2025-06-14T00:21:25.810224",
+          "field": "subAction",
+          "invalid_value": [
+            "CODING"
+          ],
+          "expected_value": "CODING",
+          "valid_options": [
+            "CODING",
+            "VISUAL_EDITS",
+            "ERROR",
+            "GENERAL"
+          ]
+        },
+        {
+          "example_idx": 1,
+          "input_prompt": "Add EmployeeItems in route and add urls(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\"CODE_GENERATION\"],\n  \"subAction\": [\"CODING\"],\n  \"platform\": [\"DYNAMIC_WEB_APPLICATION\"],\n  \"framework\": [\"REACT\"],\n  \"languageType\": [\"REACT_JAVASCRIPT\"]\n}",
+          "timestamp": "2025-06-14T00:21:25.810224",
+          "field": "platform",
+          "invalid_value": [
+            "DYNAMIC_WEB_APPLICATION"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "DYNAMIC_WEB_APPLICATION",
+            "STATIC_WEB_APPLICATION",
+            "DYNAMIC_MOBILE_APP",
+            "STATIC_MOBILE_APP",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 1,
+          "input_prompt": "Add EmployeeItems in route and add urls(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\"CODE_GENERATION\"],\n  \"subAction\": [\"CODING\"],\n  \"platform\": [\"DYNAMIC_WEB_APPLICATION\"],\n  \"framework\": [\"REACT\"],\n  \"languageType\": [\"REACT_JAVASCRIPT\"]\n}",
+          "timestamp": "2025-06-14T00:21:25.810224",
+          "field": "framework",
+          "invalid_value": [
+            "REACT"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "REACT",
+            "FLUTTER",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 1,
+          "input_prompt": "Add EmployeeItems in route and add urls(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\"CODE_GENERATION\"],\n  \"subAction\": [\"CODING\"],\n  \"platform\": [\"DYNAMIC_WEB_APPLICATION\"],\n  \"framework\": [\"REACT\"],\n  \"languageType\": [\"REACT_JAVASCRIPT\"]\n}",
+          "timestamp": "2025-06-14T00:21:25.810224",
+          "field": "languageType",
+          "invalid_value": [
+            "REACT_JAVASCRIPT"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "REACT_JAVASCRIPT",
+            "NOT_FOUND"
+          ]
+        }
+      ],
+      "missing_fields": [],
+      "wrong_classifications": [
+        {
+          "example_idx": 2,
+          "input_prompt": "Create only UI of login screen with username and password. (query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"REACT\",\n  \"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-14T00:21:25.810234",
+          "wrong_fields": [
+            {
+              "field": "subAction",
+              "predicted_value": "CODING",
+              "expected_value": "VISUAL_EDITS"
+            },
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "STATIC_WEB_APPLICATION"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        }
+      ]
+    },
+    "overall_accuracy": 0.0,
+    "evaluation_metadata": {
+      "evaluation_type": "final_test",
+      "model_used": "llama-3.3-70b-versatile",
+      "num_samples": 3
+    }
+  },
+  "train_baseline_metrics": {
+    "validation_metrics": {
+      "valid_json_accuracy": 1.0,
+      "exact_match_accuracy": 0.0,
+      "schema_compliance_accuracy": 0.0,
+      "all_fields_present_accuracy": 1.0
+    },
+    "enum_field_metrics": {
+      "action": {
+        "macro_precision": 0.0,
+        "macro_recall": 0.0,
+        "macro_f1": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0,
+        "accuracy": 0.0,
+        "per_class": {}
+      },
+      "subAction": {
+        "macro_precision": 0.0,
+        "macro_recall": 0.0,
+        "macro_f1": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0,
+        "accuracy": 0.0,
+        "per_class": {}
+      },
+      "platform": {
+        "macro_precision": 0.0,
+        "macro_recall": 0.0,
+        "macro_f1": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0,
+        "accuracy": 0.0,
+        "per_class": {}
+      },
+      "framework": {
+        "macro_precision": 0.0,
+        "macro_recall": 0.0,
+        "macro_f1": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0,
+        "accuracy": 0.0,
+        "per_class": {}
+      },
+      "languageType": {
+        "macro_precision": 0.0,
+        "macro_recall": 0.0,
+        "macro_f1": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0,
+        "accuracy": 0.0,
+        "per_class": {}
+      }
+    },
+    "failed_cases_summary": {
+      "invalid_json_count": 0,
+      "schema_violations_count": 10,
+      "missing_fields_count": 0,
+      "wrong_classifications_count": 0
+    },
+    "field_insights": {
+      "action": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['NOT_FOUND']": 1,
+          "['CODE_GENERATION']": 1
+        },
+        "most_common_confusions": {},
+        "error_severity": "HIGH"
+      },
+      "subAction": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['ERROR']": 1,
+          "['CODING']": 1
+        },
+        "most_common_confusions": {},
+        "error_severity": "HIGH"
+      },
+      "platform": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['NOT_FOUND']": 1,
+          "['DYNAMIC_WEB_APPLICATION']": 1
+        },
+        "most_common_confusions": {},
+        "error_severity": "HIGH"
+      },
+      "framework": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['NOT_FOUND']": 1,
+          "['REACT']": 1
+        },
+        "most_common_confusions": {},
+        "error_severity": "HIGH"
+      },
+      "languageType": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['NOT_FOUND']": 1,
+          "['REACT_JAVASCRIPT']": 1
+        },
+        "most_common_confusions": {},
+        "error_severity": "HIGH"
+      }
+    },
+    "optimization_opportunities": {
+      "prompt_engineering": [],
+      "schema_clarification": [
+        "Provide clearer enum value definitions and constraints"
+      ],
+      "example_enhancement": [
+        "Provide more examples for 'action' field classifications",
+        "Provide more examples for 'subAction' field classifications",
+        "Provide more examples for 'platform' field classifications",
+        "Provide more examples for 'framework' field classifications",
+        "Provide more examples for 'languageType' field classifications"
+      ],
+      "instruction_refinement": []
+    },
+    "summary": {
+      "average_enum_macro_f1": 0.0,
+      "average_enum_macro_precision": 0.0,
+      "average_enum_macro_recall": 0.0,
+      "total_examples": 2
+    },
+    "detailed_failed_cases": {
+      "invalid_json": [],
+      "schema_violations": [
+        {
+          "example_idx": 0,
+          "input_prompt": "Getting Error : import { api } from '../../utils/api';\n\nnot able to Find this file and its breaking code(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "ERROR",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"NOT_FOUND\"\n  ],\n  \"subAction\": [\n    \"ERROR\"\n  ],\n  \"platform\": [\n    \"NOT_FOUND\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:20:26.111082",
+          "field": "action",
+          "invalid_value": [
+            "NOT_FOUND"
+          ],
+          "expected_value": "CODE_GENERATION",
+          "valid_options": [
+            "CODE_GENERATION",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 0,
+          "input_prompt": "Getting Error : import { api } from '../../utils/api';\n\nnot able to Find this file and its breaking code(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "ERROR",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"NOT_FOUND\"\n  ],\n  \"subAction\": [\n    \"ERROR\"\n  ],\n  \"platform\": [\n    \"NOT_FOUND\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:20:26.111082",
+          "field": "subAction",
+          "invalid_value": [
+            "ERROR"
+          ],
+          "expected_value": "ERROR",
+          "valid_options": [
+            "CODING",
+            "VISUAL_EDITS",
+            "ERROR",
+            "GENERAL"
+          ]
+        },
+        {
+          "example_idx": 0,
+          "input_prompt": "Getting Error : import { api } from '../../utils/api';\n\nnot able to Find this file and its breaking code(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "ERROR",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"NOT_FOUND\"\n  ],\n  \"subAction\": [\n    \"ERROR\"\n  ],\n  \"platform\": [\n    \"NOT_FOUND\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:20:26.111082",
+          "field": "platform",
+          "invalid_value": [
+            "NOT_FOUND"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "DYNAMIC_WEB_APPLICATION",
+            "STATIC_WEB_APPLICATION",
+            "DYNAMIC_MOBILE_APP",
+            "STATIC_MOBILE_APP",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 0,
+          "input_prompt": "Getting Error : import { api } from '../../utils/api';\n\nnot able to Find this file and its breaking code(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "ERROR",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"NOT_FOUND\"\n  ],\n  \"subAction\": [\n    \"ERROR\"\n  ],\n  \"platform\": [\n    \"NOT_FOUND\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:20:26.111082",
+          "field": "framework",
+          "invalid_value": [
+            "NOT_FOUND"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "REACT",
+            "FLUTTER",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 0,
+          "input_prompt": "Getting Error : import { api } from '../../utils/api';\n\nnot able to Find this file and its breaking code(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "ERROR",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"NOT_FOUND\"\n  ],\n  \"subAction\": [\n    \"ERROR\"\n  ],\n  \"platform\": [\n    \"NOT_FOUND\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:20:26.111082",
+          "field": "languageType",
+          "invalid_value": [
+            "NOT_FOUND"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "REACT_JAVASCRIPT",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 1,
+          "input_prompt": "Add Attendance part where can see employee daily attendant and in-out time(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "```json\n{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"REACT\"\n  ],\n  \"languageType\": [\n    \"REACT_JAVASCRIPT\"\n  ],\n  \"query\": \"CREATE TABLE Attendance (id INT PRIMARY KEY, employee_id INT, date DATE, in_time TIME, out_time TIME, FOREIGN KEY (employee_id) REFERENCES Employees(id))\"\n}\n```",
+          "timestamp": "2025-06-14T00:20:26.111150",
+          "field": "action",
+          "invalid_value": [
+            "CODE_GENERATION"
+          ],
+          "expected_value": "CODE_GENERATION",
+          "valid_options": [
+            "CODE_GENERATION",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 1,
+          "input_prompt": "Add Attendance part where can see employee daily attendant and in-out time(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "```json\n{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"REACT\"\n  ],\n  \"languageType\": [\n    \"REACT_JAVASCRIPT\"\n  ],\n  \"query\": \"CREATE TABLE Attendance (id INT PRIMARY KEY, employee_id INT, date DATE, in_time TIME, out_time TIME, FOREIGN KEY (employee_id) REFERENCES Employees(id))\"\n}\n```",
+          "timestamp": "2025-06-14T00:20:26.111150",
+          "field": "subAction",
+          "invalid_value": [
+            "CODING"
+          ],
+          "expected_value": "CODING",
+          "valid_options": [
+            "CODING",
+            "VISUAL_EDITS",
+            "ERROR",
+            "GENERAL"
+          ]
+        },
+        {
+          "example_idx": 1,
+          "input_prompt": "Add Attendance part where can see employee daily attendant and in-out time(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "```json\n{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"REACT\"\n  ],\n  \"languageType\": [\n    \"REACT_JAVASCRIPT\"\n  ],\n  \"query\": \"CREATE TABLE Attendance (id INT PRIMARY KEY, employee_id INT, date DATE, in_time TIME, out_time TIME, FOREIGN KEY (employee_id) REFERENCES Employees(id))\"\n}\n```",
+          "timestamp": "2025-06-14T00:20:26.111150",
+          "field": "platform",
+          "invalid_value": [
+            "DYNAMIC_WEB_APPLICATION"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "DYNAMIC_WEB_APPLICATION",
+            "STATIC_WEB_APPLICATION",
+            "DYNAMIC_MOBILE_APP",
+            "STATIC_MOBILE_APP",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 1,
+          "input_prompt": "Add Attendance part where can see employee daily attendant and in-out time(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "```json\n{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"REACT\"\n  ],\n  \"languageType\": [\n    \"REACT_JAVASCRIPT\"\n  ],\n  \"query\": \"CREATE TABLE Attendance (id INT PRIMARY KEY, employee_id INT, date DATE, in_time TIME, out_time TIME, FOREIGN KEY (employee_id) REFERENCES Employees(id))\"\n}\n```",
+          "timestamp": "2025-06-14T00:20:26.111150",
+          "field": "framework",
+          "invalid_value": [
+            "REACT"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "REACT",
+            "FLUTTER",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 1,
+          "input_prompt": "Add Attendance part where can see employee daily attendant and in-out time(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "```json\n{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"REACT\"\n  ],\n  \"languageType\": [\n    \"REACT_JAVASCRIPT\"\n  ],\n  \"query\": \"CREATE TABLE Attendance (id INT PRIMARY KEY, employee_id INT, date DATE, in_time TIME, out_time TIME, FOREIGN KEY (employee_id) REFERENCES Employees(id))\"\n}\n```",
+          "timestamp": "2025-06-14T00:20:26.111150",
+          "field": "languageType",
+          "invalid_value": [
+            "REACT_JAVASCRIPT"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "REACT_JAVASCRIPT",
+            "NOT_FOUND"
+          ]
+        }
+      ],
+      "missing_fields": [],
+      "wrong_classifications": []
+    },
+    "overall_accuracy": 0.0,
+    "evaluation_metadata": {
+      "evaluation_type": "train_baseline",
+      "model_used": "llama-3.3-70b-versatile",
+      "num_samples": 2
+    }
+  },
+  "dev_a_baseline_metrics": {
+    "validation_metrics": {
+      "valid_json_accuracy": 1.0,
+      "exact_match_accuracy": 0.0,
+      "schema_compliance_accuracy": 0.0,
+      "all_fields_present_accuracy": 1.0
+    },
+    "enum_field_metrics": {
+      "action": {
+        "macro_precision": 0.0,
+        "macro_recall": 0.0,
+        "macro_f1": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0,
+        "accuracy": 0.0,
+        "per_class": {}
+      },
+      "subAction": {
+        "macro_precision": 0.0,
+        "macro_recall": 0.0,
+        "macro_f1": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0,
+        "accuracy": 0.0,
+        "per_class": {}
+      },
+      "platform": {
+        "macro_precision": 0.0,
+        "macro_recall": 0.0,
+        "macro_f1": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0,
+        "accuracy": 0.0,
+        "per_class": {}
+      },
+      "framework": {
+        "macro_precision": 0.0,
+        "macro_recall": 0.0,
+        "macro_f1": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0,
+        "accuracy": 0.0,
+        "per_class": {}
+      },
+      "languageType": {
+        "macro_precision": 0.0,
+        "macro_recall": 0.0,
+        "macro_f1": 0.0,
+        "micro_precision": 0.0,
+        "micro_recall": 0.0,
+        "micro_f1": 0.0,
+        "accuracy": 0.0,
+        "per_class": {}
+      }
+    },
+    "failed_cases_summary": {
+      "invalid_json_count": 0,
+      "schema_violations_count": 15,
+      "missing_fields_count": 0,
+      "wrong_classifications_count": 0
+    },
+    "field_insights": {
+      "action": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['CODE_GENERATION']": 2,
+          "['NOT_FOUND']": 1
+        },
+        "most_common_confusions": {},
+        "error_severity": "HIGH"
+      },
+      "subAction": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['CODING']": 2,
+          "['GENERAL']": 1
+        },
+        "most_common_confusions": {},
+        "error_severity": "HIGH"
+      },
+      "platform": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['DYNAMIC_WEB_APPLICATION']": 2,
+          "['NOT_FOUND']": 1
+        },
+        "most_common_confusions": {},
+        "error_severity": "HIGH"
+      },
+      "framework": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['NOT_FOUND']": 2,
+          "['REACT']": 1
+        },
+        "most_common_confusions": {},
+        "error_severity": "HIGH"
+      },
+      "languageType": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {
+          "['NOT_FOUND']": 2,
+          "['REACT_JAVASCRIPT']": 1
+        },
+        "most_common_confusions": {},
+        "error_severity": "HIGH"
+      }
+    },
+    "optimization_opportunities": {
+      "prompt_engineering": [],
+      "schema_clarification": [
+        "Provide clearer enum value definitions and constraints"
+      ],
+      "example_enhancement": [
+        "Provide more examples for 'action' field classifications",
+        "Provide more examples for 'subAction' field classifications",
+        "Provide more examples for 'platform' field classifications",
+        "Provide more examples for 'framework' field classifications",
+        "Provide more examples for 'languageType' field classifications"
+      ],
+      "instruction_refinement": []
+    },
+    "summary": {
+      "average_enum_macro_f1": 0.0,
+      "average_enum_macro_precision": 0.0,
+      "average_enum_macro_recall": 0.0,
+      "total_examples": 3
+    },
+    "detailed_failed_cases": {
+      "invalid_json": [],
+      "schema_violations": [
+        {
+          "example_idx": 0,
+          "input_prompt": "Create one page for dollar to indian ruppe(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:20:49.482219",
+          "field": "action",
+          "invalid_value": [
+            "CODE_GENERATION"
+          ],
+          "expected_value": "CODE_GENERATION",
+          "valid_options": [
+            "CODE_GENERATION",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 0,
+          "input_prompt": "Create one page for dollar to indian ruppe(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:20:49.482219",
+          "field": "subAction",
+          "invalid_value": [
+            "CODING"
+          ],
+          "expected_value": "CODING",
+          "valid_options": [
+            "CODING",
+            "VISUAL_EDITS",
+            "ERROR",
+            "GENERAL"
+          ]
+        },
+        {
+          "example_idx": 0,
+          "input_prompt": "Create one page for dollar to indian ruppe(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:20:49.482219",
+          "field": "platform",
+          "invalid_value": [
+            "DYNAMIC_WEB_APPLICATION"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "DYNAMIC_WEB_APPLICATION",
+            "STATIC_WEB_APPLICATION",
+            "DYNAMIC_MOBILE_APP",
+            "STATIC_MOBILE_APP",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 0,
+          "input_prompt": "Create one page for dollar to indian ruppe(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:20:49.482219",
+          "field": "framework",
+          "invalid_value": [
+            "NOT_FOUND"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "REACT",
+            "FLUTTER",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 0,
+          "input_prompt": "Create one page for dollar to indian ruppe(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+          "timestamp": "2025-06-14T00:20:49.482219",
+          "field": "languageType",
+          "invalid_value": [
+            "NOT_FOUND"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "REACT_JAVASCRIPT",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 1,
+          "input_prompt": "Hello, How are you?(query)",
+          "ground_truth": {
+            "action": "NOT_FOUND",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "GENERAL",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\"NOT_FOUND\"],\n  \"subAction\": [\"GENERAL\"],\n  \"platform\": [\"NOT_FOUND\"],\n  \"framework\": [\"NOT_FOUND\"],\n  \"languageType\": [\"NOT_FOUND\"]\n}",
+          "timestamp": "2025-06-14T00:20:49.482254",
+          "field": "action",
+          "invalid_value": [
+            "NOT_FOUND"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "CODE_GENERATION",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 1,
+          "input_prompt": "Hello, How are you?(query)",
+          "ground_truth": {
+            "action": "NOT_FOUND",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "GENERAL",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\"NOT_FOUND\"],\n  \"subAction\": [\"GENERAL\"],\n  \"platform\": [\"NOT_FOUND\"],\n  \"framework\": [\"NOT_FOUND\"],\n  \"languageType\": [\"NOT_FOUND\"]\n}",
+          "timestamp": "2025-06-14T00:20:49.482254",
+          "field": "subAction",
+          "invalid_value": [
+            "GENERAL"
+          ],
+          "expected_value": "GENERAL",
+          "valid_options": [
+            "CODING",
+            "VISUAL_EDITS",
+            "ERROR",
+            "GENERAL"
+          ]
+        },
+        {
+          "example_idx": 1,
+          "input_prompt": "Hello, How are you?(query)",
+          "ground_truth": {
+            "action": "NOT_FOUND",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "GENERAL",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\"NOT_FOUND\"],\n  \"subAction\": [\"GENERAL\"],\n  \"platform\": [\"NOT_FOUND\"],\n  \"framework\": [\"NOT_FOUND\"],\n  \"languageType\": [\"NOT_FOUND\"]\n}",
+          "timestamp": "2025-06-14T00:20:49.482254",
+          "field": "platform",
+          "invalid_value": [
+            "NOT_FOUND"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "DYNAMIC_WEB_APPLICATION",
+            "STATIC_WEB_APPLICATION",
+            "DYNAMIC_MOBILE_APP",
+            "STATIC_MOBILE_APP",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 1,
+          "input_prompt": "Hello, How are you?(query)",
+          "ground_truth": {
+            "action": "NOT_FOUND",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "GENERAL",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\"NOT_FOUND\"],\n  \"subAction\": [\"GENERAL\"],\n  \"platform\": [\"NOT_FOUND\"],\n  \"framework\": [\"NOT_FOUND\"],\n  \"languageType\": [\"NOT_FOUND\"]\n}",
+          "timestamp": "2025-06-14T00:20:49.482254",
+          "field": "framework",
+          "invalid_value": [
+            "NOT_FOUND"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "REACT",
+            "FLUTTER",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 1,
+          "input_prompt": "Hello, How are you?(query)",
+          "ground_truth": {
+            "action": "NOT_FOUND",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "GENERAL",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\"NOT_FOUND\"],\n  \"subAction\": [\"GENERAL\"],\n  \"platform\": [\"NOT_FOUND\"],\n  \"framework\": [\"NOT_FOUND\"],\n  \"languageType\": [\"NOT_FOUND\"]\n}",
+          "timestamp": "2025-06-14T00:20:49.482254",
+          "field": "languageType",
+          "invalid_value": [
+            "NOT_FOUND"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "REACT_JAVASCRIPT",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 2,
+          "input_prompt": "Create new screen for the laptop and other items assigned to every employee. show in table with accordion UI(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\"CODE_GENERATION\"],\n  \"subAction\": [\"CODING\"],\n  \"platform\": [\"DYNAMIC_WEB_APPLICATION\"],\n  \"framework\": [\"REACT\"],\n  \"languageType\": [\"REACT_JAVASCRIPT\"]\n}",
+          "timestamp": "2025-06-14T00:20:49.482269",
+          "field": "action",
+          "invalid_value": [
+            "CODE_GENERATION"
+          ],
+          "expected_value": "CODE_GENERATION",
+          "valid_options": [
+            "CODE_GENERATION",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 2,
+          "input_prompt": "Create new screen for the laptop and other items assigned to every employee. show in table with accordion UI(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\"CODE_GENERATION\"],\n  \"subAction\": [\"CODING\"],\n  \"platform\": [\"DYNAMIC_WEB_APPLICATION\"],\n  \"framework\": [\"REACT\"],\n  \"languageType\": [\"REACT_JAVASCRIPT\"]\n}",
+          "timestamp": "2025-06-14T00:20:49.482269",
+          "field": "subAction",
+          "invalid_value": [
+            "CODING"
+          ],
+          "expected_value": "VISUAL_EDITS",
+          "valid_options": [
+            "CODING",
+            "VISUAL_EDITS",
+            "ERROR",
+            "GENERAL"
+          ]
+        },
+        {
+          "example_idx": 2,
+          "input_prompt": "Create new screen for the laptop and other items assigned to every employee. show in table with accordion UI(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\"CODE_GENERATION\"],\n  \"subAction\": [\"CODING\"],\n  \"platform\": [\"DYNAMIC_WEB_APPLICATION\"],\n  \"framework\": [\"REACT\"],\n  \"languageType\": [\"REACT_JAVASCRIPT\"]\n}",
+          "timestamp": "2025-06-14T00:20:49.482269",
+          "field": "platform",
+          "invalid_value": [
+            "DYNAMIC_WEB_APPLICATION"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "DYNAMIC_WEB_APPLICATION",
+            "STATIC_WEB_APPLICATION",
+            "DYNAMIC_MOBILE_APP",
+            "STATIC_MOBILE_APP",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 2,
+          "input_prompt": "Create new screen for the laptop and other items assigned to every employee. show in table with accordion UI(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\"CODE_GENERATION\"],\n  \"subAction\": [\"CODING\"],\n  \"platform\": [\"DYNAMIC_WEB_APPLICATION\"],\n  \"framework\": [\"REACT\"],\n  \"languageType\": [\"REACT_JAVASCRIPT\"]\n}",
+          "timestamp": "2025-06-14T00:20:49.482269",
+          "field": "framework",
+          "invalid_value": [
+            "REACT"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "REACT",
+            "FLUTTER",
+            "NOT_FOUND"
+          ]
+        },
+        {
+          "example_idx": 2,
+          "input_prompt": "Create new screen for the laptop and other items assigned to every employee. show in table with accordion UI(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": [\"CODE_GENERATION\"],\n  \"subAction\": [\"CODING\"],\n  \"platform\": [\"DYNAMIC_WEB_APPLICATION\"],\n  \"framework\": [\"REACT\"],\n  \"languageType\": [\"REACT_JAVASCRIPT\"]\n}",
+          "timestamp": "2025-06-14T00:20:49.482269",
+          "field": "languageType",
+          "invalid_value": [
+            "REACT_JAVASCRIPT"
+          ],
+          "expected_value": "NOT_FOUND",
+          "valid_options": [
+            "REACT_JAVASCRIPT",
+            "NOT_FOUND"
+          ]
+        }
+      ],
+      "missing_fields": [],
+      "wrong_classifications": []
+    },
+    "overall_accuracy": 0.0,
+    "evaluation_metadata": {
+      "evaluation_type": "dev_a_baseline",
+      "model_used": "llama-3.3-70b-versatile",
+      "num_samples": 3
+    }
+  },
+  "optimization_results": {
+    "final_prompt": "You are a classification model. Classify the input into the correct category. Return the result in JSON format.\n\nThe schema is as follows:\n{\n  \"action\": [\n    \"CODE_GENERATION\",\n    \"NOT_FOUND\"\n  ],\n  \"subAction\": [\n    \"CODING\",\n    \"VISUAL_EDITS\",\n    \"ERROR\",\n    \"GENERAL\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\",\n    \"STATIC_WEB_APPLICATION\",\n    \"DYNAMIC_MOBILE_APP\",\n    \"STATIC_MOBILE_APP\",\n    \"NOT_FOUND\"\n  ],\n  \"framework\": [\n    \"REACT\",\n    \"FLUTTER\",\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"REACT_JAVASCRIPT\",\n    \"NOT_FOUND\"\n  ]\n}\n\nIMPORTANT: Respond with a valid JSON object only. Do not include any explanations or text outside the JSON. Do not add any comments inside the JSON.",
+    "final_metrics": {
+      "validation_metrics": {
+        "valid_json_accuracy": 1.0,
+        "exact_match_accuracy": 0.0,
+        "schema_compliance_accuracy": 0.0,
+        "all_fields_present_accuracy": 1.0
+      },
+      "enum_field_metrics": {
+        "action": {
+          "macro_precision": 0.0,
+          "macro_recall": 0.0,
+          "macro_f1": 0.0,
+          "micro_precision": 0.0,
+          "micro_recall": 0.0,
+          "micro_f1": 0.0,
+          "accuracy": 0.0,
+          "per_class": {}
+        },
+        "subAction": {
+          "macro_precision": 0.0,
+          "macro_recall": 0.0,
+          "macro_f1": 0.0,
+          "micro_precision": 0.0,
+          "micro_recall": 0.0,
+          "micro_f1": 0.0,
+          "accuracy": 0.0,
+          "per_class": {}
+        },
+        "platform": {
+          "macro_precision": 0.0,
+          "macro_recall": 0.0,
+          "macro_f1": 0.0,
+          "micro_precision": 0.0,
+          "micro_recall": 0.0,
+          "micro_f1": 0.0,
+          "accuracy": 0.0,
+          "per_class": {}
+        },
+        "framework": {
+          "macro_precision": 0.0,
+          "macro_recall": 0.0,
+          "macro_f1": 0.0,
+          "micro_precision": 0.0,
+          "micro_recall": 0.0,
+          "micro_f1": 0.0,
+          "accuracy": 0.0,
+          "per_class": {}
+        },
+        "languageType": {
+          "macro_precision": 0.0,
+          "macro_recall": 0.0,
+          "macro_f1": 0.0,
+          "micro_precision": 0.0,
+          "micro_recall": 0.0,
+          "micro_f1": 0.0,
+          "accuracy": 0.0,
+          "per_class": {}
+        }
+      },
+      "failed_cases_summary": {
+        "invalid_json_count": 0,
+        "schema_violations_count": 10,
+        "missing_fields_count": 0,
+        "wrong_classifications_count": 0
+      },
+      "field_insights": {
+        "action": {
+          "missing_rate": 0.0,
+          "most_common_invalid_values": {
+            "['NOT_FOUND']": 1,
+            "['CODE_GENERATION']": 1
+          },
+          "most_common_confusions": {},
+          "error_severity": "HIGH"
+        },
+        "subAction": {
+          "missing_rate": 0.0,
+          "most_common_invalid_values": {
+            "['ERROR']": 1,
+            "['CODING']": 1
+          },
+          "most_common_confusions": {},
+          "error_severity": "HIGH"
+        },
+        "platform": {
+          "missing_rate": 0.0,
+          "most_common_invalid_values": {
+            "['NOT_FOUND']": 1,
+            "['DYNAMIC_WEB_APPLICATION']": 1
+          },
+          "most_common_confusions": {},
+          "error_severity": "HIGH"
+        },
+        "framework": {
+          "missing_rate": 0.0,
+          "most_common_invalid_values": {
+            "['NOT_FOUND']": 1,
+            "['REACT']": 1
+          },
+          "most_common_confusions": {},
+          "error_severity": "HIGH"
+        },
+        "languageType": {
+          "missing_rate": 0.0,
+          "most_common_invalid_values": {
+            "['NOT_FOUND']": 1,
+            "['REACT_JAVASCRIPT']": 1
+          },
+          "most_common_confusions": {},
+          "error_severity": "HIGH"
+        }
+      },
+      "optimization_opportunities": {
+        "prompt_engineering": [],
+        "schema_clarification": [
+          "Provide clearer enum value definitions and constraints"
+        ],
+        "example_enhancement": [
+          "Provide more examples for 'action' field classifications",
+          "Provide more examples for 'subAction' field classifications",
+          "Provide more examples for 'platform' field classifications",
+          "Provide more examples for 'framework' field classifications",
+          "Provide more examples for 'languageType' field classifications"
+        ],
+        "instruction_refinement": []
+      },
+      "summary": {
+        "average_enum_macro_f1": 0.0,
+        "average_enum_macro_precision": 0.0,
+        "average_enum_macro_recall": 0.0,
+        "total_examples": 2
+      },
+      "detailed_failed_cases": {
+        "invalid_json": [],
+        "schema_violations": [
+          {
+            "example_idx": 0,
+            "input_prompt": "Getting Error : import { api } from '../../utils/api';\n\nnot able to Find this file and its breaking code(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "ERROR",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "{\n  \"action\": [\n    \"NOT_FOUND\"\n  ],\n  \"subAction\": [\n    \"ERROR\"\n  ],\n  \"platform\": [\n    \"NOT_FOUND\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+            "timestamp": "2025-06-14T00:20:26.111082",
+            "field": "action",
+            "invalid_value": [
+              "NOT_FOUND"
+            ],
+            "expected_value": "CODE_GENERATION",
+            "valid_options": [
+              "CODE_GENERATION",
+              "NOT_FOUND"
+            ]
+          },
+          {
+            "example_idx": 0,
+            "input_prompt": "Getting Error : import { api } from '../../utils/api';\n\nnot able to Find this file and its breaking code(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "ERROR",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "{\n  \"action\": [\n    \"NOT_FOUND\"\n  ],\n  \"subAction\": [\n    \"ERROR\"\n  ],\n  \"platform\": [\n    \"NOT_FOUND\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+            "timestamp": "2025-06-14T00:20:26.111082",
+            "field": "subAction",
+            "invalid_value": [
+              "ERROR"
+            ],
+            "expected_value": "ERROR",
+            "valid_options": [
+              "CODING",
+              "VISUAL_EDITS",
+              "ERROR",
+              "GENERAL"
+            ]
+          },
+          {
+            "example_idx": 0,
+            "input_prompt": "Getting Error : import { api } from '../../utils/api';\n\nnot able to Find this file and its breaking code(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "ERROR",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "{\n  \"action\": [\n    \"NOT_FOUND\"\n  ],\n  \"subAction\": [\n    \"ERROR\"\n  ],\n  \"platform\": [\n    \"NOT_FOUND\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+            "timestamp": "2025-06-14T00:20:26.111082",
+            "field": "platform",
+            "invalid_value": [
+              "NOT_FOUND"
+            ],
+            "expected_value": "NOT_FOUND",
+            "valid_options": [
+              "DYNAMIC_WEB_APPLICATION",
+              "STATIC_WEB_APPLICATION",
+              "DYNAMIC_MOBILE_APP",
+              "STATIC_MOBILE_APP",
+              "NOT_FOUND"
+            ]
+          },
+          {
+            "example_idx": 0,
+            "input_prompt": "Getting Error : import { api } from '../../utils/api';\n\nnot able to Find this file and its breaking code(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "ERROR",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "{\n  \"action\": [\n    \"NOT_FOUND\"\n  ],\n  \"subAction\": [\n    \"ERROR\"\n  ],\n  \"platform\": [\n    \"NOT_FOUND\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+            "timestamp": "2025-06-14T00:20:26.111082",
+            "field": "framework",
+            "invalid_value": [
+              "NOT_FOUND"
+            ],
+            "expected_value": "NOT_FOUND",
+            "valid_options": [
+              "REACT",
+              "FLUTTER",
+              "NOT_FOUND"
+            ]
+          },
+          {
+            "example_idx": 0,
+            "input_prompt": "Getting Error : import { api } from '../../utils/api';\n\nnot able to Find this file and its breaking code(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "ERROR",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "{\n  \"action\": [\n    \"NOT_FOUND\"\n  ],\n  \"subAction\": [\n    \"ERROR\"\n  ],\n  \"platform\": [\n    \"NOT_FOUND\"\n  ],\n  \"framework\": [\n    \"NOT_FOUND\"\n  ],\n  \"languageType\": [\n    \"NOT_FOUND\"\n  ]\n}",
+            "timestamp": "2025-06-14T00:20:26.111082",
+            "field": "languageType",
+            "invalid_value": [
+              "NOT_FOUND"
+            ],
+            "expected_value": "NOT_FOUND",
+            "valid_options": [
+              "REACT_JAVASCRIPT",
+              "NOT_FOUND"
+            ]
+          },
+          {
+            "example_idx": 1,
+            "input_prompt": "Add Attendance part where can see employee daily attendant and in-out time(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "CODING",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "```json\n{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"REACT\"\n  ],\n  \"languageType\": [\n    \"REACT_JAVASCRIPT\"\n  ],\n  \"query\": \"CREATE TABLE Attendance (id INT PRIMARY KEY, employee_id INT, date DATE, in_time TIME, out_time TIME, FOREIGN KEY (employee_id) REFERENCES Employees(id))\"\n}\n```",
+            "timestamp": "2025-06-14T00:20:26.111150",
+            "field": "action",
+            "invalid_value": [
+              "CODE_GENERATION"
+            ],
+            "expected_value": "CODE_GENERATION",
+            "valid_options": [
+              "CODE_GENERATION",
+              "NOT_FOUND"
+            ]
+          },
+          {
+            "example_idx": 1,
+            "input_prompt": "Add Attendance part where can see employee daily attendant and in-out time(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "CODING",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "```json\n{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"REACT\"\n  ],\n  \"languageType\": [\n    \"REACT_JAVASCRIPT\"\n  ],\n  \"query\": \"CREATE TABLE Attendance (id INT PRIMARY KEY, employee_id INT, date DATE, in_time TIME, out_time TIME, FOREIGN KEY (employee_id) REFERENCES Employees(id))\"\n}\n```",
+            "timestamp": "2025-06-14T00:20:26.111150",
+            "field": "subAction",
+            "invalid_value": [
+              "CODING"
+            ],
+            "expected_value": "CODING",
+            "valid_options": [
+              "CODING",
+              "VISUAL_EDITS",
+              "ERROR",
+              "GENERAL"
+            ]
+          },
+          {
+            "example_idx": 1,
+            "input_prompt": "Add Attendance part where can see employee daily attendant and in-out time(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "CODING",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "```json\n{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"REACT\"\n  ],\n  \"languageType\": [\n    \"REACT_JAVASCRIPT\"\n  ],\n  \"query\": \"CREATE TABLE Attendance (id INT PRIMARY KEY, employee_id INT, date DATE, in_time TIME, out_time TIME, FOREIGN KEY (employee_id) REFERENCES Employees(id))\"\n}\n```",
+            "timestamp": "2025-06-14T00:20:26.111150",
+            "field": "platform",
+            "invalid_value": [
+              "DYNAMIC_WEB_APPLICATION"
+            ],
+            "expected_value": "NOT_FOUND",
+            "valid_options": [
+              "DYNAMIC_WEB_APPLICATION",
+              "STATIC_WEB_APPLICATION",
+              "DYNAMIC_MOBILE_APP",
+              "STATIC_MOBILE_APP",
+              "NOT_FOUND"
+            ]
+          },
+          {
+            "example_idx": 1,
+            "input_prompt": "Add Attendance part where can see employee daily attendant and in-out time(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "CODING",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "```json\n{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"REACT\"\n  ],\n  \"languageType\": [\n    \"REACT_JAVASCRIPT\"\n  ],\n  \"query\": \"CREATE TABLE Attendance (id INT PRIMARY KEY, employee_id INT, date DATE, in_time TIME, out_time TIME, FOREIGN KEY (employee_id) REFERENCES Employees(id))\"\n}\n```",
+            "timestamp": "2025-06-14T00:20:26.111150",
+            "field": "framework",
+            "invalid_value": [
+              "REACT"
+            ],
+            "expected_value": "NOT_FOUND",
+            "valid_options": [
+              "REACT",
+              "FLUTTER",
+              "NOT_FOUND"
+            ]
+          },
+          {
+            "example_idx": 1,
+            "input_prompt": "Add Attendance part where can see employee daily attendant and in-out time(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "CODING",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "```json\n{\n  \"action\": [\n    \"CODE_GENERATION\"\n  ],\n  \"subAction\": [\n    \"CODING\"\n  ],\n  \"platform\": [\n    \"DYNAMIC_WEB_APPLICATION\"\n  ],\n  \"framework\": [\n    \"REACT\"\n  ],\n  \"languageType\": [\n    \"REACT_JAVASCRIPT\"\n  ],\n  \"query\": \"CREATE TABLE Attendance (id INT PRIMARY KEY, employee_id INT, date DATE, in_time TIME, out_time TIME, FOREIGN KEY (employee_id) REFERENCES Employees(id))\"\n}\n```",
+            "timestamp": "2025-06-14T00:20:26.111150",
+            "field": "languageType",
+            "invalid_value": [
+              "REACT_JAVASCRIPT"
+            ],
+            "expected_value": "NOT_FOUND",
+            "valid_options": [
+              "REACT_JAVASCRIPT",
+              "NOT_FOUND"
+            ]
+          }
+        ],
+        "missing_fields": [],
+        "wrong_classifications": []
+      },
+      "overall_accuracy": 0.0,
+      "evaluation_metadata": {
+        "evaluation_type": "train_baseline",
+        "model_used": "llama-3.3-70b-versatile",
+        "num_samples": 2
+      }
+    },
+    "optimization_history": [],
+    "total_iterations": 0
+  }
+}

@@ -56,11 +56,15 @@ class OptimizationController:
         self.intent_identifier.schema = schema
         self.intent_identifier.baseline_metrics = baseline_metrics
         
+        # Extract key failure patterns (simple approach)
+        detailed_failed_cases = baseline_metrics.get('detailed_failed_cases', {})
+        key_failures = self._extract_key_failures(detailed_failed_cases)
+        
         # Prepare analysis context
         analysis_context = {
             'schema': schema,
             'baseline_metrics': baseline_metrics,
-            'failed_cases': baseline_metrics.get('detailed_failed_cases', {}).get('wrong_classifications', [])[:3],
+            'failed_cases': key_failures,  # Use extracted key failures instead
             'failed_cases_summary': baseline_metrics.get('failed_cases_summary', {}),
             'train_samples': train_samples,
             'base_prompt': base_prompt
@@ -129,17 +133,25 @@ class OptimizationController:
         
         # Convert results to candidate format
         candidates = []
-        for result in execution_results.results:
-            if result.status.value == "completed":
-                candidate = {
-                    "strategy": result.optimizer_name,
-                    "optimized_prompt": result.candidate_prompt,
-                    "reasoning": result.reasoning,
-                    "confidence": result.confidence,
-                    "changes_made": result.changes_made,
-                    "execution_time": result.execution_time
-                }
-                candidates.append(candidate)
+        
+        # Handle different result formats
+        results_list = execution_results.results if hasattr(execution_results, 'results') else execution_results
+        
+        for result in results_list:
+            try:
+                if hasattr(result, 'status') and result.status.value == "completed":
+                    candidate = {
+                        "strategy": getattr(result, 'optimizer_name', 'unknown'),
+                        "optimized_prompt": getattr(result, 'candidate_prompt', ''),
+                        "reasoning": getattr(result, 'reasoning', ''),
+                        "confidence": getattr(result, 'confidence', 0.0),
+                        "changes_made": getattr(result, 'changes_made', []),
+                        "execution_time": getattr(result, 'execution_time', 0.0)
+                    }
+                    candidates.append(candidate)
+            except Exception as e:
+                print(f"⚠️  Error processing result: {e}")
+                continue
         
         print(f"✅ Generated {len(candidates)} candidate prompts")
         return candidates
@@ -167,9 +179,10 @@ class OptimizationController:
         """
         # Extract failed cases
         failed_cases = current_metrics.get('detailed_failed_cases', {}).get('wrong_classifications', [])
+        
         failed_cases_summary = current_metrics.get('failed_cases_summary', {})
         
-        current_metrics = {k: v for k, v in current_metrics.items() if k != 'detailed_failed_cases'}
+        current_metrics = {k: v for k, v in current_metrics.items() if k != 'detailed_failed_cases' and k != 'failed_cases_summary'}
         
         # Create target model configuration
         target_model = ModelConfiguration(
@@ -192,6 +205,69 @@ class OptimizationController:
         context.iteration_number = iteration
         
         return context
+    
+    def _extract_key_failures(self, detailed_failed_cases: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Simple extraction of key failure patterns from your metrics
+        Focuses on the most important issues without overwhelming context
+        """
+        key_failures = []
+        
+        # 1. Schema violations (highest priority - format issues)
+        schema_violations = detailed_failed_cases.get('schema_violations', [])
+        if schema_violations:
+            # Group by issue type
+            format_issues = []
+            wrong_values = []
+            
+            for violation in schema_violations:
+                invalid_value = violation.get('invalid_value')
+                expected_value = violation.get('expected_value')
+                
+                # Check if it's a format issue (array vs string)
+                if isinstance(invalid_value, list) and len(invalid_value) == 1:
+                    if invalid_value[0] == expected_value:
+                        format_issues.append(violation)
+                    else:
+                        wrong_values.append(violation)
+                else:
+                    wrong_values.append(violation)
+            
+            # Add format issues (most critical)
+            if format_issues:
+                key_failures.append({
+                    'issue_type': 'format_issue',
+                    'description': f'Model returns arrays instead of strings ({len(format_issues)} cases)',
+                    'examples': format_issues[:2],
+                })
+            
+            # Add wrong values
+            if wrong_values:
+                key_failures.append({
+                    'issue_type': 'wrong_values',
+                    'description': f'Wrong field values ({len(wrong_values)} cases)',
+                    'examples': wrong_values[:2],
+                })
+        
+        # 2. Wrong classifications (second priority)
+        wrong_classifications = detailed_failed_cases.get('wrong_classifications', [])
+        if wrong_classifications:
+            key_failures.append({
+                'issue_type': 'wrong_classification',
+                'description': f'Wrong classifications ({len(wrong_classifications)} cases)',
+                'examples': wrong_classifications[:2],
+            })
+        
+        # 3. Invalid JSON (critical but usually fewer cases)
+        invalid_json = detailed_failed_cases.get('invalid_json', [])
+        if invalid_json:
+            key_failures.append({
+                'issue_type': 'invalid_json',
+                'description': f'Invalid JSON format ({len(invalid_json)} cases)',
+                'examples': invalid_json[:1],
+            })
+        
+        return key_failures[:3]  # Limit to top 3 issues
     
     async def close(self):
         """Close all resources"""
