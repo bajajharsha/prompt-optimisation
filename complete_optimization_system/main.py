@@ -37,7 +37,10 @@ class CompleteOptimizationSystem:
         self.config = {
             "max_iterations": 5,
             "improvement_threshold": 0.05,  # 5% improvement to continue
-            "dataset_name": "code_gen_10",
+            "convergence_threshold": 0.005,  # Within 0.5% improvement considered same
+            "convergence_patience": 3,  # Stop if stable for 3 iterations
+            "max_retry_attempts": 2,  # Maximum retries when no improvement found
+            "dataset_name": "code_gen",
             "target_model": {
                 "provider": "groq",
                 "model_name": "llama-3.3-70b-versatile"
@@ -183,15 +186,24 @@ class CompleteOptimizationSystem:
         data_splits: Dict[str, List]
     ) -> Dict[str, Any]:
         """
-        Run the iterative optimization loop
+        Run the iterative optimization loop with improved stopping mechanism
         """
         current_prompt = baseline_prompt
         current_metrics = train_baseline_metrics
         iteration = 1
         optimization_history = []
         
+        # Tracking for improved stopping mechanism
+        improvement_history = []  # Track last improvements for convergence detection
+        convergence_threshold = self.config["convergence_threshold"]  # Within 0.5% improvement considered same
+        convergence_patience = self.config["convergence_patience"]  # Stop if stable for 3 iterations
+        retry_attempts = 0
+        max_retry_attempts = self.config["max_retry_attempts"]  # Maximum retries when no improvement found
+        
         while iteration <= self.config["max_iterations"]:
             print(f"\n🔄 Optimization Iteration {iteration}")
+            if retry_attempts > 0:
+                print(f"   (Retry attempt {retry_attempts}/{max_retry_attempts})")
             print("-" * 50)
             
             # Generate candidate prompts
@@ -205,8 +217,14 @@ class CompleteOptimizationSystem:
             )
             
             if not candidates:
-                print("❌ No candidates generated, stopping optimization")
-                break
+                print("❌ No candidates generated")
+                if retry_attempts < max_retry_attempts:
+                    retry_attempts += 1
+                    print(f"🔄 Retrying optimization (attempt {retry_attempts}/{max_retry_attempts})...")
+                    continue
+                else:
+                    print("❌ Maximum retry attempts reached, stopping optimization")
+                    break
             
             print(f"✅ Generated {len(candidates)} candidate prompts")
             
@@ -219,13 +237,39 @@ class CompleteOptimizationSystem:
             )
             
             if not best_candidate:
-                print("❌ No improved candidates found, stopping optimization")
-                break
+                print("❌ No improved candidates found")
+                if retry_attempts < max_retry_attempts:
+                    retry_attempts += 1
+                    print(f"🔄 Retrying optimization (attempt {retry_attempts}/{max_retry_attempts})...")
+                    continue
+                else:
+                    print("❌ Maximum retry attempts reached, stopping optimization")
+                    break
+            
+            # Reset retry attempts on successful candidate generation
+            retry_attempts = 0
             
             print(f"✅ Best candidate selected: {best_candidate['strategy']}")
             print(f"   Dev A Improvement: {best_candidate['improvement']:.3f}")
             
-            # Check stopping criteria (based on Dev A)
+            # Add improvement to history for convergence tracking
+            improvement_history.append(best_candidate['improvement'])
+            
+            # Check convergence: if last 3 improvements are within threshold, stop
+            if len(improvement_history) >= convergence_patience:
+                recent_improvements = improvement_history[-convergence_patience:]
+                min_improvement = min(recent_improvements)
+                max_improvement = max(recent_improvements)
+                
+                if max_improvement - min_improvement <= convergence_threshold:
+                    print(f"🎯 Optimization converged! Improvements stable for {convergence_patience} iterations:")
+                    for i, imp in enumerate(recent_improvements):
+                        print(f"   Iteration {iteration - convergence_patience + i + 1}: {imp:.4f}")
+                    print(f"   Range: {max_improvement - min_improvement:.4f} ≤ {convergence_threshold:.4f}")
+                    print("✅ Using current best prompt as final optimization result")
+                    break
+            
+            # Check minimum improvement threshold (original logic preserved)
             if best_candidate['improvement'] < self.config["improvement_threshold"]:
                 print(f"⏹️  Improvement below threshold ({self.config['improvement_threshold']:.3f}), stopping")
                 break
@@ -269,11 +313,26 @@ class CompleteOptimizationSystem:
             print(f"✅ Iteration {iteration} completed")
             iteration += 1
         
+        # Add stopping reason to results
+        stopping_reason = "max_iterations_reached"
+        if len(improvement_history) >= convergence_patience:
+            recent_improvements = improvement_history[-convergence_patience:]
+            min_improvement = min(recent_improvements)
+            max_improvement = max(recent_improvements)
+            if max_improvement - min_improvement <= convergence_threshold:
+                stopping_reason = "converged"
+        elif improvement_history and improvement_history[-1] < self.config["improvement_threshold"]:
+            stopping_reason = "below_threshold"
+        elif retry_attempts >= max_retry_attempts:
+            stopping_reason = "max_retries_reached"
+        
         return {
             "final_prompt": current_prompt,
             "final_metrics": current_metrics,
             "optimization_history": optimization_history,
-            "total_iterations": iteration - 1
+            "total_iterations": iteration - 1,
+            "improvement_history": improvement_history,
+            "stopping_reason": stopping_reason
         }
     
     async def _evaluate_candidates_dev_a(
@@ -403,6 +462,22 @@ async def main():
         print(f"   Decision: {results['deployment_decision']}")
         print(f"   Test Improvement: {results['test_improvement']:+.3f}")
         print(f"   Total Iterations: {results['optimization_results']['total_iterations']}")
+        print(f"   Stopping Reason: {results['optimization_results']['stopping_reason']}")
+        
+        # Print improvement history if available
+        if 'improvement_history' in results['optimization_results']:
+            print(f"   Improvement History: {[f'{imp:.3f}' for imp in results['optimization_results']['improvement_history']]}")
+            
+        # Explain stopping reason
+        stopping_reason = results['optimization_results']['stopping_reason']
+        if stopping_reason == "converged":
+            print("   ✅ Optimization converged - improvements stabilized")
+        elif stopping_reason == "max_retries_reached":
+            print("   ⚠️  Optimization stopped - maximum retry attempts reached")
+        elif stopping_reason == "below_threshold":
+            print("   ⏹️  Optimization stopped - improvement below threshold")
+        elif stopping_reason == "max_iterations_reached":
+            print("   🔄 Optimization stopped - maximum iterations reached")
         
     except Exception as e:
         print(f"❌ System failed: {e}")
