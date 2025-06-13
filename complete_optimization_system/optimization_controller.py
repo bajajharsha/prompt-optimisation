@@ -178,7 +178,8 @@ class OptimizationController:
             OptimizationContext object
         """
         # Extract failed cases
-        failed_cases = current_metrics.get('detailed_failed_cases', {}).get('wrong_classifications', [])
+        failed_cases = current_metrics.get('detailed_failed_cases', {})
+        # failed_cases = current_metrics.get('detailed_failed_cases', {}).get('wrong_classifications', [])
         
         failed_cases_summary = current_metrics.get('failed_cases_summary', {})
         

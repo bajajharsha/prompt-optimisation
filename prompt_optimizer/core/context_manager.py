@@ -40,7 +40,7 @@ class ContextManager:
         self,
         json_schema: Dict[str, Any],
         failed_cases_summary: Dict[str, Any],
-        failed_cases: List[Dict[str, Any]],
+        failed_cases: Dict[str, List[Dict[str, Any]]],
         baseline_metrics: Dict[str, Any],
         intent: Dict[str, Any],
         base_prompt: str,
@@ -50,23 +50,51 @@ class ContextManager:
         Create the initial optimization context with model information
         """
         print("create_initial_context")
+        
+        # Extract failed cases list from the dictionary structure
+        # failed_cases comes as: {'invalid_json': [], 'schema_violations': [], 'wrong_classifications': [...]}
+        # Take up to 3 examples from each field that has data
+        failed_cases_list = []
+        max_examples_per_field = 3
+        
+        print(f"Processing failed cases from {len(failed_cases)} failure types:")
+        
+        # Process each failure type
+        for failure_type, cases in failed_cases.items():
+            if isinstance(cases, list) and len(cases) > 0:
+                # Take up to 3 examples from this field
+                examples_to_take = min(max_examples_per_field, len(cases))
+                selected_cases = cases[:examples_to_take]  # Take first N cases
+                
+                print(f"  - {failure_type}: {len(cases)} total, taking {examples_to_take} examples")
+                
+                # Add failure_type to each case for context
+                for case in selected_cases:
+                    case_with_type = case.copy() if isinstance(case, dict) else case
+                    if isinstance(case_with_type, dict):
+                        case_with_type['failure_type'] = failure_type
+                    failed_cases_list.append(case_with_type)
+            else:
+                print(f"  - {failure_type}: empty or not a list, skipping")
+        
+        print(f"Total failed cases extracted: {len(failed_cases_list)}")
+        
         # Create EvaluationMetrics from raw data
         eval_metrics = EvaluationMetrics(
             baseline_metrics=baseline_metrics,
-            failed_cases=failed_cases[:self._max_failed_cases],
+            failed_cases=failed_cases_list,  # Now using the list format
             failed_cases_summary=failed_cases_summary,
             evaluated_with=target_model 
         )
-        # randome 5 failed cases
-        failed_cases = random.sample(failed_cases, min(5, len(failed_cases)))
         
+        print(f"Failed cases: {len(failed_cases_list)} total cases extracted from {len(failed_cases)} failure types (max {max_examples_per_field} per type)")
         
         # Create initial context
         context = OptimizationContext(
             json_schema=json_schema,
             failed_cases_summary=failed_cases_summary,
-            failed_cases=failed_cases,  # Use the EvaluationMetrics object for failed cases too
-            baseline_metrics=baseline_metrics,  # Use the EvaluationMetrics object
+            failed_cases=failed_cases_list,  # Use the extracted list
+            baseline_metrics=baseline_metrics,
             intent=intent,
             base_prompt=base_prompt,
             target_model=target_model,
@@ -80,7 +108,7 @@ class ContextManager:
         
         print(f"✅ Created initial context.")
         print(f"   Target model: {target_model.to_string()}")
-        print(f"   Failed cases: {len(failed_cases)} (limited to {self._max_failed_cases})")
+        print(f"   Failed cases: {len(failed_cases_list)} (max {max_examples_per_field} per failure type)")
         print(f"   Iteration: {context.iteration_number}")
         
         return context
