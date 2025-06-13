@@ -91,10 +91,9 @@ class SimpleExecutor:
     async def _execute_single_optimizer(
         self,
         optimizer_name: str,
-        context: OptimizationContext,
-        timeout_seconds: int
+        context: OptimizationContext
     ) -> OptimizerResult:
-        """Execute a single optimizer with timeout"""
+        """Execute a single optimizer"""
         
         # Get optimizer instance
         optimizer = get_optimizer_by_name(optimizer_name, self.claude_client)
@@ -107,21 +106,10 @@ class SimpleExecutor:
             )
         
         try:
-            # Execute with timeout
-            result = await asyncio.wait_for(
-                optimizer.optimize(context),
-                timeout=timeout_seconds
-            )
+            # Execute without timeout (let the optimizer handle its own timeouts)
+            result = await optimizer.optimize(context)
             return result
             
-        except asyncio.TimeoutError:
-            return self._create_failed_result(
-                optimizer_name,
-                f"Optimizer timed out after {timeout_seconds}s",
-                context,
-                timeout_seconds
-            )
-        
         except Exception as e:
             return self._create_failed_result(
                 optimizer_name,

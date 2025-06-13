@@ -1,0 +1,415 @@
+{
+  "validation_metrics": {
+    "valid_json_accuracy": 1.0,
+    "exact_match_accuracy": 0.5333333333333333,
+    "schema_compliance_accuracy": 1.0,
+    "all_fields_present_accuracy": 1.0
+  },
+  "enum_field_metrics": {
+    "action": {
+      "macro_precision": 0.4666666666666667,
+      "macro_recall": 0.5,
+      "macro_f1": 0.4827586206896552,
+      "micro_precision": 0.9333333333333333,
+      "micro_recall": 0.9333333333333333,
+      "micro_f1": 0.9333333333333333,
+      "accuracy": 0.9333333333333333,
+      "per_class": {
+        "CODE_GENERATION": {
+          "precision": 0.9333333333333333,
+          "recall": 1.0,
+          "f1": 0.9655172413793104,
+          "support": 14,
+          "correct": 14,
+          "tp": 14,
+          "fp": 1,
+          "fn": 0
+        },
+        "NOT_FOUND": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1,
+          "correct": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    "subAction": {
+      "macro_precision": 0.46153846153846156,
+      "macro_recall": 0.5,
+      "macro_f1": 0.47916666666666663,
+      "micro_precision": 0.8666666666666667,
+      "micro_recall": 0.8666666666666667,
+      "micro_f1": 0.8666666666666667,
+      "accuracy": 0.8666666666666667,
+      "per_class": {
+        "CODING": {
+          "precision": 0.8461538461538461,
+          "recall": 1.0,
+          "f1": 0.9166666666666666,
+          "support": 11,
+          "correct": 11,
+          "tp": 11,
+          "fp": 2,
+          "fn": 0
+        },
+        "ERROR": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 2,
+          "correct": 2,
+          "tp": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        "GENERAL": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1,
+          "correct": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        },
+        "VISUAL_EDITS": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 1,
+          "correct": 0,
+          "tp": 0,
+          "fp": 0,
+          "fn": 1
+        }
+      }
+    },
+    "platform": {
+      "macro_precision": 0.7000000000000001,
+      "macro_recall": 0.8148148148148149,
+      "macro_f1": 0.6773504273504273,
+      "micro_precision": 0.6666666666666666,
+      "micro_recall": 0.6666666666666666,
+      "micro_f1": 0.6666666666666666,
+      "accuracy": 0.6666666666666666,
+      "per_class": {
+        "NOT_FOUND": {
+          "precision": 1.0,
+          "recall": 0.4444444444444444,
+          "f1": 0.6153846153846153,
+          "support": 9,
+          "correct": 4,
+          "tp": 4,
+          "fp": 0,
+          "fn": 5
+        },
+        "DYNAMIC_MOBILE_APP": {
+          "precision": 0.6,
+          "recall": 1.0,
+          "f1": 0.7499999999999999,
+          "support": 3,
+          "correct": 3,
+          "tp": 3,
+          "fp": 2,
+          "fn": 0
+        },
+        "DYNAMIC_WEB_APPLICATION": {
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6666666666666666,
+          "support": 3,
+          "correct": 3,
+          "tp": 3,
+          "fp": 3,
+          "fn": 0
+        }
+      }
+    },
+    "framework": {
+      "macro_precision": 1.0,
+      "macro_recall": 1.0,
+      "macro_f1": 1.0,
+      "micro_precision": 1.0,
+      "micro_recall": 1.0,
+      "micro_f1": 1.0,
+      "accuracy": 1.0,
+      "per_class": {
+        "NOT_FOUND": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 12,
+          "correct": 12,
+          "tp": 12,
+          "fp": 0,
+          "fn": 0
+        },
+        "FLUTTER": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 2,
+          "correct": 2,
+          "tp": 2,
+          "fp": 0,
+          "fn": 0
+        },
+        "REACT": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1,
+          "correct": 1,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0
+        }
+      }
+    },
+    "languageType": {
+      "macro_precision": 1.0,
+      "macro_recall": 1.0,
+      "macro_f1": 1.0,
+      "micro_precision": 1.0,
+      "micro_recall": 1.0,
+      "micro_f1": 1.0,
+      "accuracy": 1.0,
+      "per_class": {
+        "NOT_FOUND": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 14,
+          "correct": 14,
+          "tp": 14,
+          "fp": 0,
+          "fn": 0
+        },
+        "REACT_JAVASCRIPT": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1,
+          "correct": 1,
+          "tp": 1,
+          "fp": 0,
+          "fn": 0
+        }
+      }
+    }
+  },
+  "failed_cases_summary": {
+    "invalid_json_count": 0,
+    "schema_violations_count": 0,
+    "missing_fields_count": 0,
+    "wrong_classifications_count": 8
+  },
+  "field_insights": {
+    "action": {
+      "missing_rate": 0.0,
+      "most_common_invalid_values": {},
+      "most_common_confusions": {
+        "NOT_FOUND -> CODE_GENERATION": 1
+      },
+      "error_severity": "LOW"
+    },
+    "subAction": {
+      "missing_rate": 0.0,
+      "most_common_invalid_values": {},
+      "most_common_confusions": {
+        "GENERAL -> CODING": 1,
+        "VISUAL_EDITS -> CODING": 1
+      },
+      "error_severity": "MEDIUM"
+    },
+    "platform": {
+      "missing_rate": 0.0,
+      "most_common_invalid_values": {},
+      "most_common_confusions": {
+        "NOT_FOUND -> DYNAMIC_WEB_APPLICATION": 3,
+        "NOT_FOUND -> DYNAMIC_MOBILE_APP": 2
+      },
+      "error_severity": "HIGH"
+    },
+    "framework": {
+      "missing_rate": 0.0,
+      "most_common_invalid_values": {},
+      "most_common_confusions": {},
+      "error_severity": "LOW"
+    },
+    "languageType": {
+      "missing_rate": 0.0,
+      "most_common_invalid_values": {},
+      "most_common_confusions": {},
+      "error_severity": "LOW"
+    }
+  },
+  "optimization_opportunities": {
+    "prompt_engineering": [],
+    "schema_clarification": [],
+    "example_enhancement": [],
+    "instruction_refinement": []
+  },
+  "summary": {
+    "average_enum_macro_f1": 0.7278551429413498,
+    "average_enum_macro_precision": 0.7256410256410256,
+    "average_enum_macro_recall": 0.762962962962963,
+    "total_examples": 15
+  },
+  "detailed_failed_cases": {
+    "invalid_json": [],
+    "schema_violations": [],
+    "missing_fields": [],
+    "wrong_classifications": [
+      {
+        "example_idx": 0,
+        "input_prompt": "create a signup screen for ecommerce app(query)",
+        "ground_truth": {
+          "action": "CODE_GENERATION",
+          "platform": "NOT_FOUND",
+          "framework": "NOT_FOUND",
+          "subAction": "CODING",
+          "languageType": "NOT_FOUND"
+        },
+        "prediction_text": "{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_MOBILE_APP\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}",
+        "timestamp": "2025-06-13T11:19:43.443586",
+        "wrong_fields": [
+          {
+            "field": "platform",
+            "predicted_value": "DYNAMIC_MOBILE_APP",
+            "expected_value": "NOT_FOUND"
+          }
+        ]
+      },
+      {
+        "example_idx": 2,
+        "input_prompt": "Create a page for convert png to jpeg(query)",
+        "ground_truth": {
+          "action": "CODE_GENERATION",
+          "platform": "NOT_FOUND",
+          "framework": "NOT_FOUND",
+          "subAction": "CODING",
+          "languageType": "NOT_FOUND"
+        },
+        "prediction_text": "{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}",
+        "timestamp": "2025-06-13T11:19:43.443715",
+        "wrong_fields": [
+          {
+            "field": "platform",
+            "predicted_value": "DYNAMIC_WEB_APPLICATION",
+            "expected_value": "NOT_FOUND"
+          }
+        ]
+      },
+      {
+        "example_idx": 4,
+        "input_prompt": "Bug Fix(query)",
+        "ground_truth": {
+          "action": "NOT_FOUND",
+          "platform": "NOT_FOUND",
+          "framework": "NOT_FOUND",
+          "subAction": "ERROR",
+          "languageType": "NOT_FOUND"
+        },
+        "prediction_text": "{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"ERROR\",\n  \"platform\": \"NOT_FOUND\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}",
+        "timestamp": "2025-06-13T11:19:43.443758",
+        "wrong_fields": [
+          {
+            "field": "action",
+            "predicted_value": "CODE_GENERATION",
+            "expected_value": "NOT_FOUND"
+          }
+        ]
+      },
+      {
+        "example_idx": 5,
+        "input_prompt": "create login screen for stock trading(query)",
+        "ground_truth": {
+          "action": "CODE_GENERATION",
+          "platform": "NOT_FOUND",
+          "framework": "NOT_FOUND",
+          "subAction": "CODING",
+          "languageType": "NOT_FOUND"
+        },
+        "prediction_text": "{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}",
+        "timestamp": "2025-06-13T11:19:43.443779",
+        "wrong_fields": [
+          {
+            "field": "platform",
+            "predicted_value": "DYNAMIC_WEB_APPLICATION",
+            "expected_value": "NOT_FOUND"
+          }
+        ]
+      },
+      {
+        "example_idx": 7,
+        "input_prompt": "check internet speed App(query)",
+        "ground_truth": {
+          "action": "CODE_GENERATION",
+          "platform": "NOT_FOUND",
+          "framework": "NOT_FOUND",
+          "subAction": "GENERAL",
+          "languageType": "NOT_FOUND"
+        },
+        "prediction_text": "{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_MOBILE_APP\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}",
+        "timestamp": "2025-06-13T11:19:43.443819",
+        "wrong_fields": [
+          {
+            "field": "subAction",
+            "predicted_value": "CODING",
+            "expected_value": "GENERAL"
+          },
+          {
+            "field": "platform",
+            "predicted_value": "DYNAMIC_MOBILE_APP",
+            "expected_value": "NOT_FOUND"
+          }
+        ]
+      },
+      {
+        "example_idx": 12,
+        "input_prompt": "Create dashboard page(query)",
+        "ground_truth": {
+          "action": "CODE_GENERATION",
+          "platform": "NOT_FOUND",
+          "framework": "NOT_FOUND",
+          "subAction": "CODING",
+          "languageType": "NOT_FOUND"
+        },
+        "prediction_text": "{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}",
+        "timestamp": "2025-06-13T11:19:43.443911",
+        "wrong_fields": [
+          {
+            "field": "platform",
+            "predicted_value": "DYNAMIC_WEB_APPLICATION",
+            "expected_value": "NOT_FOUND"
+          }
+        ]
+      },
+      {
+        "example_idx": 14,
+        "input_prompt": "updte the home page(query)",
+        "ground_truth": {
+          "action": "CODE_GENERATION",
+          "platform": "NOT_FOUND",
+          "framework": "NOT_FOUND",
+          "subAction": "VISUAL_EDITS",
+          "languageType": "NOT_FOUND"
+        },
+        "prediction_text": "{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"NOT_FOUND\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}",
+        "timestamp": "2025-06-13T11:19:43.443950",
+        "wrong_fields": [
+          {
+            "field": "subAction",
+            "predicted_value": "CODING",
+            "expected_value": "VISUAL_EDITS"
+          }
+        ]
+      }
+    ]
+  }
+}

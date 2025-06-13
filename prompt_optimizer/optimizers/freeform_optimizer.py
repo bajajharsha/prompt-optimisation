@@ -36,16 +36,37 @@ class FreeformOptimizer(BaseOptimizer):
             # Build comprehensive context message including model information
             context_message = self._build_context_message(context)
             
+            with open("freeform_context.md", "w") as f:
+                f.write(context_message)
+            
             # Get optimization from Claude
             optimization_response = await self.claude_client.complete(
-                message=context_message,
+                messages=context_message,
                 component="freeform_optimizer",
                 operation="prompt_optimization"
             )
             
+            with open("freeform_response.md", "w") as f:
+                f.write(json.dumps(optimization_response, indent=2))
+            
             # Parse the JSON response
             try:
-                result_data = json.loads(optimization_response.strip())
+                # Handle the response format: {'content': '```json\n{...}\n```', 'usage': {...}}
+                if isinstance(optimization_response, dict) and 'content' in optimization_response:
+                    content = optimization_response['content']
+                else:
+                    content = optimization_response
+                
+                # Extract JSON from markdown code blocks if present
+                if '```json' in content:
+                    # Find the JSON content between ```json and ```
+                    start = content.find('```json') + 7  # Skip ```json
+                    end = content.find('```', start)
+                    json_content = content[start:end].strip()
+                else:
+                    json_content = content.strip()
+                
+                result_data = json.loads(json_content)
                 
                 optimized_prompt = result_data.get("optimized_prompt", context.base_prompt)
                 reasoning = result_data.get("reasoning", "No reasoning provided")
@@ -114,17 +135,17 @@ class FreeformOptimizer(BaseOptimizer):
         """
         
         # Extract key metrics
-        baseline_metrics = context.baseline_metrics.baseline_metrics
-        failed_cases = context.failed_cases.failed_cases[:5]  # Limit for message size
+        baseline_metrics = context.baseline_metrics
+        failed_cases = context.failed_cases[:5]
         
-        # Build model-specific guidance
-        model_guidance = self._get_model_specific_guidance(context.target_model)
+        # Get model information for context (no specific guidance)
+        model_info = self._get_model_info_context(context.target_model)
         
         # Build failed cases summary
         failed_cases_text = ""
         if failed_cases:
             failed_cases_text = "\n".join([
-                f"- Input: '{case.get('input_text', '')}' | Expected: {case.get('expected_intent', '')} | Got: {case.get('predicted_intent', '')} | Confidence: {case.get('confidence', 'N/A')}"
+                f"- Input: '{case.get('input_text', '')}' | Expected: {case.get('expected_intent', '')} | Got: {case.get('predicted_intent', '')}"
                 for case in failed_cases
             ])
         
@@ -148,12 +169,10 @@ class FreeformOptimizer(BaseOptimizer):
 **TARGET MODEL INFORMATION:**
 - Provider: {context.target_model.provider}
 - Model: {context.target_model.model_name}
-- Temperature: {context.target_model.temperature}
-{model_guidance}
 
 **TASK CONTEXT:**
 Intent: {context.intent}
-Current Accuracy: {baseline_metrics.get('accuracy', 'Unknown'):.2%}
+Current Metrics: {context.baseline_metrics}
 Iteration: {context.iteration_number}
 
 **CURRENT PROMPT:**
@@ -165,17 +184,13 @@ Iteration: {context.iteration_number}
 **FAILED CASES ANALYSIS:**
 {failed_cases_text if failed_cases_text else "No specific failed cases provided"}
 
-**PERFORMANCE METRICS:**
-- Accuracy: {baseline_metrics.get('accuracy', 'N/A')}
-- Precision: {baseline_metrics.get('precision', 'N/A')}
-- Recall: {baseline_metrics.get('recall', 'N/A')}
-- F1-Score: {baseline_metrics.get('f1_score', 'N/A')}
+**HISTORY AND FEEDBACK:**
 {history_context}
 {feedback_context}
 
 **OPTIMIZATION INSTRUCTIONS:**
 1. Analyze the failed cases to identify patterns in misclassification
-2. Consider the target model's strengths and optimal prompt format
+2. Consider the target model characteristics when optimizing the prompt
 3. Make the prompt more generalizable and robust to edge cases
 4. Ensure the prompt works well with the specified JSON schema
 5. Maintain consistency with the task intent while improving accuracy
@@ -191,44 +206,23 @@ Provide your optimization as a JSON response with this structure:
 Focus on making prompts that are:
 - Clear and unambiguous for the target model
 - Robust to edge cases and variations
-- Optimized for the specific model architecture and training
-- Consistent with the JSON schema requirements"""
+- Well-suited for the target model's capabilities
+- Consistent with the JSON schema requirements
+
+NOTE: Do not add strict statements according to the failed cases.
+"""
         
         return message
     
-    def _get_model_specific_guidance(self, model_config) -> str:
+    def _get_model_info_context(self, model_config) -> str:
         """
-        Get model-specific optimization guidance
+        Get model information as context (no prescriptive guidance)
         """
         provider = model_config.provider.lower()
         model_name = model_config.model_name.lower()
         
-        guidance = ""
+        # Just provide factual context about the model
+        info = f"\n- Model Type: {provider.title()} {model_name}"
         
-        if provider == "anthropic":
-            guidance += "\n- Claude models work well with clear, structured instructions"
-            guidance += "\n- Use explicit formatting and step-by-step reasoning"
-            guidance += "\n- Provide clear examples when beneficial"
-            
-            if "sonnet" in model_name:
-                guidance += "\n- Sonnet excels at complex reasoning and detailed analysis"
-                guidance += "\n- Can handle longer, more detailed prompts effectively"
-            elif "haiku" in model_name:
-                guidance += "\n- Haiku is optimized for speed and conciseness"
-                guidance += "\n- Keep prompts clear but concise"
-        
-        elif provider == "openai":
-            guidance += "\n- GPT models respond well to role-based prompting"
-            guidance += "\n- Use 'You are a...' style instructions"
-            guidance += "\n- Structured examples often improve performance"
-            
-            if "gpt-4" in model_name:
-                guidance += "\n- GPT-4 can handle complex, nuanced instructions"
-                guidance += "\n- Benefits from detailed context and examples"
-        
-        elif provider == "google":
-            guidance += "\n- Gemini models work well with structured formats"
-            guidance += "\n- Clear task decomposition often helps"
-        
-        return guidance
+        return info
     

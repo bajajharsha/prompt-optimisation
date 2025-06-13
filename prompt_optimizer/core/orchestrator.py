@@ -34,58 +34,74 @@ class Orchestrator:
         
         try:
             # Build comprehensive analysis message
+            print("select_optimization_strategy")
             analysis_message = self._build_analysis_message(context)
+            print("analysis_message", analysis_message)
             with open("analysis_message.txt", "w") as f:
                 f.write(analysis_message)
             # return analysis_message
             
             # Get AI strategy recommendation
             response = await self.claude_client.complete(
-                message=analysis_message,
+                messages=analysis_message,
                 component="orchestrator",
                 operation="strategy_selection"
             )
             
             # Parse the response
             try:
-                strategy_data = json.loads(response.strip())
+                # Handle the response format: {'content': '```json\n{...}\n```', 'usage': {...}}
+                if isinstance(response, dict) and 'content' in response:
+                    content = response['content']
+                else:
+                    content = response
+                
+                # Extract JSON from markdown code blocks if present
+                if '```json' in content:
+                    # Find the JSON content between ```json and ```
+                    start = content.find('```json') + 7  # Skip ```json
+                    end = content.find('```', start)
+                    json_content = content[start:end].strip()
+                else:
+                    json_content = content.strip()
+                
+                strategy_data = json.loads(json_content)
+                
+                # Extract optimizer names from the detailed format
+                selected_optimizers = []
+                optimizer_reasoning = {}
+                
+                if "selected_optimizers" in strategy_data:
+                    for opt in strategy_data["selected_optimizers"]:
+                        if isinstance(opt, dict) and "name" in opt:
+                            optimizer_name = opt["name"]
+                            selected_optimizers.append(optimizer_name)
+                            # Store individual reasoning if available
+                            if "reasoning" in opt:
+                                optimizer_reasoning[optimizer_name] = opt["reasoning"]
+                        elif isinstance(opt, str):
+                            selected_optimizers.append(opt)
                 
                 return OptimizerSelection(
-                    selected_optimizers=strategy_data.get("selected_optimizers", ["freeform"]),
-                    reasoning=strategy_data.get("reasoning", "AI-selected strategy"),
-                    execution_mode=strategy_data.get("execution_mode", "parallel"),
-                    confidence=float(strategy_data.get("confidence", 0.7))
+                    selected_optimizers=selected_optimizers,
+                    overall_reasoning=strategy_data.get("overall_reasoning", strategy_data.get("reasoning", "AI-selected strategy")),
+                    strategy_details=strategy_data,
                 )
                 
             except (json.JSONDecodeError, ValueError) as e:
                 print(f"⚠️ Failed to parse strategy response: {e}")
-                return self._fallback_strategy_selection(context)
                 
         except ClaudeAPIError as e:
             print(f"⚠️ Claude API error in strategy selection: {e}")
-            return self._fallback_strategy_selection(context)
         
         except Exception as e:
             print(f"⚠️ Unexpected error in strategy selection: {e}")
-            return self._fallback_strategy_selection(context)
     
     def _build_analysis_message(self, context: OptimizationContext) -> str:
         """Build comprehensive context analysis message"""
         
         # Get available optimizers for the message
-        available_optimizers = get_optimizer_names()
-        
-        # Extract key metrics
-        baseline_metrics = context.baseline_metrics.baseline_metrics if hasattr(context.baseline_metrics, 'baseline_metrics') else {}
-        failed_cases = context.failed_cases.failed_cases if hasattr(context.failed_cases, 'failed_cases') else []
-        
-        # Build failed cases summary
-        failed_cases_summary = ""
-        if failed_cases:
-            failed_cases_summary = "\n".join([
-                f"- Input: '{case.get('input_text', '')}' | Expected: {case.get('expected_intent', '')} | Got: {case.get('predicted_intent', '')}"
-                for case in failed_cases[:3]  # Show first 3
-            ])
+        available_optimizers = get_available_optimizers()
         
         # Build history context
         history_context = ""
@@ -107,7 +123,7 @@ class Orchestrator:
 
 **CONTEXT ANALYSIS:**
 Intent: {context.intent}
-Current baseline performance metrics: {baseline_metrics}
+Current baseline performance metrics: {context.baseline_metrics}
 Target model: {context.target_model.provider}/{context.target_model.model_name}
 Optimization iteration: {context.iteration_number}
 
@@ -127,7 +143,7 @@ Human feedback:
 {feedback_context}
 
 **AVAILABLE OPTIMIZERS:**
-{', '.join(available_optimizers)}
+{available_optimizers}
 
 **YOUR TASK:**
 Based on this analysis, select the most appropriate optimizers and execution strategy. Consider:
@@ -140,16 +156,16 @@ Based on this analysis, select the most appropriate optimizers and execution str
 Respond with a JSON object:
 {{
     "selected_optimizers": [
-        {
-            "name": "field_focus",
-            "reasoning": "High failure rate in category field suggests focused improvement needed"
-        },
-        {
-            "name": "example_enhancement", 
-            "reasoning": "Limited examples causing confusion in edge cases"
-        }
+        {{
+            "name": "optimizer1",
+            "reasoning": "Optimizer1 is a good optimizer for this task"
+        }},
+        {{
+            "name": "optimizer2", 
+            "reasoning": "Optimizer2 is a good optimizer for this task"
+        }}
     ],
-    "overall_reasoning": "Detailed explanation of why these optimizers were selected",
+    "overall_reasoning": "Detailed explanation of why these optimizers were selected"
 }}
 
 Focus on optimizers that can address the specific issues shown in the failed cases."""

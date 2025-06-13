@@ -887,6 +887,15 @@ def run_groq_inference(prompts: List[str], base_prompt: str, model: str = "llama
             
             {prompt}
             
+            The schema is as follows:
+            {{
+            "action": ["CODE_GENERATION", "NOT_FOUND"],
+            "subAction": ["CODING", "VISUAL_EDITS", "ERROR", "GENERAL"],
+            "platform": ["DYNAMIC_WEB_APPLICATION", "STATIC_WEB_APPLICATION", "DYNAMIC_MOBILE_APP", "STATIC_MOBILE_APP", "NOT_FOUND"],
+            "framework": ["REACT", "FLUTTER", "NOT_FOUND"],
+            "languageType": ["REACT_JAVASCRIPT", "NOT_FOUND"]
+            }}
+            
             IMPORTANT: Respond with a valid JSON object only. Do not include any explanations or text outside the JSON. Do not add any comments inside the JSON.
         """
         

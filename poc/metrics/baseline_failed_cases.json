@@ -13,42 +13,12 @@
         "subAction": "CODING",
         "languageType": "NOT_FOUND"
       },
-      "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_MOBILE_APP\",\n  \"framework\": \"FLUTTER\",\n  \"languageType\": \"NOT_FOUND\"\n}\n```",
-      "timestamp": "2025-06-10T17:20:08.074341",
+      "prediction_text": "{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_MOBILE_APP\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}",
+      "timestamp": "2025-06-13T11:19:43.443586",
       "wrong_fields": [
         {
           "field": "platform",
           "predicted_value": "DYNAMIC_MOBILE_APP",
-          "expected_value": "NOT_FOUND"
-        },
-        {
-          "field": "framework",
-          "predicted_value": "FLUTTER",
-          "expected_value": "NOT_FOUND"
-        }
-      ]
-    },
-    {
-      "example_idx": 1,
-      "input_prompt": "create login web for tinder(query)",
-      "ground_truth": {
-        "action": "CODE_GENERATION",
-        "platform": "DYNAMIC_WEB_APPLICATION",
-        "framework": "NOT_FOUND",
-        "subAction": "CODING",
-        "languageType": "NOT_FOUND"
-      },
-      "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"REACT\",\n  \"languageType\": \"REACT_JAVASCRIPT\"\n}\n```",
-      "timestamp": "2025-06-10T17:20:08.074391",
-      "wrong_fields": [
-        {
-          "field": "framework",
-          "predicted_value": "REACT",
-          "expected_value": "NOT_FOUND"
-        },
-        {
-          "field": "languageType",
-          "predicted_value": "REACT_JAVASCRIPT",
           "expected_value": "NOT_FOUND"
         }
       ]
@@ -63,8 +33,8 @@
         "subAction": "CODING",
         "languageType": "NOT_FOUND"
       },
-      "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}\n```",
-      "timestamp": "2025-06-10T17:20:08.074416",
+      "prediction_text": "{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}",
+      "timestamp": "2025-06-13T11:19:43.443715",
       "wrong_fields": [
         {
           "field": "platform",
@@ -72,12 +42,30 @@
           "expected_value": "NOT_FOUND"
         }
       ]
-    }
-  ],
-  "exact_match_failures": [
+    },
     {
-      "example_idx": 0,
-      "input_prompt": "create a signup screen for ecommerce app(query)",
+      "example_idx": 4,
+      "input_prompt": "Bug Fix(query)",
+      "ground_truth": {
+        "action": "NOT_FOUND",
+        "platform": "NOT_FOUND",
+        "framework": "NOT_FOUND",
+        "subAction": "ERROR",
+        "languageType": "NOT_FOUND"
+      },
+      "prediction_text": "{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"ERROR\",\n  \"platform\": \"NOT_FOUND\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}",
+      "timestamp": "2025-06-13T11:19:43.443758",
+      "wrong_fields": [
+        {
+          "field": "action",
+          "predicted_value": "CODE_GENERATION",
+          "expected_value": "NOT_FOUND"
+        }
+      ]
+    },
+    {
+      "example_idx": 5,
+      "input_prompt": "create login screen for stock trading(query)",
       "ground_truth": {
         "action": "CODE_GENERATION",
         "platform": "NOT_FOUND",
@@ -85,39 +73,44 @@
         "subAction": "CODING",
         "languageType": "NOT_FOUND"
       },
-      "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_MOBILE_APP\",\n  \"framework\": \"FLUTTER\",\n  \"languageType\": \"NOT_FOUND\"\n}\n```",
-      "timestamp": "2025-06-10T17:20:08.074341",
-      "parsed_prediction": {
-        "action": "CODE_GENERATION",
-        "subAction": "CODING",
-        "platform": "DYNAMIC_MOBILE_APP",
-        "framework": "FLUTTER",
-        "languageType": "NOT_FOUND"
-      }
+      "prediction_text": "{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}",
+      "timestamp": "2025-06-13T11:19:43.443779",
+      "wrong_fields": [
+        {
+          "field": "platform",
+          "predicted_value": "DYNAMIC_WEB_APPLICATION",
+          "expected_value": "NOT_FOUND"
+        }
+      ]
     },
     {
-      "example_idx": 1,
-      "input_prompt": "create login web for tinder(query)",
+      "example_idx": 7,
+      "input_prompt": "check internet speed App(query)",
       "ground_truth": {
         "action": "CODE_GENERATION",
-        "platform": "DYNAMIC_WEB_APPLICATION",
+        "platform": "NOT_FOUND",
         "framework": "NOT_FOUND",
-        "subAction": "CODING",
+        "subAction": "GENERAL",
         "languageType": "NOT_FOUND"
       },
-      "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"REACT\",\n  \"languageType\": \"REACT_JAVASCRIPT\"\n}\n```",
-      "timestamp": "2025-06-10T17:20:08.074391",
-      "parsed_prediction": {
-        "action": "CODE_GENERATION",
-        "subAction": "CODING",
-        "platform": "DYNAMIC_WEB_APPLICATION",
-        "framework": "REACT",
-        "languageType": "REACT_JAVASCRIPT"
-      }
+      "prediction_text": "{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_MOBILE_APP\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}",
+      "timestamp": "2025-06-13T11:19:43.443819",
+      "wrong_fields": [
+        {
+          "field": "subAction",
+          "predicted_value": "CODING",
+          "expected_value": "GENERAL"
+        },
+        {
+          "field": "platform",
+          "predicted_value": "DYNAMIC_MOBILE_APP",
+          "expected_value": "NOT_FOUND"
+        }
+      ]
     },
     {
-      "example_idx": 2,
-      "input_prompt": "Create a page for convert png to jpeg(query)",
+      "example_idx": 12,
+      "input_prompt": "Create dashboard page(query)",
       "ground_truth": {
         "action": "CODE_GENERATION",
         "platform": "NOT_FOUND",
@@ -125,15 +118,35 @@
         "subAction": "CODING",
         "languageType": "NOT_FOUND"
       },
-      "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}\n```",
-      "timestamp": "2025-06-10T17:20:08.074416",
-      "parsed_prediction": {
+      "prediction_text": "{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}",
+      "timestamp": "2025-06-13T11:19:43.443911",
+      "wrong_fields": [
+        {
+          "field": "platform",
+          "predicted_value": "DYNAMIC_WEB_APPLICATION",
+          "expected_value": "NOT_FOUND"
+        }
+      ]
+    },
+    {
+      "example_idx": 14,
+      "input_prompt": "updte the home page(query)",
+      "ground_truth": {
         "action": "CODE_GENERATION",
-        "subAction": "CODING",
-        "platform": "DYNAMIC_WEB_APPLICATION",
+        "platform": "NOT_FOUND",
         "framework": "NOT_FOUND",
+        "subAction": "VISUAL_EDITS",
         "languageType": "NOT_FOUND"
-      }
+      },
+      "prediction_text": "{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"NOT_FOUND\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}",
+      "timestamp": "2025-06-13T11:19:43.443950",
+      "wrong_fields": [
+        {
+          "field": "subAction",
+          "predicted_value": "CODING",
+          "expected_value": "VISUAL_EDITS"
+        }
+      ]
     }
   ]
 }

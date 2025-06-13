@@ -3,11 +3,11 @@ Core components for prompt optimization system
 """
 
 from .context_manager import ContextManager
-from .orchestrator import OrchestratorAgent
-from .executor import OptimizerExecutor
+from .orchestrator import Orchestrator
+from .simple_executor import SimpleExecutor
 
 __all__ = [
     "ContextManager",
-    "OrchestratorAgent",
-    "OptimizerExecutor"
+    "Orchestrator",
+    "SimpleExecutor"
 ] 

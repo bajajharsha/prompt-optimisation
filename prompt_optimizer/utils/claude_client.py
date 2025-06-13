@@ -29,7 +29,7 @@ class ClaudeClient:
     def __init__(
         self,
         api_key: Optional[str] = None,
-        model: str = "claude-3-sonnet-20240229",
+        model: str = "claude-sonnet-4-20250514",
         max_tokens: int = 4000,
         temperature: float = 0.1,
         timeout: int = 60
@@ -124,7 +124,7 @@ class ClaudeClient:
             "model": kwargs.get("model", self.model),
             "max_tokens": kwargs.get("max_tokens", self.max_tokens),
             "temperature": kwargs.get("temperature", self.temperature),
-            "messages": messages
+            "messages": [{"role": "user", "content": messages}]
         }
         
         headers = {

@@ -96,19 +96,11 @@ class OptimizerResult(BaseModel):
 
 
 class OptimizerSelection(BaseModel):
-    """Selected optimizers with reasoning"""
+    """Selected optimizers with detailed reasoning structure"""
     
     selected_optimizers: List[str] = Field(..., description="List of optimizer names to execute")
-    reasoning: str = Field(..., description="Why these optimizers were selected")
-    execution_mode: str = Field(default="parallel", description="How to execute optimizers")
-    confidence: float = Field(..., ge=0, le=1, description="Confidence in this selection")
-    
-    # For future expansion
-    optimizer_arguments: Dict[str, Dict[str, Any]] = Field(
-        default_factory=dict, 
-        description="Arguments for each optimizer"
-    )
-
+    overall_reasoning: str = Field(..., description="Overall reasoning for the strategy selection")
+    strategy_details: Optional[Dict[str, Any]] = Field(None, description="Complete strategy data from Claude")
 
 class OptimizationRequest(BaseModel):
     """Request for optimization"""

@@ -49,6 +49,7 @@ class ContextManager:
         """
         Create the initial optimization context with model information
         """
+        print("create_initial_context")
         # Create EvaluationMetrics from raw data
         eval_metrics = EvaluationMetrics(
             baseline_metrics=baseline_metrics,
@@ -61,8 +62,8 @@ class ContextManager:
         context = OptimizationContext(
             json_schema=json_schema,
             failed_cases_summary=failed_cases_summary,
-            failed_cases=failed_cases,  
-            baseline_metrics=baseline_metrics, 
+            failed_cases=failed_cases,  # Use the EvaluationMetrics object for failed cases too
+            baseline_metrics=baseline_metrics,  # Use the EvaluationMetrics object
             intent=intent,
             base_prompt=base_prompt,
             target_model=target_model,
@@ -74,7 +75,7 @@ class ContextManager:
         # Store in history
         self._add_to_history(context)
         
-        print(f"✅ Created initial context for: {intent}")
+        print(f"✅ Created initial context.")
         print(f"   Target model: {target_model.to_string()}")
         print(f"   Failed cases: {len(failed_cases)} (limited to {self._max_failed_cases})")
         print(f"   Iteration: {context.iteration_number}")
@@ -88,7 +89,8 @@ class ContextManager:
         new_metrics: Dict[str, Any],
         optimizer_used: str,
         human_feedback: Optional[str] = None,
-        new_failed_cases: Optional[List[Dict[str, Any]]] = None
+        new_failed_cases: Optional[List[Dict[str, Any]]] = None,
+        new_failed_cases_summary: Optional[Dict[str, Any]] = None
     ) -> OptimizationContext:
         """
         Update context with new optimization results
@@ -99,7 +101,7 @@ class ContextManager:
         new_eval_metrics = EvaluationMetrics(
             baseline_metrics=new_metrics,
             failed_cases=new_failed_cases or [],
-            failed_cases_summary={},
+            failed_cases_summary=new_failed_cases_summary or {},
             evaluated_with=current_context.target_model  # Same model as we're optimizing for
         )
         
@@ -115,8 +117,8 @@ class ContextManager:
         
         # Update prompt history (keep reasonable size)
         updated_history = current_context.prompt_history + [new_history_entry]
-        if len(updated_history) > 10:  # Keep last 10 attempts
-            updated_history = updated_history[-10:]
+        if len(updated_history) > 3:  # Keep last 3 attempts
+            updated_history = updated_history[-3:]
         
         # Update human feedback (keep recent ones)
         updated_feedback = current_context.human_feedback.copy()
@@ -127,13 +129,10 @@ class ContextManager:
         
         # Update failed cases if provided
         updated_failed_cases = current_context.failed_cases
+        updated_failed_cases_summary = current_context.failed_cases_summary
         if new_failed_cases:
-            updated_failed_cases = EvaluationMetrics(
-                baseline_metrics=new_metrics,
-                failed_cases=new_failed_cases[:self._max_failed_cases],
-                failed_cases_summary={},
-                evaluated_with=current_context.target_model
-            )
+            updated_failed_cases = new_failed_cases[:self._max_failed_cases]
+            updated_failed_cases_summary = new_failed_cases_summary or current_context.failed_cases_summary
         
         # Create updated context - new metrics become the baseline (natural insights)
         updated_context = OptimizationContext(
@@ -141,9 +140,9 @@ class ContextManager:
             base_prompt=new_prompt,  # Update to new prompt
             json_schema=current_context.json_schema,
             target_model=current_context.target_model,  # Preserve target model
-            baseline_metrics=new_eval_metrics,  # Updated metrics become new baseline
-            failed_cases=updated_failed_cases,
-            failed_cases_summary=current_context.failed_cases_summary,
+            baseline_metrics=new_metrics,  # Updated metrics become new baseline (Dict, not EvaluationMetrics)
+            failed_cases=updated_failed_cases,  # List[Dict], not EvaluationMetrics
+            failed_cases_summary=updated_failed_cases_summary,  # Dict, not EvaluationMetrics
             prompt_history=updated_history,
             human_feedback=updated_feedback,
             iteration_number=current_context.iteration_number + 1
@@ -175,7 +174,7 @@ class ContextManager:
         
         # Merge additional failed cases
         if "failed_cases" in additional_data:
-            existing_cases = merged_context.failed_cases.failed_cases if hasattr(merged_context.failed_cases, 'failed_cases') else []
+            existing_cases = merged_context.failed_cases  # This is already a List[Dict]
             new_cases = additional_data["failed_cases"]
             
             # Combine and deduplicate (simple string comparison)
@@ -189,14 +188,8 @@ class ContextManager:
                     unique_cases.append(case)
                     seen_inputs.add(case_input)
             
-            # Limit size and update with model information
-            limited_cases = unique_cases[:self._max_failed_cases]
-            merged_context.failed_cases = EvaluationMetrics(
-                baseline_metrics=merged_context.baseline_metrics.baseline_metrics,
-                failed_cases=limited_cases,
-                failed_cases_summary=merged_context.failed_cases.failed_cases_summary if hasattr(merged_context.failed_cases, 'failed_cases_summary') else {},
-                evaluated_with=merged_context.target_model
-            )
+            # Limit size and update
+            merged_context.failed_cases = unique_cases[:self._max_failed_cases]
         
         # Merge human feedback
         if "human_feedback" in additional_data:
@@ -211,7 +204,7 @@ class ContextManager:
             merged_context.human_feedback = merged_feedback
         
         print(f"✅ Merged additional data into context")
-        print(f"   Failed cases: {len(merged_context.failed_cases.failed_cases)}")
+        print(f"   Failed cases: {len(merged_context.failed_cases)}")
         print(f"   Human feedback: {len(merged_context.human_feedback)}")
         
         return merged_context
@@ -222,13 +215,13 @@ class ContextManager:
         """
         
         # Extract key accuracy metric
-        accuracy = self._extract_accuracy(context.baseline_metrics.baseline_metrics)
+        accuracy = self._extract_accuracy(context.baseline_metrics)  # baseline_metrics is already a Dict
         
         return {
             "intent": context.intent,
             "target_model": context.target_model.to_string(),
             "current_accuracy": accuracy,
-            "failed_cases_count": len(context.failed_cases.failed_cases),
+            "failed_cases_count": len(context.failed_cases),  # failed_cases is already a List
             "iterations_attempted": len(context.prompt_history),
             "has_human_feedback": len(context.human_feedback) > 0,
             "optimization_iteration": context.iteration_number

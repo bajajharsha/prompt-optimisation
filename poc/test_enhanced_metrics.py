@@ -99,19 +99,56 @@ def test_baseline_with_langfuse():
     # }
     
     # Base prompt
+    # base_prompt = """
+    # You are a classification model. Classify the input into the correct category. Return the result in JSON format. 
+    # """
     base_prompt = """
-    You are a classification model. Classify the input into the correct category. Return the result in JSON format.
-    
-    The schema is as follows:
-    {
-      "action": ["CODE_GENERATION", "NOT_FOUND"],
-      "subAction": ["CODING", "VISUAL_EDITS", "ERROR", "GENERAL"],
-      "platform": ["DYNAMIC_WEB_APPLICATION", "STATIC_WEB_APPLICATION", "DYNAMIC_MOBILE_APP", "STATIC_MOBILE_APP", "NOT_FOUND"],
-      "framework": ["REACT", "FLUTTER", "NOT_FOUND"],
-      "languageType": ["REACT_JAVASCRIPT", "NOT_FOUND"]
-    }
+    You are a code generation request classifier. Your job is to analyze user requests and determine what type of code generation is needed.
+
+Classify each request using this hierarchical approach:
+
+1. **ACTION**: Is this actually requesting code generation?
+   - CODE_GENERATION: User wants code to be created/generated
+   - NOT_FOUND: Not a code generation request
+
+2. **SUB-ACTION**: What type of coding work is needed?
+   - CODING: Functional programming, logic, backend work
+   - VISUAL_EDITS: UI/design focused work, styling, layouts
+   - ERROR: Debugging, fixing errors, troubleshooting
+   - GENERAL: General programming questions or non-specific tasks
+
+3. **PLATFORM**: What is the target deployment platform?
+   - DYNAMIC_WEB_APPLICATION: Web apps with interactive features, databases, user accounts
+   - STATIC_WEB_APPLICATION: Simple web pages, portfolios, landing pages
+   - DYNAMIC_MOBILE_APP: Mobile apps with interactive features, data storage
+   - STATIC_MOBILE_APP: Simple mobile apps, basic functionality
+   - NOT_FOUND: Platform not specified or unclear
+
+4. **FRAMEWORK**: Which specific technology is mentioned?
+   - REACT: Only if "React" is explicitly mentioned
+   - FLUTTER: Only if "Flutter" is explicitly mentioned  
+   - NOT_FOUND: No framework specified or framework not supported
+
+5. **LANGUAGE_TYPE**: What specific language combination?
+   - REACT_JAVASCRIPT: Only if React and JavaScript are both clearly indicated
+   - NOT_FOUND: Language not specified or not supported
+
+**CRITICAL RULES:**
+- Only assign specific values (REACT, FLUTTER, etc.) when explicitly mentioned in the request
+- When in doubt or when details are missing, use NOT_FOUND
+- Don't assume or infer frameworks - require explicit mention
+- Generic requests like "create a web app" without framework specification should use NOT_FOUND for framework
+
+Return only a valid JSON object with all five fields:
+
+{
+  "action": "...",
+  "subAction": "...",
+  "platform": "...",
+  "framework": "...",
+  "languageType": "..."
+}
     """
-    
     # base_prompt = """
     # You are given movie reviews and you need to classify the sentiment of the review. Return the result in JSON format.
     # The schema is as follows:
