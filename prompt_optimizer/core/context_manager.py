@@ -8,7 +8,7 @@ from datetime import datetime
 import copy
 import sys
 import os
-
+import random
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 sys.path.insert(0, project_root)
 # Add parent directory to path for imports when running standalone
@@ -57,6 +57,9 @@ class ContextManager:
             failed_cases_summary=failed_cases_summary,
             evaluated_with=target_model 
         )
+        # randome 5 failed cases
+        failed_cases = random.sample(failed_cases, 5)
+        
         
         # Create initial context
         context = OptimizationContext(

@@ -202,7 +202,9 @@ class JSONGenerationEvaluator:
             
             # Track invalid enum values
             if pred_val not in enum_values:
-                self.field_error_patterns[field]["invalid_values"][pred_val] += 1
+                # Convert unhashable types to string for dictionary key
+                key_val = str(pred_val) if not isinstance(pred_val, (str, int, float, bool, type(None))) else pred_val
+                self.field_error_patterns[field]["invalid_values"][key_val] += 1
                 self.failed_cases["schema_violations"].append({
                     **example_data,
                     "field": field,
@@ -947,6 +949,7 @@ def run_groq_inference(prompts: List[str], base_prompt: str, model: str = "llama
                 print(f"Token logging failed: {e}")
             
             # Extract response content
+            print(response_data)
             response_text = response_data["choices"][0]["message"]["content"]
             responses.append(response_text)
         except Exception as e:

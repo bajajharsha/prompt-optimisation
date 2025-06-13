@@ -78,7 +78,7 @@ async def run_optimization_pipeline():
         base_prompt=base_prompt,
         target_model=ModelConfiguration(
             provider="groq",
-            model_name="llama-3.1-70b-versatile",
+            model_name="llama-3.3-70b-versatile",
         )
     )
     

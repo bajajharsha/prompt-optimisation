@@ -1,0 +1,2402 @@
+[
+  {
+    "review_id": "REV-0001",
+    "product_review": "Great product!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0002",
+    "product_review": "Love it!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0003",
+    "product_review": "Perfect!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0004",
+    "product_review": "Excellent quality",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0005",
+    "product_review": "Fast delivery",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0006",
+    "product_review": "Worth the money",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0007",
+    "product_review": "Terrible quality",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0008",
+    "product_review": "Don't buy this",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0009",
+    "product_review": "Waste of money",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0010",
+    "product_review": "Broke immediately",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0011",
+    "product_review": "Poor customer service",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0012",
+    "product_review": "Not as described",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0013",
+    "product_review": "Good product but shipping was slow. Overall satisfied with the purchase.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0014",
+    "product_review": "The item arrived damaged but customer service was helpful in resolving the issue.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0015",
+    "product_review": "Quality is decent for the price point. Would recommend to others.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0016",
+    "product_review": "Easy to use and setup was straightforward. Missing some advanced features.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0017",
+    "product_review": "Beautiful design and good build quality. A bit expensive but worth it.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0018",
+    "product_review": "Works as expected but instructions could be clearer.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0019",
+    "product_review": "I've been using this product for 3 months now and I'm really impressed with the build quality. The packaging was excellent and everything arrived in perfect condition. Setup was easy and the user manual was very clear. The product performs exactly as advertised and I haven't had any issues. Customer service was responsive when I had a question. Overall, I'm very satisfied and would definitely recommend this to others.",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Detailed",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0020",
+    "product_review": "Unfortunately, this product didn't meet my expectations. The quality feels cheap and it started showing signs of wear after just a few weeks of normal use. The description on the website was misleading - it's much smaller than I expected. I tried contacting customer service but they were unhelpful and it took days to get a response. I wouldn't recommend this product and I'm disappointed with my purchase. Save your money and look elsewhere.",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0021",
+    "product_review": "Mixed feelings about this purchase. On the positive side, it arrived quickly and was well-packaged. The design is attractive and it mostly works as intended. However, there are some annoying bugs and the battery life is shorter than advertised. For the price, I expected better performance. It's not terrible but there are probably better alternatives available. I might return it if I find something better.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Detailed",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0022",
+    "product_review": "Does this work with older models? The description isn't clear.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0023",
+    "product_review": "Has anyone tried using this for professional work?",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0024",
+    "product_review": "Is this suitable for beginners or do you need experience?",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0025",
+    "product_review": "What's the warranty like? Thinking about buying but want to know.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0026",
+    "product_review": "The color was completely different from what was shown online.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0027",
+    "product_review": "Arrived 2 weeks late and the tracking information was never updated.",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0028",
+    "product_review": "The size chart was wrong - ordered large but it fits like a medium.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Clothing",
+      "review_type": "Complaint",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0029",
+    "product_review": "Make sure to read the fine print - there are hidden fees.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0030",
+    "product_review": "AMAZING! Best purchase I've made all year! Cannot recommend enough!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0031",
+    "product_review": "Absolutely perfect in every way. Exceeded all my expectations!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0032",
+    "product_review": "This company never disappoints. Top quality as always!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0033",
+    "product_review": "Worth every penny! You won't regret buying this!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0034",
+    "product_review": "This product changed my life! Highly recommend to everyone!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0035",
+    "product_review": "Meh, it's okay I guess. Nothing special but does the job.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0036",
+    "product_review": "Returned immediately. Complete waste of time and money.",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0037",
+    "product_review": "Five stars! Will definitely buy again!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0038",
+    "product_review": "One star. Worst product ever made.",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0039",
+    "product_review": "Good value for money but could be improved in several areas.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0040",
+    "product_review": "I'm on the fence about this one. Some good points, some bad.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0041",
+    "product_review": "Perfect for what I needed. Simple and effective solution.",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0042",
+    "product_review": "Overhyped product. Marketing was better than the actual item.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0043",
+    "product_review": "Surprised by the quality! Much better than I expected for this price.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0044",
+    "product_review": "Unfortunately, this product didn't meet my expectations. The quality feels cheap and it started showing signs of wear after just a few weeks of normal use. The description on the website was misleading - it's much smaller than I expected. I tried contacting customer service but they were unhelpful and it took days to get a response. I wouldn't recommend this product and I'm disappointed with my purchase. Save your money and look elsewhere.",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0045",
+    "product_review": "Works as expected but instructions could be clearer.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0046",
+    "product_review": "The item arrived damaged but customer service was helpful in resolving the issue.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0047",
+    "product_review": "Not as described",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0048",
+    "product_review": "Waste of money",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0049",
+    "product_review": "The color was completely different from what was shown online.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0050",
+    "product_review": "Absolutely perfect in every way. Exceeded all my expectations!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0051",
+    "product_review": "Broke immediately",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0052",
+    "product_review": "This company never disappoints. Top quality as always!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0053",
+    "product_review": "Don't buy this",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0054",
+    "product_review": "Terrible quality",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0055",
+    "product_review": "This company never disappoints. Top quality as always!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0056",
+    "product_review": "Beautiful design and good build quality. A bit expensive but worth it.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0057",
+    "product_review": "Not as described",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0058",
+    "product_review": "Not as described",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0059",
+    "product_review": "The item arrived damaged but customer service was helpful in resolving the issue.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0060",
+    "product_review": "Has anyone tried using this for professional work?",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0061",
+    "product_review": "Poor customer service",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0062",
+    "product_review": "Has anyone tried using this for professional work?",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0063",
+    "product_review": "Broke immediately",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0064",
+    "product_review": "What's the warranty like? Thinking about buying but want to know.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0065",
+    "product_review": "Great product!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0066",
+    "product_review": "What's the warranty like? Thinking about buying but want to know.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0067",
+    "product_review": "This company never disappoints. Top quality as always!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0068",
+    "product_review": "Love it!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0069",
+    "product_review": "Fast delivery",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0070",
+    "product_review": "I've been using this product for 3 months now and I'm really impressed with the build quality. The packaging was excellent and everything arrived in perfect condition. Setup was easy and the user manual was very clear. The product performs exactly as advertised and I haven't had any issues. Customer service was responsive when I had a question. Overall, I'm very satisfied and would definitely recommend this to others.",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Detailed",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0071",
+    "product_review": "Great product!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0072",
+    "product_review": "Is this suitable for beginners or do you need experience?",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0073",
+    "product_review": "Excellent quality",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0074",
+    "product_review": "Works as expected but instructions could be clearer.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0075",
+    "product_review": "Poor customer service",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0076",
+    "product_review": "Easy to use and setup was straightforward. Missing some advanced features.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0077",
+    "product_review": "Not as described",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0078",
+    "product_review": "What's the warranty like? Thinking about buying but want to know.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0079",
+    "product_review": "The item arrived damaged but customer service was helpful in resolving the issue.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0080",
+    "product_review": "This company never disappoints. Top quality as always!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0081",
+    "product_review": "Good product but shipping was slow. Overall satisfied with the purchase.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0082",
+    "product_review": "Not as described",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0083",
+    "product_review": "Excellent quality",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0084",
+    "product_review": "Love it!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0085",
+    "product_review": "The size chart was wrong - ordered large but it fits like a medium.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Clothing",
+      "review_type": "Complaint",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0086",
+    "product_review": "Unfortunately, this product didn't meet my expectations. The quality feels cheap and it started showing signs of wear after just a few weeks of normal use. The description on the website was misleading - it's much smaller than I expected. I tried contacting customer service but they were unhelpful and it took days to get a response. I wouldn't recommend this product and I'm disappointed with my purchase. Save your money and look elsewhere.",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0087",
+    "product_review": "Has anyone tried using this for professional work?",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0088",
+    "product_review": "Quality is decent for the price point. Would recommend to others.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0089",
+    "product_review": "Easy to use and setup was straightforward. Missing some advanced features.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0090",
+    "product_review": "Perfect!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0091",
+    "product_review": "Is this suitable for beginners or do you need experience?",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0092",
+    "product_review": "Unfortunately, this product didn't meet my expectations. The quality feels cheap and it started showing signs of wear after just a few weeks of normal use. The description on the website was misleading - it's much smaller than I expected. I tried contacting customer service but they were unhelpful and it took days to get a response. I wouldn't recommend this product and I'm disappointed with my purchase. Save your money and look elsewhere.",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0093",
+    "product_review": "Mixed feelings about this purchase. On the positive side, it arrived quickly and was well-packaged. The design is attractive and it mostly works as intended. However, there are some annoying bugs and the battery life is shorter than advertised. For the price, I expected better performance. It's not terrible but there are probably better alternatives available. I might return it if I find something better.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Detailed",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0094",
+    "product_review": "Terrible quality",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0095",
+    "product_review": "Great product!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0096",
+    "product_review": "Worth the money",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0097",
+    "product_review": "Mixed feelings about this purchase. On the positive side, it arrived quickly and was well-packaged. The design is attractive and it mostly works as intended. However, there are some annoying bugs and the battery life is shorter than advertised. For the price, I expected better performance. It's not terrible but there are probably better alternatives available. I might return it if I find something better.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Detailed",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0098",
+    "product_review": "Waste of money",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0099",
+    "product_review": "Beautiful design and good build quality. A bit expensive but worth it.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0100",
+    "product_review": "The color was completely different from what was shown online.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0101",
+    "product_review": "Perfect!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0102",
+    "product_review": "Broke immediately",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0103",
+    "product_review": "Is this suitable for beginners or do you need experience?",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0104",
+    "product_review": "Worth every penny! You won't regret buying this!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0105",
+    "product_review": "AMAZING! Best purchase I've made all year! Cannot recommend enough!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0106",
+    "product_review": "The item arrived damaged but customer service was helpful in resolving the issue.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0107",
+    "product_review": "Don't buy this",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0108",
+    "product_review": "Perfect!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0109",
+    "product_review": "Fast delivery",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0110",
+    "product_review": "The color was completely different from what was shown online.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0111",
+    "product_review": "The size chart was wrong - ordered large but it fits like a medium.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Clothing",
+      "review_type": "Complaint",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0112",
+    "product_review": "What's the warranty like? Thinking about buying but want to know.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0113",
+    "product_review": "Does this work with older models? The description isn't clear.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0114",
+    "product_review": "This company never disappoints. Top quality as always!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0115",
+    "product_review": "Don't buy this",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0116",
+    "product_review": "Excellent quality",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0117",
+    "product_review": "Fast delivery",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0118",
+    "product_review": "Easy to use and setup was straightforward. Missing some advanced features.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0119",
+    "product_review": "Don't buy this",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0120",
+    "product_review": "Make sure to read the fine print - there are hidden fees.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0121",
+    "product_review": "Good product but shipping was slow. Overall satisfied with the purchase.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0122",
+    "product_review": "Love it!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0123",
+    "product_review": "What's the warranty like? Thinking about buying but want to know.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0124",
+    "product_review": "Waste of money",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0125",
+    "product_review": "The color was completely different from what was shown online.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0126",
+    "product_review": "Love it!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0127",
+    "product_review": "Excellent quality",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0128",
+    "product_review": "Don't buy this",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0129",
+    "product_review": "Excellent quality",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0130",
+    "product_review": "Waste of money",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0131",
+    "product_review": "Love it!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0132",
+    "product_review": "Excellent quality",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0133",
+    "product_review": "Quality is decent for the price point. Would recommend to others.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0134",
+    "product_review": "Unfortunately, this product didn't meet my expectations. The quality feels cheap and it started showing signs of wear after just a few weeks of normal use. The description on the website was misleading - it's much smaller than I expected. I tried contacting customer service but they were unhelpful and it took days to get a response. I wouldn't recommend this product and I'm disappointed with my purchase. Save your money and look elsewhere.",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0135",
+    "product_review": "The size chart was wrong - ordered large but it fits like a medium.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Clothing",
+      "review_type": "Complaint",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0136",
+    "product_review": "Absolutely perfect in every way. Exceeded all my expectations!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0137",
+    "product_review": "Beautiful design and good build quality. A bit expensive but worth it.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0138",
+    "product_review": "I've been using this product for 3 months now and I'm really impressed with the build quality. The packaging was excellent and everything arrived in perfect condition. Setup was easy and the user manual was very clear. The product performs exactly as advertised and I haven't had any issues. Customer service was responsive when I had a question. Overall, I'm very satisfied and would definitely recommend this to others.",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Detailed",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0139",
+    "product_review": "Waste of money",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0140",
+    "product_review": "The size chart was wrong - ordered large but it fits like a medium.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Clothing",
+      "review_type": "Complaint",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0141",
+    "product_review": "Make sure to read the fine print - there are hidden fees.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0142",
+    "product_review": "Broke immediately",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0143",
+    "product_review": "Great product!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0144",
+    "product_review": "Beautiful design and good build quality. A bit expensive but worth it.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0145",
+    "product_review": "Terrible quality",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0146",
+    "product_review": "The size chart was wrong - ordered large but it fits like a medium.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Negative",
+      "product_category": "Clothing",
+      "review_type": "Complaint",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0147",
+    "product_review": "Fast delivery",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0148",
+    "product_review": "Has anyone tried using this for professional work?",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0149",
+    "product_review": "Good product but shipping was slow. Overall satisfied with the purchase.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0150",
+    "product_review": "Does this work with older models? The description isn't clear.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0151",
+    "product_review": "Works as expected but instructions could be clearer.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0152",
+    "product_review": "Make sure to read the fine print - there are hidden fees.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0153",
+    "product_review": "Absolutely perfect in every way. Exceeded all my expectations!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0154",
+    "product_review": "Does this work with older models? The description isn't clear.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0155",
+    "product_review": "Unfortunately, this product didn't meet my expectations. The quality feels cheap and it started showing signs of wear after just a few weeks of normal use. The description on the website was misleading - it's much smaller than I expected. I tried contacting customer service but they were unhelpful and it took days to get a response. I wouldn't recommend this product and I'm disappointed with my purchase. Save your money and look elsewhere.",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0156",
+    "product_review": "Has anyone tried using this for professional work?",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0157",
+    "product_review": "Is this suitable for beginners or do you need experience?",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0158",
+    "product_review": "The item arrived damaged but customer service was helpful in resolving the issue.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0159",
+    "product_review": "Beautiful design and good build quality. A bit expensive but worth it.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0160",
+    "product_review": "Worth the money",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0161",
+    "product_review": "Unfortunately, this product didn't meet my expectations. The quality feels cheap and it started showing signs of wear after just a few weeks of normal use. The description on the website was misleading - it's much smaller than I expected. I tried contacting customer service but they were unhelpful and it took days to get a response. I wouldn't recommend this product and I'm disappointed with my purchase. Save your money and look elsewhere.",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0162",
+    "product_review": "Worth the money",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0163",
+    "product_review": "Works as expected but instructions could be clearer.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0164",
+    "product_review": "Fast delivery",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0165",
+    "product_review": "Don't buy this",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0166",
+    "product_review": "Works as expected but instructions could be clearer.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0167",
+    "product_review": "Unfortunately, this product didn't meet my expectations. The quality feels cheap and it started showing signs of wear after just a few weeks of normal use. The description on the website was misleading - it's much smaller than I expected. I tried contacting customer service but they were unhelpful and it took days to get a response. I wouldn't recommend this product and I'm disappointed with my purchase. Save your money and look elsewhere.",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0168",
+    "product_review": "Great product!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0169",
+    "product_review": "Broke immediately",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0170",
+    "product_review": "Fast delivery",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0171",
+    "product_review": "The size chart was wrong - ordered large but it fits like a medium.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Clothing",
+      "review_type": "Complaint",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0172",
+    "product_review": "Is this suitable for beginners or do you need experience?",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Question",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0173",
+    "product_review": "Love it!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0174",
+    "product_review": "Not as described",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0175",
+    "product_review": "The color was completely different from what was shown online.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0176",
+    "product_review": "Waste of money",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0177",
+    "product_review": "Not as described",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0178",
+    "product_review": "Waste of money",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0179",
+    "product_review": "AMAZING! Best purchase I've made all year! Cannot recommend enough!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0180",
+    "product_review": "Unfortunately, this product didn't meet my expectations. The quality feels cheap and it started showing signs of wear after just a few weeks of normal use. The description on the website was misleading - it's much smaller than I expected. I tried contacting customer service but they were unhelpful and it took days to get a response. I wouldn't recommend this product and I'm disappointed with my purchase. Save your money and look elsewhere.",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0181",
+    "product_review": "Terrible quality",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0182",
+    "product_review": "Broke immediately",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0183",
+    "product_review": "Mixed feelings about this purchase. On the positive side, it arrived quickly and was well-packaged. The design is attractive and it mostly works as intended. However, there are some annoying bugs and the battery life is shorter than advertised. For the price, I expected better performance. It's not terrible but there are probably better alternatives available. I might return it if I find something better.",
+    "classification": {
+      "rating": 3,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Detailed",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0184",
+    "product_review": "Great product!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0185",
+    "product_review": "The color was completely different from what was shown online.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0186",
+    "product_review": "AMAZING! Best purchase I've made all year! Cannot recommend enough!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0187",
+    "product_review": "I've been using this product for 3 months now and I'm really impressed with the build quality. The packaging was excellent and everything arrived in perfect condition. Setup was easy and the user manual was very clear. The product performs exactly as advertised and I haven't had any issues. Customer service was responsive when I had a question. Overall, I'm very satisfied and would definitely recommend this to others.",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Detailed",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0188",
+    "product_review": "Beautiful design and good build quality. A bit expensive but worth it.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0189",
+    "product_review": "Waste of money",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0190",
+    "product_review": "Worth every penny! You won't regret buying this!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Praise",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0191",
+    "product_review": "The color was completely different from what was shown online.",
+    "classification": {
+      "rating": 2,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0192",
+    "product_review": "Beautiful design and good build quality. A bit expensive but worth it.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0193",
+    "product_review": "Fast delivery",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0194",
+    "product_review": "Unfortunately, this product didn't meet my expectations. The quality feels cheap and it started showing signs of wear after just a few weeks of normal use. The description on the website was misleading - it's much smaller than I expected. I tried contacting customer service but they were unhelpful and it took days to get a response. I wouldn't recommend this product and I'm disappointed with my purchase. Save your money and look elsewhere.",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Complaint",
+      "helpfulness": "Very_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0195",
+    "product_review": "Perfect!",
+    "classification": {
+      "rating": 5,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0196",
+    "product_review": "Works as expected but instructions could be clearer.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Neutral",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0197",
+    "product_review": "Beautiful design and good build quality. A bit expensive but worth it.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Positive",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0198",
+    "product_review": "Don't buy this",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0199",
+    "product_review": "Good product but shipping was slow. Overall satisfied with the purchase.",
+    "classification": {
+      "rating": 4,
+      "sentiment": "Mixed",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Somewhat_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  },
+  {
+    "review_id": "REV-0200",
+    "product_review": "Waste of money",
+    "classification": {
+      "rating": 1,
+      "sentiment": "Negative",
+      "product_category": "Electronics",
+      "review_type": "Brief",
+      "helpfulness": "Not_Helpful",
+      "verified_purchase": "Unknown"
+    }
+  }
+]

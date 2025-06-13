@@ -2,27 +2,55 @@ You are an expert prompt optimization system. Your task is to improve the given 
 
 **TARGET MODEL INFORMATION:**
 - Provider: groq
-- Model: llama-3.1-70b-versatile
+- Model: llama-3.3-70b-versatile
 
 **TASK CONTEXT:**
-Intent: {'classification_intent': {'primary_purpose': 'This system classifies user requests for code generation to route them to appropriate code generation engines or templates. It determines what type of code to generate, for which platform, using which framework, and what specific coding approach to take.'}, 'schema_understanding': {'field_purposes': {'action': 'Determines if the request is actually asking for code generation or something else entirely - acts as the primary filter', 'subAction': "Specifies the type of coding work needed - whether it's functional coding, UI/visual work, error handling, or general non-coding tasks", 'platform': 'Identifies the target deployment platform and whether the application needs dynamic functionality or is purely static', 'framework': 'Determines the specific technology stack to use for code generation - currently supports React and Flutter', 'languageType': 'Specifies the exact programming language and framework combination for more granular code generation targeting'}, 'classification_logic': 'The system should first determine if code generation is needed, then progressively narrow down the technical requirements from platform type to specific framework and language. Each field acts as a filter to route the request to the most appropriate code generation pipeline.', 'decision_criteria': 'Classification should be based on explicit mentions of technologies, platform indicators (web/mobile), functionality requirements (dynamic vs static), and UI-focused vs logic-focused language in the user request.', 'field_relationships': 'The fields form a hierarchy: action gates everything, platform determines the broad category, framework specifies the technology, and languageType provides the final technical specification. There are logical dependencies - REACT framework should typically pair with REACT_JAVASCRIPT languageType.'}, 'domain_insights': {'input_patterns': "Inputs follow patterns like 'create [app/page/screen] for [purpose] in/using [platform/technology]'. Common requests include login screens, mobile apps with specific functionality, and web applications. Users often specify the target platform (web/mobile) and sometimes the desired framework."}, 'classification_challenges': {'ambiguous_cases': "When users don't specify a framework explicitly, the system must decide whether to default to a specific framework or use NOT_FOUND. Requests mentioning 'web' without specifying static vs dynamic functionality create ambiguity.", 'edge_cases': "Generic requests like 'create a web app' without framework specification, requests for platforms not in the schema, and requests that could work on multiple platforms (like a login screen that could be web or mobile).", 'human_decision_factors': 'A human expert would consider: explicit technology mentions, implied complexity (dynamic features suggest DYNAMIC platform), industry standards (React is common for web), and whether the request focuses on UI design (VISUAL_EDITS) vs functionality (CODING).', 'current_confusion_points': "The system is over-predicting specific frameworks (REACT, FLUTTER) when the ground truth expects NOT_FOUND, suggesting it should be more conservative about framework assignment. It's also incorrectly inferring REACT_JAVASCRIPT when no specific framework is mentioned. The system seems to assume frameworks rather than requiring explicit specification."}}
-Current Metrics: {}
-Iteration: 1
+Intent: {'classification_intent': {'primary_purpose': 'This system classifies software development requests to route them to appropriate code generation services. It analyzes user queries to determine what type of development work is needed, what platform/technology stack to use, and how to handle the request appropriately.'}, 'schema_understanding': {'field_purposes': {'action': "Determines if the request requires actual code generation or falls outside the system's capabilities (NOT_FOUND for non-coding requests)", 'subAction': 'Categorizes the type of development work - CODING for new features, VISUAL_EDITS for UI changes, ERROR for bug fixes, GENERAL for vague/broad requests', 'platform': 'Identifies the target deployment environment - distinguishes between web vs mobile and static vs dynamic applications to guide technology choices', 'framework': 'Specifies the development framework to use (React for web, Flutter for mobile) when determinable from context', 'languageType': 'Determines the specific language/framework combination, currently focused on React JavaScript implementations'}, 'classification_logic': 'The system should analyze user queries for technical keywords, context clues about platform (web/mobile), complexity indicators (static/dynamic), and specific technology mentions. It should be conservative with NOT_FOUND when information is ambiguous.', 'decision_criteria': 'Key indicators include: explicit technology mentions (React, Flutter), platform clues (web, mobile, app), complexity signals (login screens, databases, interactivity), error messages, UI/visual language, and specificity of the request.', 'field_relationships': 'The fields form a hierarchical decision tree: action determines if coding is needed, subAction categorizes the work type, platform guides technology selection, framework specifies the tech stack, and languageType provides implementation details. Framework and languageType should align (React → REACT_JAVASCRIPT).'}, 'domain_insights': {'input_patterns': "Inputs are typically brief development requests ranging from specific UI components ('login screen', 'dashboard page') to technical problems ('resolve import error') to vague project descriptions ('Space Traveller Single Webpage'). Many mention specific business contexts (e-commerce, dominos) and include technical terminology."}, 'classification_challenges': {'ambiguous_cases': 'Requests without clear platform indicators (web vs mobile), vague project descriptions that could be implemented multiple ways, and requests that mention UI elements without specifying the underlying technology stack.', 'edge_cases': 'Single page applications that blur static/dynamic boundaries, requests mentioning business domains without technical specifications, error messages that could apply to multiple frameworks, and requests combining multiple types of work (bug fixes + new features).', 'human_decision_factors': 'A human expert would consider: default assumptions for common scenarios (login screens typically imply dynamic web apps), context clues from business domains (e-commerce suggests web), technical complexity indicators, and industry standards for different types of applications.', 'current_confusion_points': 'The system over-predicts specific platforms when NOT_FOUND is appropriate (assuming mobile for generic requests), confuses subAction categories (classifying error resolution as CODING instead of ERROR), and defaults to CODING for GENERAL requests that lack specific technical requirements.'}}
+Current Metrics: {'validation_metrics': {'valid_json_accuracy': 1.0, 'exact_match_accuracy': 0.5641025641025641, 'schema_compliance_accuracy': 1.0, 'all_fields_present_accuracy': 1.0}, 'enum_field_metrics': {'action': {'macro_precision': 0.8333333333333333, 'macro_recall': 0.9864864864864865, 'macro_f1': 0.893150684931507, 'micro_precision': 0.9743589743589743, 'micro_recall': 0.9743589743589743, 'micro_f1': 0.9743589743589743, 'accuracy': 0.9743589743589743, 'per_class': {'CODE_GENERATION': {'precision': 1.0, 'recall': 0.972972972972973, 'f1': 0.9863013698630138, 'support': 37, 'correct': 36, 'tp': 36, 'fp': 0, 'fn': 1}, 'NOT_FOUND': {'precision': 0.6666666666666666, 'recall': 1.0, 'f1': 0.8, 'support': 2, 'correct': 2, 'tp': 2, 'fp': 1, 'fn': 0}}}, 'subAction': {'macro_precision': 0.7685185185185185, 'macro_recall': 0.6606060606060606, 'macro_f1': 0.6901927437641724, 'micro_precision': 0.7692307692307693, 'micro_recall': 0.7692307692307693, 'micro_f1': 0.7692307692307693, 'accuracy': 0.7692307692307693, 'per_class': {'CODING': {'precision': 0.7407407407407407, 'recall': 0.9090909090909091, 'f1': 0.8163265306122449, 'support': 22, 'correct': 20, 'tp': 20, 'fp': 7, 'fn': 2}, 'VISUAL_EDITS': {'precision': 0.6666666666666666, 'recall': 0.3333333333333333, 'f1': 0.4444444444444444, 'support': 6, 'correct': 2, 'tp': 2, 'fp': 1, 'fn': 4}, 'GENERAL': {'precision': 0.6666666666666666, 'recall': 0.4, 'f1': 0.5, 'support': 5, 'correct': 2, 'tp': 2, 'fp': 1, 'fn': 3}, 'ERROR': {'precision': 1.0, 'recall': 1.0, 'f1': 1.0, 'support': 6, 'correct': 6, 'tp': 6, 'fp': 0, 'fn': 0}}}, 'platform': {'macro_precision': 0.6333333333333333, 'macro_recall': 0.5736842105263158, 'macro_f1': 0.5553113553113553, 'micro_precision': 0.6410256410256411, 'micro_recall': 0.6410256410256411, 'micro_f1': 0.6410256410256411, 'accuracy': 0.6410256410256411, 'per_class': {'DYNAMIC_WEB_APPLICATION': {'precision': 0.5, 'recall': 1.0, 'f1': 0.6666666666666666, 'support': 12, 'correct': 12, 'tp': 12, 'fp': 12, 'fn': 0}, 'NOT_FOUND': {'precision': 1.0, 'recall': 0.3684210526315789, 'f1': 0.5384615384615384, 'support': 19, 'correct': 7, 'tp': 7, 'fp': 0, 'fn': 12}, 'STATIC_WEB_APPLICATION': {'precision': 0.6666666666666666, 'recall': 0.5, 'f1': 0.5714285714285715, 'support': 4, 'correct': 2, 'tp': 2, 'fp': 1, 'fn': 2}, 'DYNAMIC_MOBILE_APP': {'precision': 1.0, 'recall': 1.0, 'f1': 1.0, 'support': 4, 'correct': 4, 'tp': 4, 'fp': 0, 'fn': 0}, 'STATIC_MOBILE_APP': {'precision': 0.0, 'recall': 0.0, 'f1': 0.0, 'support': 0, 'correct': 0, 'tp': 0, 'fp': 1, 'fn': 0}}}, 'framework': {'macro_precision': 1.0, 'macro_recall': 1.0, 'macro_f1': 1.0, 'micro_precision': 1.0, 'micro_recall': 1.0, 'micro_f1': 1.0, 'accuracy': 1.0, 'per_class': {'NOT_FOUND': {'precision': 1.0, 'recall': 1.0, 'f1': 1.0, 'support': 29, 'correct': 29, 'tp': 29, 'fp': 0, 'fn': 0}, 'REACT': {'precision': 1.0, 'recall': 1.0, 'f1': 1.0, 'support': 7, 'correct': 7, 'tp': 7, 'fp': 0, 'fn': 0}, 'FLUTTER': {'precision': 1.0, 'recall': 1.0, 'f1': 1.0, 'support': 3, 'correct': 3, 'tp': 3, 'fp': 0, 'fn': 0}}}, 'languageType': {'macro_precision': 1.0, 'macro_recall': 1.0, 'macro_f1': 1.0, 'micro_precision': 1.0, 'micro_recall': 1.0, 'micro_f1': 1.0, 'accuracy': 1.0, 'per_class': {'NOT_FOUND': {'precision': 1.0, 'recall': 1.0, 'f1': 1.0, 'support': 32, 'correct': 32, 'tp': 32, 'fp': 0, 'fn': 0}, 'REACT_JAVASCRIPT': {'precision': 1.0, 'recall': 1.0, 'f1': 1.0, 'support': 7, 'correct': 7, 'tp': 7, 'fp': 0, 'fn': 0}}}}, 'failed_cases_summary': {'invalid_json_count': 0, 'schema_violations_count': 0, 'missing_fields_count': 0, 'wrong_classifications_count': 24}, 'field_insights': {'action': {'missing_rate': 0.0, 'most_common_invalid_values': {}, 'most_common_confusions': {'CODE_GENERATION -> NOT_FOUND': 1}, 'error_severity': 'LOW'}, 'subAction': {'missing_rate': 0.0, 'most_common_invalid_values': {}, 'most_common_confusions': {'VISUAL_EDITS -> CODING': 4, 'GENERAL -> CODING': 3, 'CODING -> GENERAL': 1, 'CODING -> VISUAL_EDITS': 1}, 'error_severity': 'MEDIUM'}, 'platform': {'missing_rate': 0.0, 'most_common_invalid_values': {}, 'most_common_confusions': {'NOT_FOUND -> DYNAMIC_WEB_APPLICATION': 10, 'STATIC_WEB_APPLICATION -> DYNAMIC_WEB_APPLICATION': 2, 'NOT_FOUND -> STATIC_MOBILE_APP': 1, 'NOT_FOUND -> STATIC_WEB_APPLICATION': 1}, 'error_severity': 'HIGH'}, 'framework': {'missing_rate': 0.0, 'most_common_invalid_values': {}, 'most_common_confusions': {}, 'error_severity': 'LOW'}, 'languageType': {'missing_rate': 0.0, 'most_common_invalid_values': {}, 'most_common_confusions': {}, 'error_severity': 'LOW'}}, 'optimization_opportunities': {'prompt_engineering': [], 'schema_clarification': [], 'example_enhancement': [], 'instruction_refinement': []}, 'summary': {'average_enum_macro_f1': 0.8277309568014068, 'average_enum_macro_precision': 0.847037037037037, 'average_enum_macro_recall': 0.8441553515237725, 'total_examples': 39}, 'overall_accuracy': 0.5641025641025641, 'evaluation_metadata': {'evaluation_type': 'dev_b_validation', 'model_used': 'llama-3.3-70b-versatile', 'num_samples': 39, 'prompt_length': 2071}}
+Iteration: 2
 
 **CURRENT PROMPT:**
+You are a software development request classifier. Analyze the input to determine what type of development work is needed and route it to the appropriate code generation service.
 
-    You are a classification model. Classify the input into the correct category. Return the result in JSON format. 
-    The schema is as follows:
-    {{
-    "action": ["CODE_GENERATION", "NOT_FOUND"],
-    "subAction": ["CODING", "VISUAL_EDITS", "ERROR", "GENERAL"],
-    "platform": ["DYNAMIC_WEB_APPLICATION", "STATIC_WEB_APPLICATION", "DYNAMIC_MOBILE_APP", "STATIC_MOBILE_APP", "NOT_FOUND"],
-    "framework": ["REACT", "FLUTTER", "NOT_FOUND"],
-    "languageType": ["REACT_JAVASCRIPT", "NOT_FOUND"]
-    }}
-    
-    IMPORTANT: Respond with a valid JSON object only. Do not include any explanations or text outside the JSON. Do not add any comments inside the JSON.
-    
+**CLASSIFICATION GUIDELINES:**
+
+**action**: Determine if this requires code generation
+- CODE_GENERATION: Clear software development requests (features, UI components, bug fixes)
+- NOT_FOUND: Non-coding requests, vague inquiries, or requests outside development scope
+
+**subAction**: Categorize the type of development work
+- CODING: New features, functionality, or components
+- VISUAL_EDITS: UI/styling changes, layout modifications, design updates
+- ERROR: Bug fixes, error resolution, debugging issues
+- GENERAL: Broad/vague requests without specific technical requirements
+
+**platform**: Identify target deployment environment (be conservative - use NOT_FOUND when unclear)
+- DYNAMIC_WEB_APPLICATION: Web apps with interactivity, login systems, databases
+- STATIC_WEB_APPLICATION: Simple websites, landing pages, portfolios
+- DYNAMIC_MOBILE_APP: Mobile apps with complex features
+- STATIC_MOBILE_APP: Simple mobile apps or prototypes
+- NOT_FOUND: Platform not specified or ambiguous
+
+**framework**: Specify development framework only when clearly indicated
+- REACT: Explicitly mentioned or clear web development context
+- FLUTTER: Explicitly mentioned or clear mobile development context
+- NOT_FOUND: Framework not specified or unclear
+
+**languageType**: Implementation language/framework combination
+- REACT_JAVASCRIPT: React-based implementations
+- NOT_FOUND: Not using React or unclear
+
+**KEY INDICATORS:**
+- UI terms ("screen", "page", "button", "design") → likely VISUAL_EDITS
+- Error messages, "fix", "debug" → ERROR
+- "Login", "dashboard", "database" → DYNAMIC platform
+- "Website", "landing page" → STATIC_WEB_APPLICATION
+- "App", "mobile" → mobile platform
+- Vague business descriptions without technical details → GENERAL
+
+**DECISION PRIORITY:** When in doubt, choose NOT_FOUND for platform/framework rather than guessing.
+
+Return only a valid JSON object with all five fields:
 
 **JSON SCHEMA REQUIREMENT:**
 {
@@ -55,7 +83,11 @@ Iteration: 1
 }
 
 **FAILED CASES ANALYSIS:**
-No specific failed cases provided
+- Input: '' | Expected:  | Got: 
+- Input: '' | Expected:  | Got: 
+- Input: '' | Expected:  | Got: 
+- Input: '' | Expected:  | Got: 
+- Input: '' | Expected:  | Got: 
 
 **HISTORY AND FEEDBACK:**
 

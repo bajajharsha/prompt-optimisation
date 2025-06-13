@@ -17,6 +17,7 @@ from prompt_optimizer.models.types import OptimizationContext, OptimizerSelectio
 from prompt_optimizer.utils.claude_client import ClaudeClient, ClaudeAPIError
 from prompt_optimizer.optimizers.simple_registry import get_available_optimizers, get_optimizer_names
 from poc.intent_analysis.claude_intent_identifier import load_baseline_metrics
+from .human_feedback import HumanFeedbackManager, DevBHumanFeedbackIntegration
 
 class Orchestrator:
     """
@@ -177,6 +178,271 @@ Focus on optimizers that can address the specific issues shown in the failed cas
         if self.claude_client:
             await self.claude_client.close() 
             
+    async def run_optimization_cycle(self) -> Dict[str, Any]:
+        """
+        Run a complete optimization cycle with human feedback integration.
+        
+        Returns:
+            Dict containing optimization results and human feedback
+        """
+        print("🚀 Starting optimization cycle with human feedback integration...")
+        
+        try:
+            # Step 1: Generate candidate prompts using Dev A
+            print("\n📊 Step 1: Generating candidate prompts on Dev A...")
+            candidates = await self.generate_candidates()
+            
+            if not candidates:
+                raise ValueError("No candidate prompts generated")
+            
+            # Step 2: Select best candidate based on Dev A performance
+            print(f"\n🎯 Step 2: Selecting best candidate from {len(candidates)} options...")
+            best_candidate = self.select_best_candidate(candidates)
+            
+            print(f"✅ Selected best candidate: {best_candidate['strategy']}")
+            print(f"   Dev A F1 Score: {best_candidate.get('dev_a_f1', 'N/A'):.3f}")
+            
+            # Step 3: Evaluate best candidate on Dev B
+            print(f"\n🔬 Step 3: Evaluating best candidate on Dev B...")
+            dev_b_results = await self.evaluate_on_dev_b(best_candidate)
+            
+            # Step 4: Setup and trigger human feedback collection
+            print(f"\n👥 Step 4: Setting up human feedback collection...")
+            human_feedback_results = await self.collect_human_feedback(
+                best_candidate, dev_b_results
+            )
+            
+            # Step 5: Compile final results
+            optimization_results = {
+                "cycle_id": f"cycle_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+                "timestamp": datetime.now().isoformat(),
+                "candidates_generated": len(candidates),
+                "best_candidate": best_candidate,
+                "dev_b_evaluation": dev_b_results,
+                "human_feedback": human_feedback_results,
+                "baseline_comparison": self._compare_with_baseline(dev_b_results),
+                "recommendations": self._generate_recommendations(
+                    best_candidate, dev_b_results, human_feedback_results
+                )
+            }
+            
+            print(f"\n✅ Optimization cycle completed successfully!")
+            print(f"   Best candidate F1: {dev_b_results.get('summary', {}).get('average_enum_macro_f1', 0):.3f}")
+            print(f"   Human feedback collected: {human_feedback_results.get('total_traces', 0)} traces")
+            
+            return optimization_results
+            
+        except Exception as e:
+            print(f"❌ Error in optimization cycle: {e}")
+            raise
+
+    async def collect_human_feedback(self, 
+                                   best_candidate: Dict[str, Any], 
+                                   dev_b_results: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Collect human feedback on Dev B evaluation results.
+        
+        Args:
+            best_candidate: The selected best candidate prompt
+            dev_b_results: Results from Dev B evaluation
+            
+        Returns:
+            Dict containing human feedback results
+        """
+        print("👥 Collecting human feedback on Dev B results...")
+        
+        try:
+            # Initialize human feedback manager
+            feedback_manager = HumanFeedbackManager()
+            feedback_integration = DevBHumanFeedbackIntegration(feedback_manager)
+            
+            # Setup human feedback workflow (first time only)
+            feedback_integration.setup_human_feedback_workflow()
+            
+            # Prepare Dev B results for human review
+            dev_b_evaluation_data = self._prepare_dev_b_for_human_review(
+                best_candidate, dev_b_results
+            )
+            
+            # Create traces for human feedback
+            trace_ids = feedback_integration.process_dev_b_results_for_human_feedback(
+                dev_b_results=dev_b_evaluation_data,
+                candidate_prompt=best_candidate['optimized_prompt'],
+                baseline_metrics=self.context_manager.baseline_metrics
+            )
+            
+            print(f"✅ Created {len(trace_ids)} traces for human review")
+            print("📝 Manual steps required:")
+            print("   1. Go to LangFuse dashboard")
+            print("   2. Navigate to 'Annotate' tab")
+            print("   3. Add traces to annotation queue")
+            print("   4. Complete human annotations")
+            
+            # Option 1: Wait for human feedback (blocking)
+            if self.config.get('wait_for_human_feedback', False):
+                print("⏳ Waiting for human feedback...")
+                feedback_results = feedback_manager.wait_for_human_feedback(
+                    trace_ids=trace_ids,
+                    timeout_minutes=self.config.get('human_feedback_timeout_minutes', 60)
+                )
+            else:
+                # Option 2: Return trace IDs for async collection
+                feedback_results = {
+                    "status": "pending",
+                    "trace_ids": trace_ids,
+                    "queue_name": feedback_integration.config.queue_name,
+                    "instructions": "Complete human annotations in LangFuse dashboard"
+                }
+            
+            return feedback_results
+            
+        except Exception as e:
+            print(f"❌ Error collecting human feedback: {e}")
+            return {
+                "status": "error",
+                "error": str(e),
+                "trace_ids": []
+            }
+
+    def _prepare_dev_b_for_human_review(self, 
+                                      best_candidate: Dict[str, Any], 
+                                      dev_b_results: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Prepare Dev B evaluation results for human review.
+        
+        Args:
+            best_candidate: Selected best candidate
+            dev_b_results: Dev B evaluation results
+            
+        Returns:
+            List of evaluation data formatted for human review
+        """
+        print("📋 Preparing Dev B results for human review...")
+        
+        evaluation_data = []
+        
+        # Extract failed cases for human review (most important)
+        failed_cases = dev_b_results.get('detailed_failed_cases', {})
+        
+        # Prioritize wrong classifications for human feedback
+        wrong_classifications = failed_cases.get('wrong_classifications', [])
+        
+        for i, case in enumerate(wrong_classifications):
+            evaluation_item = {
+                "evaluation_id": f"wrong_classification_{i}",
+                "input_prompt": case.get('input_prompt', ''),
+                "model_output": case.get('prediction_text', ''),
+                "expected_output": case.get('ground_truth', {}),
+                "failure_type": "wrong_classification",
+                "wrong_fields": case.get('wrong_fields', []),
+                "metadata": {
+                    "example_idx": case.get('example_idx', i),
+                    "timestamp": case.get('timestamp', ''),
+                    "candidate_strategy": best_candidate.get('strategy', 'unknown')
+                }
+            }
+            evaluation_data.append(evaluation_item)
+        
+        # Add some correct cases for comparison (sample)
+        # This helps human reviewers understand what good outputs look like
+        if len(evaluation_data) < 10:  # Add correct cases if we have few failures
+            # We'd need to extract correct cases from the evaluation
+            # For now, we'll note this as a TODO
+            pass
+        
+        print(f"✅ Prepared {len(evaluation_data)} cases for human review")
+        print(f"   Wrong classifications: {len(wrong_classifications)}")
+        
+        return evaluation_data
+
+    async def get_human_feedback_results(self, trace_ids: List[str]) -> Dict[str, Any]:
+        """
+        Retrieve human feedback results for given trace IDs.
+        
+        Args:
+            trace_ids: List of trace IDs to get feedback for
+            
+        Returns:
+            Dict containing human feedback summary
+        """
+        print(f"📊 Retrieving human feedback for {len(trace_ids)} traces...")
+        
+        try:
+            feedback_manager = HumanFeedbackManager()
+            feedback_results = feedback_manager.get_human_feedback_summary(trace_ids)
+            
+            print(f"✅ Retrieved feedback for {feedback_results['annotated_traces']} traces")
+            return feedback_results
+            
+        except Exception as e:
+            print(f"❌ Error retrieving human feedback: {e}")
+            return {
+                "status": "error",
+                "error": str(e),
+                "annotated_traces": 0,
+                "total_traces": len(trace_ids)
+            }
+
+    def _generate_recommendations(self, 
+                                best_candidate: Dict[str, Any],
+                                dev_b_results: Dict[str, Any], 
+                                human_feedback: Dict[str, Any]) -> List[str]:
+        """
+        Generate recommendations based on Dev B results and human feedback.
+        
+        Args:
+            best_candidate: Selected best candidate
+            dev_b_results: Dev B evaluation results
+            human_feedback: Human feedback results
+            
+        Returns:
+            List of recommendation strings
+        """
+        recommendations = []
+        
+        # Performance-based recommendations
+        dev_b_f1 = dev_b_results.get('summary', {}).get('average_enum_macro_f1', 0)
+        baseline_f1 = self.context_manager.baseline_metrics.get('summary', {}).get('average_enum_macro_f1', 0)
+        
+        if dev_b_f1 > baseline_f1 + 0.05:  # 5% improvement
+            recommendations.append(f"✅ Strong improvement: {(dev_b_f1 - baseline_f1)*100:.1f}% F1 gain")
+            recommendations.append("🚀 Recommend deploying this optimized prompt")
+        elif dev_b_f1 > baseline_f1:
+            recommendations.append(f"📈 Modest improvement: {(dev_b_f1 - baseline_f1)*100:.1f}% F1 gain")
+            recommendations.append("🤔 Consider further optimization before deployment")
+        else:
+            recommendations.append(f"📉 Performance regression: {(baseline_f1 - dev_b_f1)*100:.1f}% F1 loss")
+            recommendations.append("❌ Do not deploy - continue optimization")
+        
+        # Human feedback-based recommendations
+        if human_feedback.get('status') == 'pending':
+            recommendations.append("⏳ Waiting for human feedback - check LangFuse dashboard")
+        elif human_feedback.get('annotated_traces', 0) > 0:
+            avg_scores = human_feedback.get('average_scores', {})
+            
+            if 'improvement_over_baseline' in avg_scores:
+                improvement_score = avg_scores['improvement_over_baseline'].get('average', 0)
+                if improvement_score > 0.7:  # 70% of humans think it's better
+                    recommendations.append("👥 Human feedback: Strong preference for optimized prompt")
+                elif improvement_score > 0.5:
+                    recommendations.append("👥 Human feedback: Moderate preference for optimized prompt")
+                else:
+                    recommendations.append("👥 Human feedback: Preference for baseline prompt")
+            
+            if 'classification_accuracy' in avg_scores:
+                accuracy_score = avg_scores['classification_accuracy'].get('average', 0)
+                if accuracy_score < 0.7:
+                    recommendations.append("⚠️  Human feedback indicates accuracy concerns")
+        
+        # Strategy-specific recommendations
+        strategy = best_candidate.get('strategy', '')
+        if 'field_specific' in strategy.lower():
+            recommendations.append("🎯 Field-specific optimization showed promise - consider expanding")
+        elif 'example' in strategy.lower():
+            recommendations.append("📚 Example-based optimization effective - consider more examples")
+        
+        return recommendations
+
 if __name__ == "__main__":
     
     all_metrics = load_baseline_metrics("poc/metrics/enhanced_baseline_results.json")

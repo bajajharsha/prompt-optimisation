@@ -1,0 +1,3498 @@
+{
+  "deployment_decision": "DEPLOY",
+  "recommended_prompt": "You are a software development request classifier. Analyze the input to determine what type of development work is needed and route it to the appropriate code generation service.\n\n**CLASSIFICATION GUIDELINES:**\n\n**action**: Determine if this requires code generation\n- CODE_GENERATION: Clear software development requests (features, UI components, bug fixes)\n- NOT_FOUND: Non-coding requests, vague inquiries, or requests outside development scope\n\n**subAction**: Categorize the type of development work\n- CODING: New features, functionality, or components\n- VISUAL_EDITS: UI/styling changes, layout modifications, design updates\n- ERROR: Bug fixes, error resolution, debugging issues\n- GENERAL: Broad/vague requests without specific technical requirements\n\n**platform**: Identify target deployment environment (be conservative - use NOT_FOUND when unclear)\n- DYNAMIC_WEB_APPLICATION: Web apps with interactivity, login systems, databases\n- STATIC_WEB_APPLICATION: Simple websites, landing pages, portfolios\n- DYNAMIC_MOBILE_APP: Mobile apps with complex features\n- STATIC_MOBILE_APP: Simple mobile apps or prototypes\n- NOT_FOUND: Platform not specified or ambiguous\n\n**framework**: Specify development framework only when clearly indicated\n- REACT: Explicitly mentioned or clear web development context\n- FLUTTER: Explicitly mentioned or clear mobile development context\n- NOT_FOUND: Framework not specified or unclear\n\n**languageType**: Implementation language/framework combination\n- REACT_JAVASCRIPT: React-based implementations\n- NOT_FOUND: Not using React or unclear\n\n**KEY INDICATORS:**\n- UI terms (\"screen\", \"page\", \"button\", \"design\") \u2192 likely VISUAL_EDITS\n- Error messages, \"fix\", \"debug\" \u2192 ERROR\n- \"Login\", \"dashboard\", \"database\" \u2192 DYNAMIC platform\n- \"Website\", \"landing page\" \u2192 STATIC_WEB_APPLICATION\n- \"App\", \"mobile\" \u2192 mobile platform\n- Vague business descriptions without technical details \u2192 GENERAL\n\n**DECISION PRIORITY:** When in doubt, choose NOT_FOUND for platform/framework rather than guessing.\n\nReturn only a valid JSON object with all five fields:",
+  "test_improvement": 0.16666666666666669,
+  "baseline_test_metrics": {
+    "validation_metrics": {
+      "valid_json_accuracy": 1.0,
+      "exact_match_accuracy": 0.19047619047619047,
+      "schema_compliance_accuracy": 1.0,
+      "all_fields_present_accuracy": 1.0
+    },
+    "enum_field_metrics": {
+      "action": {
+        "macro_precision": 0.625,
+        "macro_recall": 0.9634146341463414,
+        "macro_f1": 0.6810126582278482,
+        "micro_precision": 0.9285714285714286,
+        "micro_recall": 0.9285714285714286,
+        "micro_f1": 0.9285714285714286,
+        "accuracy": 0.9285714285714286,
+        "per_class": {
+          "CODE_GENERATION": {
+            "precision": 1.0,
+            "recall": 0.926829268292683,
+            "f1": 0.9620253164556963,
+            "support": 41,
+            "correct": 38,
+            "tp": 38,
+            "fp": 0,
+            "fn": 3
+          },
+          "NOT_FOUND": {
+            "precision": 0.25,
+            "recall": 1.0,
+            "f1": 0.4,
+            "support": 1,
+            "correct": 1,
+            "tp": 1,
+            "fp": 3,
+            "fn": 0
+          }
+        }
+      },
+      "subAction": {
+        "macro_precision": 0.6375,
+        "macro_recall": 0.5469348659003832,
+        "macro_f1": 0.5239448051948052,
+        "micro_precision": 0.7857142857142857,
+        "micro_recall": 0.7857142857142857,
+        "micro_f1": 0.7857142857142857,
+        "accuracy": 0.7857142857142857,
+        "per_class": {
+          "CODING": {
+            "precision": 0.8,
+            "recall": 0.9655172413793104,
+            "f1": 0.8750000000000001,
+            "support": 29,
+            "correct": 28,
+            "tp": 28,
+            "fp": 7,
+            "fn": 1
+          },
+          "ERROR": {
+            "precision": 0.75,
+            "recall": 1.0,
+            "f1": 0.8571428571428571,
+            "support": 3,
+            "correct": 3,
+            "tp": 3,
+            "fp": 1,
+            "fn": 0
+          },
+          "VISUAL_EDITS": {
+            "precision": 1.0,
+            "recall": 0.2222222222222222,
+            "f1": 0.3636363636363636,
+            "support": 9,
+            "correct": 2,
+            "tp": 2,
+            "fp": 0,
+            "fn": 7
+          },
+          "GENERAL": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 1,
+            "correct": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 1
+          }
+        }
+      },
+      "platform": {
+        "macro_precision": 0.3038461538461538,
+        "macro_recall": 0.42857142857142855,
+        "macro_f1": 0.2661818181818182,
+        "micro_precision": 0.38095238095238093,
+        "micro_recall": 0.38095238095238093,
+        "micro_f1": 0.38095238095238093,
+        "accuracy": 0.38095238095238093,
+        "per_class": {
+          "STATIC_WEB_APPLICATION": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 7,
+            "correct": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 7
+          },
+          "DYNAMIC_WEB_APPLICATION": {
+            "precision": 0.2692307692307692,
+            "recall": 1.0,
+            "f1": 0.42424242424242425,
+            "support": 7,
+            "correct": 7,
+            "tp": 7,
+            "fp": 19,
+            "fn": 0
+          },
+          "NOT_FOUND": {
+            "precision": 0.75,
+            "recall": 0.14285714285714285,
+            "f1": 0.24,
+            "support": 21,
+            "correct": 3,
+            "tp": 3,
+            "fp": 1,
+            "fn": 18
+          },
+          "DYNAMIC_MOBILE_APP": {
+            "precision": 0.5,
+            "recall": 1.0,
+            "f1": 0.6666666666666666,
+            "support": 6,
+            "correct": 6,
+            "tp": 6,
+            "fp": 6,
+            "fn": 0
+          },
+          "STATIC_MOBILE_APP": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 1,
+            "correct": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          }
+        }
+      },
+      "framework": {
+        "macro_precision": 0.576923076923077,
+        "macro_recall": 0.7111111111111111,
+        "macro_f1": 0.4256535947712418,
+        "micro_precision": 0.38095238095238093,
+        "micro_recall": 0.38095238095238093,
+        "micro_f1": 0.38095238095238093,
+        "accuracy": 0.38095238095238093,
+        "per_class": {
+          "NOT_FOUND": {
+            "precision": 1.0,
+            "recall": 0.13333333333333333,
+            "f1": 0.23529411764705882,
+            "support": 30,
+            "correct": 4,
+            "tp": 4,
+            "fp": 0,
+            "fn": 26
+          },
+          "REACT": {
+            "precision": 0.23076923076923078,
+            "recall": 1.0,
+            "f1": 0.375,
+            "support": 6,
+            "correct": 6,
+            "tp": 6,
+            "fp": 20,
+            "fn": 0
+          },
+          "FLUTTER": {
+            "precision": 0.5,
+            "recall": 1.0,
+            "f1": 0.6666666666666666,
+            "support": 6,
+            "correct": 6,
+            "tp": 6,
+            "fp": 6,
+            "fn": 0
+          }
+        }
+      },
+      "languageType": {
+        "macro_precision": 0.6153846153846154,
+        "macro_recall": 0.7222222222222222,
+        "macro_f1": 0.49519230769230765,
+        "micro_precision": 0.5238095238095238,
+        "micro_recall": 0.5238095238095238,
+        "micro_f1": 0.5238095238095238,
+        "accuracy": 0.5238095238095238,
+        "per_class": {
+          "NOT_FOUND": {
+            "precision": 1.0,
+            "recall": 0.4444444444444444,
+            "f1": 0.6153846153846153,
+            "support": 36,
+            "correct": 16,
+            "tp": 16,
+            "fp": 0,
+            "fn": 20
+          },
+          "REACT_JAVASCRIPT": {
+            "precision": 0.23076923076923078,
+            "recall": 1.0,
+            "f1": 0.375,
+            "support": 6,
+            "correct": 6,
+            "tp": 6,
+            "fp": 20,
+            "fn": 0
+          }
+        }
+      }
+    },
+    "failed_cases_summary": {
+      "invalid_json_count": 0,
+      "schema_violations_count": 0,
+      "missing_fields_count": 0,
+      "wrong_classifications_count": 84
+    },
+    "field_insights": {
+      "action": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {},
+        "most_common_confusions": {
+          "CODE_GENERATION -> NOT_FOUND": 3
+        },
+        "error_severity": "LOW"
+      },
+      "subAction": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {},
+        "most_common_confusions": {
+          "VISUAL_EDITS -> CODING": 7,
+          "GENERAL -> ERROR": 1,
+          "CODING -> GENERAL": 1
+        },
+        "error_severity": "MEDIUM"
+      },
+      "platform": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {},
+        "most_common_confusions": {
+          "NOT_FOUND -> DYNAMIC_WEB_APPLICATION": 13,
+          "STATIC_WEB_APPLICATION -> DYNAMIC_WEB_APPLICATION": 6,
+          "NOT_FOUND -> DYNAMIC_MOBILE_APP": 5,
+          "STATIC_MOBILE_APP -> DYNAMIC_MOBILE_APP": 1,
+          "STATIC_WEB_APPLICATION -> NOT_FOUND": 1
+        },
+        "error_severity": "HIGH"
+      },
+      "framework": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {},
+        "most_common_confusions": {
+          "NOT_FOUND -> REACT": 20,
+          "NOT_FOUND -> FLUTTER": 6
+        },
+        "error_severity": "HIGH"
+      },
+      "languageType": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {},
+        "most_common_confusions": {
+          "NOT_FOUND -> REACT_JAVASCRIPT": 20
+        },
+        "error_severity": "HIGH"
+      }
+    },
+    "optimization_opportunities": {
+      "prompt_engineering": [],
+      "schema_clarification": [],
+      "example_enhancement": [],
+      "instruction_refinement": []
+    },
+    "summary": {
+      "average_enum_macro_f1": 0.47839703681360424,
+      "average_enum_macro_precision": 0.5517307692307692,
+      "average_enum_macro_recall": 0.6744508523902973,
+      "total_examples": 42
+    },
+    "detailed_failed_cases": {
+      "invalid_json": [],
+      "schema_violations": [],
+      "missing_fields": [],
+      "wrong_classifications": [
+        {
+          "example_idx": 0,
+          "input_prompt": "create only login screen for dominos web(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.166222",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "STATIC_WEB_APPLICATION"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 1,
+          "input_prompt": "Create a single screen for rupee to doller converter in web(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.166380",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "STATIC_WEB_APPLICATION"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 2,
+          "input_prompt": "Space Traveller  for space travel Single Webpage in React.JS(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_WEB_APPLICATION",
+            "framework": "REACT",
+            "subAction": "CODING",
+            "languageType": "REACT_JAVASCRIPT"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.166432",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "STATIC_WEB_APPLICATION"
+            }
+          ]
+        },
+        {
+          "example_idx": 4,
+          "input_prompt": "hi create todo App(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.166509",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 6,
+          "input_prompt": "create a login page for gym web.(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.166584",
+          "wrong_fields": [
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 7,
+          "input_prompt": "/home/ubuntu/app/coloring_book_creator/src/index.css:35:3: The `text-white` class does not exist. If `text-white` is a custom class, make sure it is defined within a `@layer` directive.(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "ERROR",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"NOT_FOUND\",\n\"subAction\": \"ERROR\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.166623",
+          "wrong_fields": [
+            {
+              "field": "action",
+              "predicted_value": "NOT_FOUND",
+              "expected_value": "CODE_GENERATION"
+            },
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 8,
+          "input_prompt": "change the name to \"homely\" instead of \" airbnb\"(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\"action\": \"CODE_GENERATION\", \"subAction\": \"CODING\", \"platform\": \"DYNAMIC_WEB_APPLICATION\", \"framework\": \"REACT\", \"languageType\": \"REACT_JAVASCRIPT\"}",
+          "timestamp": "2025-06-13T15:00:47.166667",
+          "wrong_fields": [
+            {
+              "field": "subAction",
+              "predicted_value": "CODING",
+              "expected_value": "VISUAL_EDITS"
+            },
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 9,
+          "input_prompt": "create login app for zomato(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_MOBILE_APP\",\n\"framework\": \"FLUTTER\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T15:00:47.166708",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_MOBILE_APP",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "FLUTTER",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 11,
+          "input_prompt": "Create a page for jpeg to png image converter(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.166781",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 13,
+          "input_prompt": "Can you generate a login screen for my Ninis Kitchen bakery app?(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n    \"action\": \"CODE_GENERATION\",\n    \"subAction\": \"CODING\",\n    \"platform\": \"DYNAMIC_MOBILE_APP\",\n    \"framework\": \"FLUTTER\",\n    \"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T15:00:47.166852",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_MOBILE_APP",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "FLUTTER",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 16,
+          "input_prompt": "create only ui login screen in flutter(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_MOBILE_APP",
+            "framework": "FLUTTER",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_MOBILE_APP\",\n\"framework\": \"FLUTTER\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T15:00:47.166953",
+          "wrong_fields": [
+            {
+              "field": "subAction",
+              "predicted_value": "CODING",
+              "expected_value": "VISUAL_EDITS"
+            }
+          ]
+        },
+        {
+          "example_idx": 17,
+          "input_prompt": "Good Job but It shoud show running Sec \nand Now show some animation when winner(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"REACT\",\n  \"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.166987",
+          "wrong_fields": [
+            {
+              "field": "subAction",
+              "predicted_value": "CODING",
+              "expected_value": "VISUAL_EDITS"
+            },
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 18,
+          "input_prompt": "Create only currency convert from dollar to INR in react, please only generare in single screen with static login of 85 as multiplier(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_WEB_APPLICATION",
+            "framework": "REACT",
+            "subAction": "CODING",
+            "languageType": "REACT_JAVASCRIPT"
+          },
+          "prediction_text": "{\n    \"action\": \"CODE_GENERATION\",\n    \"subAction\": \"CODING\",\n    \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n    \"framework\": \"REACT\",\n    \"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167026",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "STATIC_WEB_APPLICATION"
+            }
+          ]
+        },
+        {
+          "example_idx": 19,
+          "input_prompt": "Its mobile First Ui, I need Web First approach(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167061",
+          "wrong_fields": [
+            {
+              "field": "subAction",
+              "predicted_value": "CODING",
+              "expected_value": "VISUAL_EDITS"
+            },
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 20,
+          "input_prompt": "import Dashboard from \"pages/Dashboard\";\n\nDashboard is not compoent(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "REACT",
+            "subAction": "ERROR",
+            "languageType": "REACT_JAVASCRIPT"
+          },
+          "prediction_text": "{\n  \"action\": \"NOT_FOUND\",\n  \"subAction\": \"ERROR\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"REACT\",\n  \"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167098",
+          "wrong_fields": [
+            {
+              "field": "action",
+              "predicted_value": "NOT_FOUND",
+              "expected_value": "CODE_GENERATION"
+            },
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 21,
+          "input_prompt": "create flutter welcome screen ui only(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_MOBILE_APP",
+            "framework": "FLUTTER",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_MOBILE_APP\",\n  \"framework\": \"FLUTTER\",\n  \"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167134",
+          "wrong_fields": [
+            {
+              "field": "subAction",
+              "predicted_value": "CODING",
+              "expected_value": "VISUAL_EDITS"
+            },
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_MOBILE_APP",
+              "expected_value": "STATIC_MOBILE_APP"
+            }
+          ]
+        },
+        {
+          "example_idx": 22,
+          "input_prompt": "Create only UI of login screen with username and password. (query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"VISUAL_EDITS\",\n\"platform\": \"NOT_FOUND\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167170",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "NOT_FOUND",
+              "expected_value": "STATIC_WEB_APPLICATION"
+            }
+          ]
+        },
+        {
+          "example_idx": 23,
+          "input_prompt": "Create mobile app of scanning xray(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_MOBILE_APP",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_MOBILE_APP\",\n\"framework\": \"FLUTTER\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167205",
+          "wrong_fields": [
+            {
+              "field": "framework",
+              "predicted_value": "FLUTTER",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 24,
+          "input_prompt": "login page for e-comm(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167241",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 25,
+          "input_prompt": "Create Signup page(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167278",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 26,
+          "input_prompt": "Add another option for login through mobile number. when i click on login through mobile number then ask for opt(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n    \"action\": \"CODE_GENERATION\",\n    \"subAction\": \"CODING\",\n    \"platform\": \"DYNAMIC_MOBILE_APP\",\n    \"framework\": \"FLUTTER\",\n    \"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167317",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_MOBILE_APP",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "FLUTTER",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 28,
+          "input_prompt": "Create only UI login screen in web(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167385",
+          "wrong_fields": [
+            {
+              "field": "subAction",
+              "predicted_value": "CODING",
+              "expected_value": "VISUAL_EDITS"
+            },
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "STATIC_WEB_APPLICATION"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 29,
+          "input_prompt": "Create only Dashboard UI\n screen in Ecommerce Web(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167418",
+          "wrong_fields": [
+            {
+              "field": "subAction",
+              "predicted_value": "CODING",
+              "expected_value": "VISUAL_EDITS"
+            },
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "STATIC_WEB_APPLICATION"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 30,
+          "input_prompt": "Getting Error : import { api } from '../../utils/api';\n\nnot able to Find this file and its breaking code(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "ERROR",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n  \"action\": \"NOT_FOUND\",\n  \"subAction\": \"ERROR\",\n  \"platform\": \"NOT_FOUND\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167453",
+          "wrong_fields": [
+            {
+              "field": "action",
+              "predicted_value": "NOT_FOUND",
+              "expected_value": "CODE_GENERATION"
+            }
+          ]
+        },
+        {
+          "example_idx": 32,
+          "input_prompt": "I want to build an app where i upload an \n and it automatically converts it into a colouring book drawing and gives me an option to download it into a pdf. I want only the black outlines in the result. The inner area should be white for a kid to colour the same.(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167512",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 33,
+          "input_prompt": "Create one login page(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n    \"action\": \"CODE_GENERATION\",\n    \"subAction\": \"CODING\",\n    \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n    \"framework\": \"REACT\",\n    \"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167544",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 34,
+          "input_prompt": "Create a web app for building and maintaining daily habits through customizable trackers, reminders, goal-setting, and visual progress analytics. The app empowers users to develop positive routines and stay consistent in their personal growth journeys. Core features include streak tracking, habit stacking, daily reflections, and motivational nudges. Users can join social challenges, set custom habit frequencies, receive AI-generated habit suggestions, and sync their progress across multiple devices for seamless habit building.(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167584",
+          "wrong_fields": [
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 35,
+          "input_prompt": "Add signup page.\nAllow full form based signup and also allow social signup and signin(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n    \"action\": \"CODE_GENERATION\",\n    \"subAction\": \"CODING\",\n    \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n    \"framework\": \"REACT\",\n    \"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167614",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 36,
+          "input_prompt": "create an ecommerce web app(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167645",
+          "wrong_fields": [
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 37,
+          "input_prompt": "Add login page(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167675",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 38,
+          "input_prompt": "add a sign up screen as well(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_MOBILE_APP\",\n\"framework\": \"FLUTTER\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167706",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_MOBILE_APP",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "FLUTTER",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 39,
+          "input_prompt": "not able to find signup screen, how can find it(query)",
+          "ground_truth": {
+            "action": "NOT_FOUND",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "GENERAL",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n    \"action\": \"NOT_FOUND\",\n    \"subAction\": \"ERROR\",\n    \"platform\": \"NOT_FOUND\",\n    \"framework\": \"NOT_FOUND\",\n    \"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167736",
+          "wrong_fields": [
+            {
+              "field": "subAction",
+              "predicted_value": "ERROR",
+              "expected_value": "GENERAL"
+            }
+          ]
+        },
+        {
+          "example_idx": 40,
+          "input_prompt": "Create a web app that promotes employee wellness by offering guided yoga sessions, mindfulness exercises, and holistic health content tailored to the workplace. It includes live and recorded sessions, personalized wellness plans, habit tracking, team challenges, mental health check-ins, wearables integration, and corporate wellness leaderboards. HR teams can also monitor participation metrics and offer wellness incentives.(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"GENERAL\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167767",
+          "wrong_fields": [
+            {
+              "field": "subAction",
+              "predicted_value": "GENERAL",
+              "expected_value": "CODING"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "REACT",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "languageType",
+              "predicted_value": "REACT_JAVASCRIPT",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 41,
+          "input_prompt": "create a signup screen for ecommerce app(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_MOBILE_APP\",\n\"framework\": \"FLUTTER\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T15:00:47.167800",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_MOBILE_APP",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "FLUTTER",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        }
+      ]
+    },
+    "overall_accuracy": 0.19047619047619047,
+    "evaluation_metadata": {
+      "evaluation_type": "baseline_test",
+      "model_used": "llama-3.3-70b-versatile",
+      "num_samples": 42,
+      "prompt_length": 618
+    }
+  },
+  "optimized_test_metrics": {
+    "validation_metrics": {
+      "valid_json_accuracy": 1.0,
+      "exact_match_accuracy": 0.35714285714285715,
+      "schema_compliance_accuracy": 1.0,
+      "all_fields_present_accuracy": 1.0
+    },
+    "enum_field_metrics": {
+      "action": {
+        "macro_precision": 0.4880952380952381,
+        "macro_recall": 0.5,
+        "macro_f1": 0.4939759036144578,
+        "micro_precision": 0.9761904761904762,
+        "micro_recall": 0.9761904761904762,
+        "micro_f1": 0.9761904761904762,
+        "accuracy": 0.9761904761904762,
+        "per_class": {
+          "CODE_GENERATION": {
+            "precision": 0.9761904761904762,
+            "recall": 1.0,
+            "f1": 0.9879518072289156,
+            "support": 41,
+            "correct": 41,
+            "tp": 41,
+            "fp": 1,
+            "fn": 0
+          },
+          "NOT_FOUND": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 1,
+            "correct": 0,
+            "tp": 0,
+            "fp": 0,
+            "fn": 1
+          }
+        }
+      },
+      "subAction": {
+        "macro_precision": 0.5738095238095238,
+        "macro_recall": 0.5852490421455938,
+        "macro_f1": 0.5789473684210525,
+        "micro_precision": 0.8333333333333334,
+        "micro_recall": 0.8333333333333334,
+        "micro_f1": 0.8333333333333334,
+        "accuracy": 0.8333333333333334,
+        "per_class": {
+          "CODING": {
+            "precision": 0.9285714285714286,
+            "recall": 0.896551724137931,
+            "f1": 0.912280701754386,
+            "support": 29,
+            "correct": 26,
+            "tp": 26,
+            "fp": 2,
+            "fn": 3
+          },
+          "VISUAL_EDITS": {
+            "precision": 0.7,
+            "recall": 0.7777777777777778,
+            "f1": 0.7368421052631577,
+            "support": 9,
+            "correct": 7,
+            "tp": 7,
+            "fp": 3,
+            "fn": 2
+          },
+          "ERROR": {
+            "precision": 0.6666666666666666,
+            "recall": 0.6666666666666666,
+            "f1": 0.6666666666666666,
+            "support": 3,
+            "correct": 2,
+            "tp": 2,
+            "fp": 1,
+            "fn": 1
+          },
+          "GENERAL": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 1,
+            "correct": 0,
+            "tp": 0,
+            "fp": 1,
+            "fn": 1
+          }
+        }
+      },
+      "platform": {
+        "macro_precision": 0.6575757575757576,
+        "macro_recall": 0.6714285714285715,
+        "macro_f1": 0.5717211328976035,
+        "micro_precision": 0.47619047619047616,
+        "micro_recall": 0.47619047619047616,
+        "micro_f1": 0.47619047619047616,
+        "accuracy": 0.47619047619047616,
+        "per_class": {
+          "STATIC_WEB_APPLICATION": {
+            "precision": 0.6666666666666666,
+            "recall": 0.2857142857142857,
+            "f1": 0.4,
+            "support": 7,
+            "correct": 2,
+            "tp": 2,
+            "fp": 1,
+            "fn": 5
+          },
+          "DYNAMIC_WEB_APPLICATION": {
+            "precision": 0.3333333333333333,
+            "recall": 1.0,
+            "f1": 0.5,
+            "support": 7,
+            "correct": 7,
+            "tp": 7,
+            "fp": 14,
+            "fn": 0
+          },
+          "NOT_FOUND": {
+            "precision": 0.8333333333333334,
+            "recall": 0.23809523809523808,
+            "f1": 0.37037037037037035,
+            "support": 21,
+            "correct": 5,
+            "tp": 5,
+            "fp": 1,
+            "fn": 16
+          },
+          "DYNAMIC_MOBILE_APP": {
+            "precision": 0.45454545454545453,
+            "recall": 0.8333333333333334,
+            "f1": 0.5882352941176471,
+            "support": 6,
+            "correct": 5,
+            "tp": 5,
+            "fp": 6,
+            "fn": 1
+          },
+          "STATIC_MOBILE_APP": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 1,
+            "correct": 1,
+            "tp": 1,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      },
+      "framework": {
+        "macro_precision": 0.9166666666666666,
+        "macro_recall": 0.9777777777777779,
+        "macro_f1": 0.9408866995073892,
+        "micro_precision": 0.9523809523809523,
+        "micro_recall": 0.9523809523809523,
+        "micro_f1": 0.9523809523809523,
+        "accuracy": 0.9523809523809523,
+        "per_class": {
+          "NOT_FOUND": {
+            "precision": 1.0,
+            "recall": 0.9333333333333333,
+            "f1": 0.9655172413793104,
+            "support": 30,
+            "correct": 28,
+            "tp": 28,
+            "fp": 0,
+            "fn": 2
+          },
+          "REACT": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 6,
+            "correct": 6,
+            "tp": 6,
+            "fp": 0,
+            "fn": 0
+          },
+          "FLUTTER": {
+            "precision": 0.75,
+            "recall": 1.0,
+            "f1": 0.8571428571428571,
+            "support": 6,
+            "correct": 6,
+            "tp": 6,
+            "fp": 2,
+            "fn": 0
+          }
+        }
+      },
+      "languageType": {
+        "macro_precision": 1.0,
+        "macro_recall": 1.0,
+        "macro_f1": 1.0,
+        "micro_precision": 1.0,
+        "micro_recall": 1.0,
+        "micro_f1": 1.0,
+        "accuracy": 1.0,
+        "per_class": {
+          "NOT_FOUND": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 36,
+            "correct": 36,
+            "tp": 36,
+            "fp": 0,
+            "fn": 0
+          },
+          "REACT_JAVASCRIPT": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 6,
+            "correct": 6,
+            "tp": 6,
+            "fp": 0,
+            "fn": 0
+          }
+        }
+      }
+    },
+    "failed_cases_summary": {
+      "invalid_json_count": 0,
+      "schema_violations_count": 0,
+      "missing_fields_count": 0,
+      "wrong_classifications_count": 32
+    },
+    "field_insights": {
+      "action": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {},
+        "most_common_confusions": {
+          "NOT_FOUND -> CODE_GENERATION": 1
+        },
+        "error_severity": "LOW"
+      },
+      "subAction": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {},
+        "most_common_confusions": {
+          "CODING -> VISUAL_EDITS": 3,
+          "VISUAL_EDITS -> CODING": 1,
+          "VISUAL_EDITS -> GENERAL": 1,
+          "ERROR -> CODING": 1,
+          "GENERAL -> ERROR": 1
+        },
+        "error_severity": "MEDIUM"
+      },
+      "platform": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {},
+        "most_common_confusions": {
+          "NOT_FOUND -> DYNAMIC_WEB_APPLICATION": 10,
+          "NOT_FOUND -> DYNAMIC_MOBILE_APP": 6,
+          "STATIC_WEB_APPLICATION -> DYNAMIC_WEB_APPLICATION": 4,
+          "DYNAMIC_MOBILE_APP -> STATIC_WEB_APPLICATION": 1,
+          "STATIC_WEB_APPLICATION -> NOT_FOUND": 1
+        },
+        "error_severity": "HIGH"
+      },
+      "framework": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {},
+        "most_common_confusions": {
+          "NOT_FOUND -> FLUTTER": 2
+        },
+        "error_severity": "LOW"
+      },
+      "languageType": {
+        "missing_rate": 0.0,
+        "most_common_invalid_values": {},
+        "most_common_confusions": {},
+        "error_severity": "LOW"
+      }
+    },
+    "optimization_opportunities": {
+      "prompt_engineering": [],
+      "schema_clarification": [],
+      "example_enhancement": [],
+      "instruction_refinement": []
+    },
+    "summary": {
+      "average_enum_macro_f1": 0.7171062208881006,
+      "average_enum_macro_precision": 0.7272294372294372,
+      "average_enum_macro_recall": 0.7468910782703887,
+      "total_examples": 42
+    },
+    "detailed_failed_cases": {
+      "invalid_json": [],
+      "schema_violations": [],
+      "missing_fields": [],
+      "wrong_classifications": [
+        {
+          "example_idx": 0,
+          "input_prompt": "create only login screen for dominos web(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"VISUAL_EDITS\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.561469",
+          "wrong_fields": [
+            {
+              "field": "subAction",
+              "predicted_value": "VISUAL_EDITS",
+              "expected_value": "CODING"
+            },
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "STATIC_WEB_APPLICATION"
+            }
+          ]
+        },
+        {
+          "example_idx": 1,
+          "input_prompt": "Create a single screen for rupee to doller converter in web(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}\n```",
+          "timestamp": "2025-06-13T14:59:42.561718",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "STATIC_WEB_APPLICATION"
+            }
+          ]
+        },
+        {
+          "example_idx": 3,
+          "input_prompt": "hello world react page(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_WEB_APPLICATION",
+            "framework": "REACT",
+            "subAction": "CODING",
+            "languageType": "REACT_JAVASCRIPT"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"VISUAL_EDITS\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T14:59:42.561851",
+          "wrong_fields": [
+            {
+              "field": "subAction",
+              "predicted_value": "VISUAL_EDITS",
+              "expected_value": "CODING"
+            }
+          ]
+        },
+        {
+          "example_idx": 4,
+          "input_prompt": "hi create todo App(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_MOBILE_APP\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.561893",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_MOBILE_APP",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 5,
+          "input_prompt": "Create UI login screen in react js(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_WEB_APPLICATION",
+            "framework": "REACT",
+            "subAction": "CODING",
+            "languageType": "REACT_JAVASCRIPT"
+          },
+          "prediction_text": "{\n    \"action\": \"CODE_GENERATION\",\n    \"subAction\": \"VISUAL_EDITS\",\n    \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n    \"framework\": \"REACT\",\n    \"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T14:59:42.561938",
+          "wrong_fields": [
+            {
+              "field": "subAction",
+              "predicted_value": "VISUAL_EDITS",
+              "expected_value": "CODING"
+            }
+          ]
+        },
+        {
+          "example_idx": 7,
+          "input_prompt": "/home/ubuntu/app/coloring_book_creator/src/index.css:35:3: The `text-white` class does not exist. If `text-white` is a custom class, make sure it is defined within a `@layer` directive.(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "ERROR",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"ERROR\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}\n```",
+          "timestamp": "2025-06-13T14:59:42.562035",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 9,
+          "input_prompt": "create login app for zomato(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_MOBILE_APP\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.562126",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_MOBILE_APP",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 10,
+          "input_prompt": "create flutter bhavesh portfolio page(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_MOBILE_APP",
+            "framework": "FLUTTER",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"STATIC_WEB_APPLICATION\",\n\"framework\": \"FLUTTER\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.562171",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "STATIC_WEB_APPLICATION",
+              "expected_value": "DYNAMIC_MOBILE_APP"
+            }
+          ]
+        },
+        {
+          "example_idx": 11,
+          "input_prompt": "Create a page for jpeg to png image converter(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.562230",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 12,
+          "input_prompt": "Create new function for currency converter(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n    \"action\": \"CODE_GENERATION\",\n    \"subAction\": \"CODING\",\n    \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n    \"framework\": \"NOT_FOUND\",\n    \"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.562270",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 13,
+          "input_prompt": "Can you generate a login screen for my Ninis Kitchen bakery app?(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_MOBILE_APP\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.562336",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_MOBILE_APP",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 16,
+          "input_prompt": "create only ui login screen in flutter(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_MOBILE_APP",
+            "framework": "FLUTTER",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_MOBILE_APP\",\n\"framework\": \"FLUTTER\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.562459",
+          "wrong_fields": [
+            {
+              "field": "subAction",
+              "predicted_value": "CODING",
+              "expected_value": "VISUAL_EDITS"
+            }
+          ]
+        },
+        {
+          "example_idx": 18,
+          "input_prompt": "Create only currency convert from dollar to INR in react, please only generare in single screen with static login of 85 as multiplier(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_WEB_APPLICATION",
+            "framework": "REACT",
+            "subAction": "CODING",
+            "languageType": "REACT_JAVASCRIPT"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T14:59:42.562539",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "STATIC_WEB_APPLICATION"
+            }
+          ]
+        },
+        {
+          "example_idx": 19,
+          "input_prompt": "Its mobile First Ui, I need Web First approach(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"GENERAL\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.562578",
+          "wrong_fields": [
+            {
+              "field": "subAction",
+              "predicted_value": "GENERAL",
+              "expected_value": "VISUAL_EDITS"
+            },
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 20,
+          "input_prompt": "import Dashboard from \"pages/Dashboard\";\n\nDashboard is not compoent(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "REACT",
+            "subAction": "ERROR",
+            "languageType": "REACT_JAVASCRIPT"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+          "timestamp": "2025-06-13T14:59:42.562632",
+          "wrong_fields": [
+            {
+              "field": "subAction",
+              "predicted_value": "CODING",
+              "expected_value": "ERROR"
+            },
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 22,
+          "input_prompt": "Create only UI of login screen with username and password. (query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n    \"action\": \"CODE_GENERATION\",\n    \"subAction\": \"VISUAL_EDITS\",\n    \"platform\": \"NOT_FOUND\",\n    \"framework\": \"NOT_FOUND\",\n    \"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.562714",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "NOT_FOUND",
+              "expected_value": "STATIC_WEB_APPLICATION"
+            }
+          ]
+        },
+        {
+          "example_idx": 23,
+          "input_prompt": "Create mobile app of scanning xray(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "DYNAMIC_MOBILE_APP",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_MOBILE_APP\",\n\"framework\": \"FLUTTER\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.562753",
+          "wrong_fields": [
+            {
+              "field": "framework",
+              "predicted_value": "FLUTTER",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 24,
+          "input_prompt": "login page for e-comm(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.562793",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 25,
+          "input_prompt": "Create Signup page(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n    \"action\": \"CODE_GENERATION\",\n    \"subAction\": \"CODING\",\n    \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n    \"framework\": \"NOT_FOUND\",\n    \"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.562831",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 26,
+          "input_prompt": "Add another option for login through mobile number. when i click on login through mobile number then ask for opt(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n    \"action\": \"CODE_GENERATION\",\n    \"subAction\": \"CODING\",\n    \"platform\": \"DYNAMIC_MOBILE_APP\",\n    \"framework\": \"FLUTTER\",\n    \"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.562871",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_MOBILE_APP",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "framework",
+              "predicted_value": "FLUTTER",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 29,
+          "input_prompt": "Create only Dashboard UI\n screen in Ecommerce Web(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "STATIC_WEB_APPLICATION",
+            "framework": "NOT_FOUND",
+            "subAction": "VISUAL_EDITS",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"VISUAL_EDITS\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.563003",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "STATIC_WEB_APPLICATION"
+            }
+          ]
+        },
+        {
+          "example_idx": 32,
+          "input_prompt": "I want to build an app where i upload an \n and it automatically converts it into a colouring book drawing and gives me an option to download it into a pdf. I want only the black outlines in the result. The inner area should be white for a kid to colour the same.(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_MOBILE_APP\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}\n```",
+          "timestamp": "2025-06-13T14:59:42.563119",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_MOBILE_APP",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 33,
+          "input_prompt": "Create one login page(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.563159",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 35,
+          "input_prompt": "Add signup page.\nAllow full form based signup and also allow social signup and signin(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.563236",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 37,
+          "input_prompt": "Add login page(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.563311",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_WEB_APPLICATION",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        },
+        {
+          "example_idx": 39,
+          "input_prompt": "not able to find signup screen, how can find it(query)",
+          "ground_truth": {
+            "action": "NOT_FOUND",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "GENERAL",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"ERROR\",\n\"platform\": \"NOT_FOUND\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.563386",
+          "wrong_fields": [
+            {
+              "field": "action",
+              "predicted_value": "CODE_GENERATION",
+              "expected_value": "NOT_FOUND"
+            },
+            {
+              "field": "subAction",
+              "predicted_value": "ERROR",
+              "expected_value": "GENERAL"
+            }
+          ]
+        },
+        {
+          "example_idx": 41,
+          "input_prompt": "create a signup screen for ecommerce app(query)",
+          "ground_truth": {
+            "action": "CODE_GENERATION",
+            "platform": "NOT_FOUND",
+            "framework": "NOT_FOUND",
+            "subAction": "CODING",
+            "languageType": "NOT_FOUND"
+          },
+          "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_MOBILE_APP\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+          "timestamp": "2025-06-13T14:59:42.563481",
+          "wrong_fields": [
+            {
+              "field": "platform",
+              "predicted_value": "DYNAMIC_MOBILE_APP",
+              "expected_value": "NOT_FOUND"
+            }
+          ]
+        }
+      ]
+    },
+    "overall_accuracy": 0.35714285714285715,
+    "evaluation_metadata": {
+      "evaluation_type": "final_test",
+      "model_used": "llama-3.3-70b-versatile",
+      "num_samples": 42,
+      "prompt_length": 2071
+    }
+  },
+  "optimization_results": {
+    "final_prompt": "You are a software development request classifier. Analyze the input to determine what type of development work is needed and route it to the appropriate code generation service.\n\n**CLASSIFICATION GUIDELINES:**\n\n**action**: Determine if this requires code generation\n- CODE_GENERATION: Clear software development requests (features, UI components, bug fixes)\n- NOT_FOUND: Non-coding requests, vague inquiries, or requests outside development scope\n\n**subAction**: Categorize the type of development work\n- CODING: New features, functionality, or components\n- VISUAL_EDITS: UI/styling changes, layout modifications, design updates\n- ERROR: Bug fixes, error resolution, debugging issues\n- GENERAL: Broad/vague requests without specific technical requirements\n\n**platform**: Identify target deployment environment (be conservative - use NOT_FOUND when unclear)\n- DYNAMIC_WEB_APPLICATION: Web apps with interactivity, login systems, databases\n- STATIC_WEB_APPLICATION: Simple websites, landing pages, portfolios\n- DYNAMIC_MOBILE_APP: Mobile apps with complex features\n- STATIC_MOBILE_APP: Simple mobile apps or prototypes\n- NOT_FOUND: Platform not specified or ambiguous\n\n**framework**: Specify development framework only when clearly indicated\n- REACT: Explicitly mentioned or clear web development context\n- FLUTTER: Explicitly mentioned or clear mobile development context\n- NOT_FOUND: Framework not specified or unclear\n\n**languageType**: Implementation language/framework combination\n- REACT_JAVASCRIPT: React-based implementations\n- NOT_FOUND: Not using React or unclear\n\n**KEY INDICATORS:**\n- UI terms (\"screen\", \"page\", \"button\", \"design\") \u2192 likely VISUAL_EDITS\n- Error messages, \"fix\", \"debug\" \u2192 ERROR\n- \"Login\", \"dashboard\", \"database\" \u2192 DYNAMIC platform\n- \"Website\", \"landing page\" \u2192 STATIC_WEB_APPLICATION\n- \"App\", \"mobile\" \u2192 mobile platform\n- Vague business descriptions without technical details \u2192 GENERAL\n\n**DECISION PRIORITY:** When in doubt, choose NOT_FOUND for platform/framework rather than guessing.\n\nReturn only a valid JSON object with all five fields:",
+    "final_metrics": {
+      "validation_metrics": {
+        "valid_json_accuracy": 1.0,
+        "exact_match_accuracy": 0.5641025641025641,
+        "schema_compliance_accuracy": 1.0,
+        "all_fields_present_accuracy": 1.0
+      },
+      "enum_field_metrics": {
+        "action": {
+          "macro_precision": 0.8333333333333333,
+          "macro_recall": 0.9864864864864865,
+          "macro_f1": 0.893150684931507,
+          "micro_precision": 0.9743589743589743,
+          "micro_recall": 0.9743589743589743,
+          "micro_f1": 0.9743589743589743,
+          "accuracy": 0.9743589743589743,
+          "per_class": {
+            "CODE_GENERATION": {
+              "precision": 1.0,
+              "recall": 0.972972972972973,
+              "f1": 0.9863013698630138,
+              "support": 37,
+              "correct": 36,
+              "tp": 36,
+              "fp": 0,
+              "fn": 1
+            },
+            "NOT_FOUND": {
+              "precision": 0.6666666666666666,
+              "recall": 1.0,
+              "f1": 0.8,
+              "support": 2,
+              "correct": 2,
+              "tp": 2,
+              "fp": 1,
+              "fn": 0
+            }
+          }
+        },
+        "subAction": {
+          "macro_precision": 0.7685185185185185,
+          "macro_recall": 0.6606060606060606,
+          "macro_f1": 0.6901927437641724,
+          "micro_precision": 0.7692307692307693,
+          "micro_recall": 0.7692307692307693,
+          "micro_f1": 0.7692307692307693,
+          "accuracy": 0.7692307692307693,
+          "per_class": {
+            "CODING": {
+              "precision": 0.7407407407407407,
+              "recall": 0.9090909090909091,
+              "f1": 0.8163265306122449,
+              "support": 22,
+              "correct": 20,
+              "tp": 20,
+              "fp": 7,
+              "fn": 2
+            },
+            "VISUAL_EDITS": {
+              "precision": 0.6666666666666666,
+              "recall": 0.3333333333333333,
+              "f1": 0.4444444444444444,
+              "support": 6,
+              "correct": 2,
+              "tp": 2,
+              "fp": 1,
+              "fn": 4
+            },
+            "GENERAL": {
+              "precision": 0.6666666666666666,
+              "recall": 0.4,
+              "f1": 0.5,
+              "support": 5,
+              "correct": 2,
+              "tp": 2,
+              "fp": 1,
+              "fn": 3
+            },
+            "ERROR": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "support": 6,
+              "correct": 6,
+              "tp": 6,
+              "fp": 0,
+              "fn": 0
+            }
+          }
+        },
+        "platform": {
+          "macro_precision": 0.6333333333333333,
+          "macro_recall": 0.5736842105263158,
+          "macro_f1": 0.5553113553113553,
+          "micro_precision": 0.6410256410256411,
+          "micro_recall": 0.6410256410256411,
+          "micro_f1": 0.6410256410256411,
+          "accuracy": 0.6410256410256411,
+          "per_class": {
+            "DYNAMIC_WEB_APPLICATION": {
+              "precision": 0.5,
+              "recall": 1.0,
+              "f1": 0.6666666666666666,
+              "support": 12,
+              "correct": 12,
+              "tp": 12,
+              "fp": 12,
+              "fn": 0
+            },
+            "NOT_FOUND": {
+              "precision": 1.0,
+              "recall": 0.3684210526315789,
+              "f1": 0.5384615384615384,
+              "support": 19,
+              "correct": 7,
+              "tp": 7,
+              "fp": 0,
+              "fn": 12
+            },
+            "STATIC_WEB_APPLICATION": {
+              "precision": 0.6666666666666666,
+              "recall": 0.5,
+              "f1": 0.5714285714285715,
+              "support": 4,
+              "correct": 2,
+              "tp": 2,
+              "fp": 1,
+              "fn": 2
+            },
+            "DYNAMIC_MOBILE_APP": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "support": 4,
+              "correct": 4,
+              "tp": 4,
+              "fp": 0,
+              "fn": 0
+            },
+            "STATIC_MOBILE_APP": {
+              "precision": 0.0,
+              "recall": 0.0,
+              "f1": 0.0,
+              "support": 0,
+              "correct": 0,
+              "tp": 0,
+              "fp": 1,
+              "fn": 0
+            }
+          }
+        },
+        "framework": {
+          "macro_precision": 1.0,
+          "macro_recall": 1.0,
+          "macro_f1": 1.0,
+          "micro_precision": 1.0,
+          "micro_recall": 1.0,
+          "micro_f1": 1.0,
+          "accuracy": 1.0,
+          "per_class": {
+            "NOT_FOUND": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "support": 29,
+              "correct": 29,
+              "tp": 29,
+              "fp": 0,
+              "fn": 0
+            },
+            "REACT": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "support": 7,
+              "correct": 7,
+              "tp": 7,
+              "fp": 0,
+              "fn": 0
+            },
+            "FLUTTER": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "support": 3,
+              "correct": 3,
+              "tp": 3,
+              "fp": 0,
+              "fn": 0
+            }
+          }
+        },
+        "languageType": {
+          "macro_precision": 1.0,
+          "macro_recall": 1.0,
+          "macro_f1": 1.0,
+          "micro_precision": 1.0,
+          "micro_recall": 1.0,
+          "micro_f1": 1.0,
+          "accuracy": 1.0,
+          "per_class": {
+            "NOT_FOUND": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "support": 32,
+              "correct": 32,
+              "tp": 32,
+              "fp": 0,
+              "fn": 0
+            },
+            "REACT_JAVASCRIPT": {
+              "precision": 1.0,
+              "recall": 1.0,
+              "f1": 1.0,
+              "support": 7,
+              "correct": 7,
+              "tp": 7,
+              "fp": 0,
+              "fn": 0
+            }
+          }
+        }
+      },
+      "failed_cases_summary": {
+        "invalid_json_count": 0,
+        "schema_violations_count": 0,
+        "missing_fields_count": 0,
+        "wrong_classifications_count": 24
+      },
+      "field_insights": {
+        "action": {
+          "missing_rate": 0.0,
+          "most_common_invalid_values": {},
+          "most_common_confusions": {
+            "CODE_GENERATION -> NOT_FOUND": 1
+          },
+          "error_severity": "LOW"
+        },
+        "subAction": {
+          "missing_rate": 0.0,
+          "most_common_invalid_values": {},
+          "most_common_confusions": {
+            "VISUAL_EDITS -> CODING": 4,
+            "GENERAL -> CODING": 3,
+            "CODING -> GENERAL": 1,
+            "CODING -> VISUAL_EDITS": 1
+          },
+          "error_severity": "MEDIUM"
+        },
+        "platform": {
+          "missing_rate": 0.0,
+          "most_common_invalid_values": {},
+          "most_common_confusions": {
+            "NOT_FOUND -> DYNAMIC_WEB_APPLICATION": 10,
+            "STATIC_WEB_APPLICATION -> DYNAMIC_WEB_APPLICATION": 2,
+            "NOT_FOUND -> STATIC_MOBILE_APP": 1,
+            "NOT_FOUND -> STATIC_WEB_APPLICATION": 1
+          },
+          "error_severity": "HIGH"
+        },
+        "framework": {
+          "missing_rate": 0.0,
+          "most_common_invalid_values": {},
+          "most_common_confusions": {},
+          "error_severity": "LOW"
+        },
+        "languageType": {
+          "missing_rate": 0.0,
+          "most_common_invalid_values": {},
+          "most_common_confusions": {},
+          "error_severity": "LOW"
+        }
+      },
+      "optimization_opportunities": {
+        "prompt_engineering": [],
+        "schema_clarification": [],
+        "example_enhancement": [],
+        "instruction_refinement": []
+      },
+      "summary": {
+        "average_enum_macro_f1": 0.8277309568014068,
+        "average_enum_macro_precision": 0.847037037037037,
+        "average_enum_macro_recall": 0.8441553515237725,
+        "total_examples": 39
+      },
+      "detailed_failed_cases": {
+        "invalid_json": [],
+        "schema_violations": [],
+        "missing_fields": [],
+        "wrong_classifications": [
+          {
+            "example_idx": 4,
+            "input_prompt": "Add List view and Map view in listing section(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "VISUAL_EDITS",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+            "timestamp": "2025-06-13T14:42:13.442983",
+            "wrong_fields": [
+              {
+                "field": "subAction",
+                "predicted_value": "CODING",
+                "expected_value": "VISUAL_EDITS"
+              },
+              {
+                "field": "platform",
+                "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                "expected_value": "NOT_FOUND"
+              }
+            ]
+          },
+          {
+            "example_idx": 5,
+            "input_prompt": "Create template of only UI of login screen with username and password. with logic (query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "CODING",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+            "timestamp": "2025-06-13T14:42:13.443074",
+            "wrong_fields": [
+              {
+                "field": "platform",
+                "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                "expected_value": "NOT_FOUND"
+              }
+            ]
+          },
+          {
+            "example_idx": 7,
+            "input_prompt": "mock code(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "CODING",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "```json\n{\n    \"action\": \"NOT_FOUND\",\n    \"subAction\": \"GENERAL\",\n    \"platform\": \"NOT_FOUND\",\n    \"framework\": \"NOT_FOUND\",\n    \"languageType\": \"NOT_FOUND\"\n}\n```",
+            "timestamp": "2025-06-13T14:42:13.443240",
+            "wrong_fields": [
+              {
+                "field": "action",
+                "predicted_value": "NOT_FOUND",
+                "expected_value": "CODE_GENERATION"
+              },
+              {
+                "field": "subAction",
+                "predicted_value": "GENERAL",
+                "expected_value": "CODING"
+              }
+            ]
+          },
+          {
+            "example_idx": 8,
+            "input_prompt": "We are creating a design for B2B Diamond Trading Platform for customers. There will be more than 40,000 diamonds on the platform so design it in a way that a user can experience the platform in a best possible way. **1. Registration & Login** - **Quick Registration:** Simple form with basic details - **Country-Specific KYC:** Based on regional compliance requirements - **Login Options:** - Registered user login - Guest login (limited features) - **Login Security:** - Password protection - 2FA (Optional) **2. Diamond Parameters** Each diamond listed must include the following: - Packet No - Shape - Carat - Color - Clarity - Cut - Polish (Pol) - Symmetry (Sym) - Fluorescence (Fls) - Rapaport Price (Rap.$) - Discount % (Disc %) - Price per Carat (Price/ct) - Total Amount (Amount) - Measurement (Length, Width, Height) - Ratio - Depth % - Table % - Crown Angle - Crown Height % - Pavilion Angle - Pavilion Height % - Girdle % - Lab - Report Number - Comments - Key To Symbols - Shade - H&A - Luster - Eye Clean - Table Inclusion (TI) - Side Inclusion (SI) - Table Black (TB) - Side Black (SB) - Table Open Inclusion (TO) - Side Open Inclusion (SO) **3. Buyer activities to be performed on platform** - Search Diamonds: Customer can search with basic and advance filters to get diamonds of their choice - Watchlist: Customer can add diamonds to watch list and get notified if there's a change in price - Cart: Customer can add selected diamonds to cart - Enquiry: Customer can place inquiry for a diamond(s) - Quote: Customer can quote diamonds with its price - Bid: Customers can bid on a diamond when bid is live - Appointment: Customer can book an appointment to physically view diamonds - Hold: Customer can request for a diamond hold if it doesn't want others to purchase it. - Order: Customer can place an order for diamonds - Compare: Customer can compare two or more diamonds to check its parameters - Share: Customers can share excel with all diamonds data, images and certificates with anyone via Email or WhatsApp - Download Diamonds Data Excel, Images and Certificates - Print: Customer can print the list of diamonds - Add Notes: Customer can add notes for internal references - Final Calculations: Show final calculation based on discount and payment terms - Modify Search: Customers can modify the search criteria - Reminders: Customers can set a reminder on specific diamonds with notes - Sort by multiple criteria: Customers can sort diamonds based on multiple criterias - Notification system for order status **4. Analytics & Reporting** - Customer can see all activities they perfomed - Order and transaction summary - Top listed/viewed diamonds - View other related analyticals **5. Settings** - Profile management - Diamond view sequence management - Email/SMS notifications management(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "DYNAMIC_WEB_APPLICATION",
+              "framework": "NOT_FOUND",
+              "subAction": "VISUAL_EDITS",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "```json\n{\n    \"action\": \"CODE_GENERATION\",\n    \"subAction\": \"CODING\",\n    \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n    \"framework\": \"NOT_FOUND\",\n    \"languageType\": \"NOT_FOUND\"\n}\n```",
+            "timestamp": "2025-06-13T14:42:13.443338",
+            "wrong_fields": [
+              {
+                "field": "subAction",
+                "predicted_value": "CODING",
+                "expected_value": "VISUAL_EDITS"
+              }
+            ]
+          },
+          {
+            "example_idx": 11,
+            "input_prompt": "Create a page for convert png to jpeg(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "CODING",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+            "timestamp": "2025-06-13T14:42:13.443568",
+            "wrong_fields": [
+              {
+                "field": "platform",
+                "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                "expected_value": "NOT_FOUND"
+              }
+            ]
+          },
+          {
+            "example_idx": 12,
+            "input_prompt": "react hello world animated page(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "STATIC_WEB_APPLICATION",
+              "framework": "REACT",
+              "subAction": "CODING",
+              "languageType": "REACT_JAVASCRIPT"
+            },
+            "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"VISUAL_EDITS\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+            "timestamp": "2025-06-13T14:42:13.443648",
+            "wrong_fields": [
+              {
+                "field": "subAction",
+                "predicted_value": "VISUAL_EDITS",
+                "expected_value": "CODING"
+              },
+              {
+                "field": "platform",
+                "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                "expected_value": "STATIC_WEB_APPLICATION"
+              }
+            ]
+          },
+          {
+            "example_idx": 13,
+            "input_prompt": "Employee Directory not opening as default, please add this page as default route(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "CODING",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+            "timestamp": "2025-06-13T14:42:13.443729",
+            "wrong_fields": [
+              {
+                "field": "platform",
+                "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                "expected_value": "NOT_FOUND"
+              }
+            ]
+          },
+          {
+            "example_idx": 17,
+            "input_prompt": "Add signup page(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "CODING",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "{\n    \"action\": \"CODE_GENERATION\",\n    \"subAction\": \"CODING\",\n    \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n    \"framework\": \"NOT_FOUND\",\n    \"languageType\": \"NOT_FOUND\"\n}",
+            "timestamp": "2025-06-13T14:42:13.444008",
+            "wrong_fields": [
+              {
+                "field": "platform",
+                "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                "expected_value": "NOT_FOUND"
+              }
+            ]
+          },
+          {
+            "example_idx": 19,
+            "input_prompt": "check internet speed App(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "GENERAL",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"STATIC_MOBILE_APP\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+            "timestamp": "2025-06-13T14:42:13.444144",
+            "wrong_fields": [
+              {
+                "field": "subAction",
+                "predicted_value": "CODING",
+                "expected_value": "GENERAL"
+              },
+              {
+                "field": "platform",
+                "predicted_value": "STATIC_MOBILE_APP",
+                "expected_value": "NOT_FOUND"
+              }
+            ]
+          },
+          {
+            "example_idx": 20,
+            "input_prompt": "Create a single screen for rupee to dollar converter in web(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "STATIC_WEB_APPLICATION",
+              "framework": "NOT_FOUND",
+              "subAction": "CODING",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}\n```",
+            "timestamp": "2025-06-13T14:42:13.444220",
+            "wrong_fields": [
+              {
+                "field": "platform",
+                "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                "expected_value": "STATIC_WEB_APPLICATION"
+              }
+            ]
+          },
+          {
+            "example_idx": 22,
+            "input_prompt": "Create new screen for the laptop and other items assigned to every employee. show in table with accordion UI(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "VISUAL_EDITS",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+            "timestamp": "2025-06-13T14:42:13.444375",
+            "wrong_fields": [
+              {
+                "field": "subAction",
+                "predicted_value": "CODING",
+                "expected_value": "VISUAL_EDITS"
+              },
+              {
+                "field": "platform",
+                "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                "expected_value": "NOT_FOUND"
+              }
+            ]
+          },
+          {
+            "example_idx": 24,
+            "input_prompt": "/home/ubuntu/app/wine_showcase/src/pages/WineShowcase/components/FoodPairing.jsx: Unexpected t\noken, expected \",\" (291:94)(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "REACT",
+              "subAction": "ERROR",
+              "languageType": "REACT_JAVASCRIPT"
+            },
+            "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"ERROR\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"REACT\",\n  \"languageType\": \"REACT_JAVASCRIPT\"\n}\n```",
+            "timestamp": "2025-06-13T14:42:13.444506",
+            "wrong_fields": [
+              {
+                "field": "platform",
+                "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                "expected_value": "NOT_FOUND"
+              }
+            ]
+          },
+          {
+            "example_idx": 29,
+            "input_prompt": "Create a web page that presents products with rich visuals and optimized content to maximize user engagement and conversions. Features include 360\u00b0 product views, variant selection, customer reviews, real-time inventory updates, sticky \"Add to Cart\" buttons, related products, urgency indicators (\"Only 2 left!\"), and quick checkout options.(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "DYNAMIC_WEB_APPLICATION",
+              "framework": "NOT_FOUND",
+              "subAction": "VISUAL_EDITS",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "{\n    \"action\": \"CODE_GENERATION\",\n    \"subAction\": \"CODING\",\n    \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n    \"framework\": \"NOT_FOUND\",\n    \"languageType\": \"NOT_FOUND\"\n}",
+            "timestamp": "2025-06-13T14:42:13.444835",
+            "wrong_fields": [
+              {
+                "field": "subAction",
+                "predicted_value": "CODING",
+                "expected_value": "VISUAL_EDITS"
+              }
+            ]
+          },
+          {
+            "example_idx": 34,
+            "input_prompt": "create a welcome back page(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "CODING",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "{\n    \"action\": \"CODE_GENERATION\",\n    \"subAction\": \"CODING\",\n    \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n    \"framework\": \"NOT_FOUND\",\n    \"languageType\": \"NOT_FOUND\"\n}",
+            "timestamp": "2025-06-13T14:42:13.445173",
+            "wrong_fields": [
+              {
+                "field": "platform",
+                "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                "expected_value": "NOT_FOUND"
+              }
+            ]
+          },
+          {
+            "example_idx": 36,
+            "input_prompt": "User list screen for IT company(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "GENERAL",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+            "timestamp": "2025-06-13T14:42:13.445305",
+            "wrong_fields": [
+              {
+                "field": "subAction",
+                "predicted_value": "CODING",
+                "expected_value": "GENERAL"
+              },
+              {
+                "field": "platform",
+                "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                "expected_value": "NOT_FOUND"
+              }
+            ]
+          },
+          {
+            "example_idx": 37,
+            "input_prompt": "A real-time supply chain orchestrator for global enterprises.\nTracks shipments, predicts delays, and optimizes routes\u2014logistics chaos, terminated.(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "GENERAL",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+            "timestamp": "2025-06-13T14:42:13.445375",
+            "wrong_fields": [
+              {
+                "field": "subAction",
+                "predicted_value": "CODING",
+                "expected_value": "GENERAL"
+              },
+              {
+                "field": "platform",
+                "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                "expected_value": "NOT_FOUND"
+              }
+            ]
+          },
+          {
+            "example_idx": 38,
+            "input_prompt": "updte the home page(query)",
+            "ground_truth": {
+              "action": "CODE_GENERATION",
+              "platform": "NOT_FOUND",
+              "framework": "NOT_FOUND",
+              "subAction": "VISUAL_EDITS",
+              "languageType": "NOT_FOUND"
+            },
+            "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"VISUAL_EDITS\",\n\"platform\": \"STATIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+            "timestamp": "2025-06-13T14:42:13.445443",
+            "wrong_fields": [
+              {
+                "field": "platform",
+                "predicted_value": "STATIC_WEB_APPLICATION",
+                "expected_value": "NOT_FOUND"
+              }
+            ]
+          }
+        ]
+      },
+      "overall_accuracy": 0.5641025641025641,
+      "evaluation_metadata": {
+        "evaluation_type": "dev_b_validation",
+        "model_used": "llama-3.3-70b-versatile",
+        "num_samples": 39,
+        "prompt_length": 2071
+      }
+    },
+    "optimization_history": [
+      {
+        "iteration": 1,
+        "strategy": "freeform",
+        "dev_a_improvement": 0.18840579710144928,
+        "dev_b_metrics": {
+          "validation_metrics": {
+            "valid_json_accuracy": 1.0,
+            "exact_match_accuracy": 0.5641025641025641,
+            "schema_compliance_accuracy": 1.0,
+            "all_fields_present_accuracy": 1.0
+          },
+          "enum_field_metrics": {
+            "action": {
+              "macro_precision": 0.8333333333333333,
+              "macro_recall": 0.9864864864864865,
+              "macro_f1": 0.893150684931507,
+              "micro_precision": 0.9743589743589743,
+              "micro_recall": 0.9743589743589743,
+              "micro_f1": 0.9743589743589743,
+              "accuracy": 0.9743589743589743,
+              "per_class": {
+                "CODE_GENERATION": {
+                  "precision": 1.0,
+                  "recall": 0.972972972972973,
+                  "f1": 0.9863013698630138,
+                  "support": 37,
+                  "correct": 36,
+                  "tp": 36,
+                  "fp": 0,
+                  "fn": 1
+                },
+                "NOT_FOUND": {
+                  "precision": 0.6666666666666666,
+                  "recall": 1.0,
+                  "f1": 0.8,
+                  "support": 2,
+                  "correct": 2,
+                  "tp": 2,
+                  "fp": 1,
+                  "fn": 0
+                }
+              }
+            },
+            "subAction": {
+              "macro_precision": 0.7685185185185185,
+              "macro_recall": 0.6606060606060606,
+              "macro_f1": 0.6901927437641724,
+              "micro_precision": 0.7692307692307693,
+              "micro_recall": 0.7692307692307693,
+              "micro_f1": 0.7692307692307693,
+              "accuracy": 0.7692307692307693,
+              "per_class": {
+                "CODING": {
+                  "precision": 0.7407407407407407,
+                  "recall": 0.9090909090909091,
+                  "f1": 0.8163265306122449,
+                  "support": 22,
+                  "correct": 20,
+                  "tp": 20,
+                  "fp": 7,
+                  "fn": 2
+                },
+                "VISUAL_EDITS": {
+                  "precision": 0.6666666666666666,
+                  "recall": 0.3333333333333333,
+                  "f1": 0.4444444444444444,
+                  "support": 6,
+                  "correct": 2,
+                  "tp": 2,
+                  "fp": 1,
+                  "fn": 4
+                },
+                "GENERAL": {
+                  "precision": 0.6666666666666666,
+                  "recall": 0.4,
+                  "f1": 0.5,
+                  "support": 5,
+                  "correct": 2,
+                  "tp": 2,
+                  "fp": 1,
+                  "fn": 3
+                },
+                "ERROR": {
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "f1": 1.0,
+                  "support": 6,
+                  "correct": 6,
+                  "tp": 6,
+                  "fp": 0,
+                  "fn": 0
+                }
+              }
+            },
+            "platform": {
+              "macro_precision": 0.6333333333333333,
+              "macro_recall": 0.5736842105263158,
+              "macro_f1": 0.5553113553113553,
+              "micro_precision": 0.6410256410256411,
+              "micro_recall": 0.6410256410256411,
+              "micro_f1": 0.6410256410256411,
+              "accuracy": 0.6410256410256411,
+              "per_class": {
+                "DYNAMIC_WEB_APPLICATION": {
+                  "precision": 0.5,
+                  "recall": 1.0,
+                  "f1": 0.6666666666666666,
+                  "support": 12,
+                  "correct": 12,
+                  "tp": 12,
+                  "fp": 12,
+                  "fn": 0
+                },
+                "NOT_FOUND": {
+                  "precision": 1.0,
+                  "recall": 0.3684210526315789,
+                  "f1": 0.5384615384615384,
+                  "support": 19,
+                  "correct": 7,
+                  "tp": 7,
+                  "fp": 0,
+                  "fn": 12
+                },
+                "STATIC_WEB_APPLICATION": {
+                  "precision": 0.6666666666666666,
+                  "recall": 0.5,
+                  "f1": 0.5714285714285715,
+                  "support": 4,
+                  "correct": 2,
+                  "tp": 2,
+                  "fp": 1,
+                  "fn": 2
+                },
+                "DYNAMIC_MOBILE_APP": {
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "f1": 1.0,
+                  "support": 4,
+                  "correct": 4,
+                  "tp": 4,
+                  "fp": 0,
+                  "fn": 0
+                },
+                "STATIC_MOBILE_APP": {
+                  "precision": 0.0,
+                  "recall": 0.0,
+                  "f1": 0.0,
+                  "support": 0,
+                  "correct": 0,
+                  "tp": 0,
+                  "fp": 1,
+                  "fn": 0
+                }
+              }
+            },
+            "framework": {
+              "macro_precision": 1.0,
+              "macro_recall": 1.0,
+              "macro_f1": 1.0,
+              "micro_precision": 1.0,
+              "micro_recall": 1.0,
+              "micro_f1": 1.0,
+              "accuracy": 1.0,
+              "per_class": {
+                "NOT_FOUND": {
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "f1": 1.0,
+                  "support": 29,
+                  "correct": 29,
+                  "tp": 29,
+                  "fp": 0,
+                  "fn": 0
+                },
+                "REACT": {
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "f1": 1.0,
+                  "support": 7,
+                  "correct": 7,
+                  "tp": 7,
+                  "fp": 0,
+                  "fn": 0
+                },
+                "FLUTTER": {
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "f1": 1.0,
+                  "support": 3,
+                  "correct": 3,
+                  "tp": 3,
+                  "fp": 0,
+                  "fn": 0
+                }
+              }
+            },
+            "languageType": {
+              "macro_precision": 1.0,
+              "macro_recall": 1.0,
+              "macro_f1": 1.0,
+              "micro_precision": 1.0,
+              "micro_recall": 1.0,
+              "micro_f1": 1.0,
+              "accuracy": 1.0,
+              "per_class": {
+                "NOT_FOUND": {
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "f1": 1.0,
+                  "support": 32,
+                  "correct": 32,
+                  "tp": 32,
+                  "fp": 0,
+                  "fn": 0
+                },
+                "REACT_JAVASCRIPT": {
+                  "precision": 1.0,
+                  "recall": 1.0,
+                  "f1": 1.0,
+                  "support": 7,
+                  "correct": 7,
+                  "tp": 7,
+                  "fp": 0,
+                  "fn": 0
+                }
+              }
+            }
+          },
+          "failed_cases_summary": {
+            "invalid_json_count": 0,
+            "schema_violations_count": 0,
+            "missing_fields_count": 0,
+            "wrong_classifications_count": 24
+          },
+          "field_insights": {
+            "action": {
+              "missing_rate": 0.0,
+              "most_common_invalid_values": {},
+              "most_common_confusions": {
+                "CODE_GENERATION -> NOT_FOUND": 1
+              },
+              "error_severity": "LOW"
+            },
+            "subAction": {
+              "missing_rate": 0.0,
+              "most_common_invalid_values": {},
+              "most_common_confusions": {
+                "VISUAL_EDITS -> CODING": 4,
+                "GENERAL -> CODING": 3,
+                "CODING -> GENERAL": 1,
+                "CODING -> VISUAL_EDITS": 1
+              },
+              "error_severity": "MEDIUM"
+            },
+            "platform": {
+              "missing_rate": 0.0,
+              "most_common_invalid_values": {},
+              "most_common_confusions": {
+                "NOT_FOUND -> DYNAMIC_WEB_APPLICATION": 10,
+                "STATIC_WEB_APPLICATION -> DYNAMIC_WEB_APPLICATION": 2,
+                "NOT_FOUND -> STATIC_MOBILE_APP": 1,
+                "NOT_FOUND -> STATIC_WEB_APPLICATION": 1
+              },
+              "error_severity": "HIGH"
+            },
+            "framework": {
+              "missing_rate": 0.0,
+              "most_common_invalid_values": {},
+              "most_common_confusions": {},
+              "error_severity": "LOW"
+            },
+            "languageType": {
+              "missing_rate": 0.0,
+              "most_common_invalid_values": {},
+              "most_common_confusions": {},
+              "error_severity": "LOW"
+            }
+          },
+          "optimization_opportunities": {
+            "prompt_engineering": [],
+            "schema_clarification": [],
+            "example_enhancement": [],
+            "instruction_refinement": []
+          },
+          "summary": {
+            "average_enum_macro_f1": 0.8277309568014068,
+            "average_enum_macro_precision": 0.847037037037037,
+            "average_enum_macro_recall": 0.8441553515237725,
+            "total_examples": 39
+          },
+          "detailed_failed_cases": {
+            "invalid_json": [],
+            "schema_violations": [],
+            "missing_fields": [],
+            "wrong_classifications": [
+              {
+                "example_idx": 4,
+                "input_prompt": "Add List view and Map view in listing section(query)",
+                "ground_truth": {
+                  "action": "CODE_GENERATION",
+                  "platform": "NOT_FOUND",
+                  "framework": "NOT_FOUND",
+                  "subAction": "VISUAL_EDITS",
+                  "languageType": "NOT_FOUND"
+                },
+                "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+                "timestamp": "2025-06-13T14:42:13.442983",
+                "wrong_fields": [
+                  {
+                    "field": "subAction",
+                    "predicted_value": "CODING",
+                    "expected_value": "VISUAL_EDITS"
+                  },
+                  {
+                    "field": "platform",
+                    "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                    "expected_value": "NOT_FOUND"
+                  }
+                ]
+              },
+              {
+                "example_idx": 5,
+                "input_prompt": "Create template of only UI of login screen with username and password. with logic (query)",
+                "ground_truth": {
+                  "action": "CODE_GENERATION",
+                  "platform": "NOT_FOUND",
+                  "framework": "NOT_FOUND",
+                  "subAction": "CODING",
+                  "languageType": "NOT_FOUND"
+                },
+                "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+                "timestamp": "2025-06-13T14:42:13.443074",
+                "wrong_fields": [
+                  {
+                    "field": "platform",
+                    "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                    "expected_value": "NOT_FOUND"
+                  }
+                ]
+              },
+              {
+                "example_idx": 7,
+                "input_prompt": "mock code(query)",
+                "ground_truth": {
+                  "action": "CODE_GENERATION",
+                  "platform": "NOT_FOUND",
+                  "framework": "NOT_FOUND",
+                  "subAction": "CODING",
+                  "languageType": "NOT_FOUND"
+                },
+                "prediction_text": "```json\n{\n    \"action\": \"NOT_FOUND\",\n    \"subAction\": \"GENERAL\",\n    \"platform\": \"NOT_FOUND\",\n    \"framework\": \"NOT_FOUND\",\n    \"languageType\": \"NOT_FOUND\"\n}\n```",
+                "timestamp": "2025-06-13T14:42:13.443240",
+                "wrong_fields": [
+                  {
+                    "field": "action",
+                    "predicted_value": "NOT_FOUND",
+                    "expected_value": "CODE_GENERATION"
+                  },
+                  {
+                    "field": "subAction",
+                    "predicted_value": "GENERAL",
+                    "expected_value": "CODING"
+                  }
+                ]
+              },
+              {
+                "example_idx": 8,
+                "input_prompt": "We are creating a design for B2B Diamond Trading Platform for customers. There will be more than 40,000 diamonds on the platform so design it in a way that a user can experience the platform in a best possible way. **1. Registration & Login** - **Quick Registration:** Simple form with basic details - **Country-Specific KYC:** Based on regional compliance requirements - **Login Options:** - Registered user login - Guest login (limited features) - **Login Security:** - Password protection - 2FA (Optional) **2. Diamond Parameters** Each diamond listed must include the following: - Packet No - Shape - Carat - Color - Clarity - Cut - Polish (Pol) - Symmetry (Sym) - Fluorescence (Fls) - Rapaport Price (Rap.$) - Discount % (Disc %) - Price per Carat (Price/ct) - Total Amount (Amount) - Measurement (Length, Width, Height) - Ratio - Depth % - Table % - Crown Angle - Crown Height % - Pavilion Angle - Pavilion Height % - Girdle % - Lab - Report Number - Comments - Key To Symbols - Shade - H&A - Luster - Eye Clean - Table Inclusion (TI) - Side Inclusion (SI) - Table Black (TB) - Side Black (SB) - Table Open Inclusion (TO) - Side Open Inclusion (SO) **3. Buyer activities to be performed on platform** - Search Diamonds: Customer can search with basic and advance filters to get diamonds of their choice - Watchlist: Customer can add diamonds to watch list and get notified if there's a change in price - Cart: Customer can add selected diamonds to cart - Enquiry: Customer can place inquiry for a diamond(s) - Quote: Customer can quote diamonds with its price - Bid: Customers can bid on a diamond when bid is live - Appointment: Customer can book an appointment to physically view diamonds - Hold: Customer can request for a diamond hold if it doesn't want others to purchase it. - Order: Customer can place an order for diamonds - Compare: Customer can compare two or more diamonds to check its parameters - Share: Customers can share excel with all diamonds data, images and certificates with anyone via Email or WhatsApp - Download Diamonds Data Excel, Images and Certificates - Print: Customer can print the list of diamonds - Add Notes: Customer can add notes for internal references - Final Calculations: Show final calculation based on discount and payment terms - Modify Search: Customers can modify the search criteria - Reminders: Customers can set a reminder on specific diamonds with notes - Sort by multiple criteria: Customers can sort diamonds based on multiple criterias - Notification system for order status **4. Analytics & Reporting** - Customer can see all activities they perfomed - Order and transaction summary - Top listed/viewed diamonds - View other related analyticals **5. Settings** - Profile management - Diamond view sequence management - Email/SMS notifications management(query)",
+                "ground_truth": {
+                  "action": "CODE_GENERATION",
+                  "platform": "DYNAMIC_WEB_APPLICATION",
+                  "framework": "NOT_FOUND",
+                  "subAction": "VISUAL_EDITS",
+                  "languageType": "NOT_FOUND"
+                },
+                "prediction_text": "```json\n{\n    \"action\": \"CODE_GENERATION\",\n    \"subAction\": \"CODING\",\n    \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n    \"framework\": \"NOT_FOUND\",\n    \"languageType\": \"NOT_FOUND\"\n}\n```",
+                "timestamp": "2025-06-13T14:42:13.443338",
+                "wrong_fields": [
+                  {
+                    "field": "subAction",
+                    "predicted_value": "CODING",
+                    "expected_value": "VISUAL_EDITS"
+                  }
+                ]
+              },
+              {
+                "example_idx": 11,
+                "input_prompt": "Create a page for convert png to jpeg(query)",
+                "ground_truth": {
+                  "action": "CODE_GENERATION",
+                  "platform": "NOT_FOUND",
+                  "framework": "NOT_FOUND",
+                  "subAction": "CODING",
+                  "languageType": "NOT_FOUND"
+                },
+                "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+                "timestamp": "2025-06-13T14:42:13.443568",
+                "wrong_fields": [
+                  {
+                    "field": "platform",
+                    "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                    "expected_value": "NOT_FOUND"
+                  }
+                ]
+              },
+              {
+                "example_idx": 12,
+                "input_prompt": "react hello world animated page(query)",
+                "ground_truth": {
+                  "action": "CODE_GENERATION",
+                  "platform": "STATIC_WEB_APPLICATION",
+                  "framework": "REACT",
+                  "subAction": "CODING",
+                  "languageType": "REACT_JAVASCRIPT"
+                },
+                "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"VISUAL_EDITS\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"REACT\",\n\"languageType\": \"REACT_JAVASCRIPT\"\n}",
+                "timestamp": "2025-06-13T14:42:13.443648",
+                "wrong_fields": [
+                  {
+                    "field": "subAction",
+                    "predicted_value": "VISUAL_EDITS",
+                    "expected_value": "CODING"
+                  },
+                  {
+                    "field": "platform",
+                    "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                    "expected_value": "STATIC_WEB_APPLICATION"
+                  }
+                ]
+              },
+              {
+                "example_idx": 13,
+                "input_prompt": "Employee Directory not opening as default, please add this page as default route(query)",
+                "ground_truth": {
+                  "action": "CODE_GENERATION",
+                  "platform": "NOT_FOUND",
+                  "framework": "NOT_FOUND",
+                  "subAction": "CODING",
+                  "languageType": "NOT_FOUND"
+                },
+                "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+                "timestamp": "2025-06-13T14:42:13.443729",
+                "wrong_fields": [
+                  {
+                    "field": "platform",
+                    "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                    "expected_value": "NOT_FOUND"
+                  }
+                ]
+              },
+              {
+                "example_idx": 17,
+                "input_prompt": "Add signup page(query)",
+                "ground_truth": {
+                  "action": "CODE_GENERATION",
+                  "platform": "NOT_FOUND",
+                  "framework": "NOT_FOUND",
+                  "subAction": "CODING",
+                  "languageType": "NOT_FOUND"
+                },
+                "prediction_text": "{\n    \"action\": \"CODE_GENERATION\",\n    \"subAction\": \"CODING\",\n    \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n    \"framework\": \"NOT_FOUND\",\n    \"languageType\": \"NOT_FOUND\"\n}",
+                "timestamp": "2025-06-13T14:42:13.444008",
+                "wrong_fields": [
+                  {
+                    "field": "platform",
+                    "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                    "expected_value": "NOT_FOUND"
+                  }
+                ]
+              },
+              {
+                "example_idx": 19,
+                "input_prompt": "check internet speed App(query)",
+                "ground_truth": {
+                  "action": "CODE_GENERATION",
+                  "platform": "NOT_FOUND",
+                  "framework": "NOT_FOUND",
+                  "subAction": "GENERAL",
+                  "languageType": "NOT_FOUND"
+                },
+                "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"STATIC_MOBILE_APP\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+                "timestamp": "2025-06-13T14:42:13.444144",
+                "wrong_fields": [
+                  {
+                    "field": "subAction",
+                    "predicted_value": "CODING",
+                    "expected_value": "GENERAL"
+                  },
+                  {
+                    "field": "platform",
+                    "predicted_value": "STATIC_MOBILE_APP",
+                    "expected_value": "NOT_FOUND"
+                  }
+                ]
+              },
+              {
+                "example_idx": 20,
+                "input_prompt": "Create a single screen for rupee to dollar converter in web(query)",
+                "ground_truth": {
+                  "action": "CODE_GENERATION",
+                  "platform": "STATIC_WEB_APPLICATION",
+                  "framework": "NOT_FOUND",
+                  "subAction": "CODING",
+                  "languageType": "NOT_FOUND"
+                },
+                "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"CODING\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"NOT_FOUND\",\n  \"languageType\": \"NOT_FOUND\"\n}\n```",
+                "timestamp": "2025-06-13T14:42:13.444220",
+                "wrong_fields": [
+                  {
+                    "field": "platform",
+                    "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                    "expected_value": "STATIC_WEB_APPLICATION"
+                  }
+                ]
+              },
+              {
+                "example_idx": 22,
+                "input_prompt": "Create new screen for the laptop and other items assigned to every employee. show in table with accordion UI(query)",
+                "ground_truth": {
+                  "action": "CODE_GENERATION",
+                  "platform": "NOT_FOUND",
+                  "framework": "NOT_FOUND",
+                  "subAction": "VISUAL_EDITS",
+                  "languageType": "NOT_FOUND"
+                },
+                "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+                "timestamp": "2025-06-13T14:42:13.444375",
+                "wrong_fields": [
+                  {
+                    "field": "subAction",
+                    "predicted_value": "CODING",
+                    "expected_value": "VISUAL_EDITS"
+                  },
+                  {
+                    "field": "platform",
+                    "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                    "expected_value": "NOT_FOUND"
+                  }
+                ]
+              },
+              {
+                "example_idx": 24,
+                "input_prompt": "/home/ubuntu/app/wine_showcase/src/pages/WineShowcase/components/FoodPairing.jsx: Unexpected t\noken, expected \",\" (291:94)(query)",
+                "ground_truth": {
+                  "action": "CODE_GENERATION",
+                  "platform": "NOT_FOUND",
+                  "framework": "REACT",
+                  "subAction": "ERROR",
+                  "languageType": "REACT_JAVASCRIPT"
+                },
+                "prediction_text": "```\n{\n  \"action\": \"CODE_GENERATION\",\n  \"subAction\": \"ERROR\",\n  \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n  \"framework\": \"REACT\",\n  \"languageType\": \"REACT_JAVASCRIPT\"\n}\n```",
+                "timestamp": "2025-06-13T14:42:13.444506",
+                "wrong_fields": [
+                  {
+                    "field": "platform",
+                    "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                    "expected_value": "NOT_FOUND"
+                  }
+                ]
+              },
+              {
+                "example_idx": 29,
+                "input_prompt": "Create a web page that presents products with rich visuals and optimized content to maximize user engagement and conversions. Features include 360\u00b0 product views, variant selection, customer reviews, real-time inventory updates, sticky \"Add to Cart\" buttons, related products, urgency indicators (\"Only 2 left!\"), and quick checkout options.(query)",
+                "ground_truth": {
+                  "action": "CODE_GENERATION",
+                  "platform": "DYNAMIC_WEB_APPLICATION",
+                  "framework": "NOT_FOUND",
+                  "subAction": "VISUAL_EDITS",
+                  "languageType": "NOT_FOUND"
+                },
+                "prediction_text": "{\n    \"action\": \"CODE_GENERATION\",\n    \"subAction\": \"CODING\",\n    \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n    \"framework\": \"NOT_FOUND\",\n    \"languageType\": \"NOT_FOUND\"\n}",
+                "timestamp": "2025-06-13T14:42:13.444835",
+                "wrong_fields": [
+                  {
+                    "field": "subAction",
+                    "predicted_value": "CODING",
+                    "expected_value": "VISUAL_EDITS"
+                  }
+                ]
+              },
+              {
+                "example_idx": 34,
+                "input_prompt": "create a welcome back page(query)",
+                "ground_truth": {
+                  "action": "CODE_GENERATION",
+                  "platform": "NOT_FOUND",
+                  "framework": "NOT_FOUND",
+                  "subAction": "CODING",
+                  "languageType": "NOT_FOUND"
+                },
+                "prediction_text": "{\n    \"action\": \"CODE_GENERATION\",\n    \"subAction\": \"CODING\",\n    \"platform\": \"DYNAMIC_WEB_APPLICATION\",\n    \"framework\": \"NOT_FOUND\",\n    \"languageType\": \"NOT_FOUND\"\n}",
+                "timestamp": "2025-06-13T14:42:13.445173",
+                "wrong_fields": [
+                  {
+                    "field": "platform",
+                    "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                    "expected_value": "NOT_FOUND"
+                  }
+                ]
+              },
+              {
+                "example_idx": 36,
+                "input_prompt": "User list screen for IT company(query)",
+                "ground_truth": {
+                  "action": "CODE_GENERATION",
+                  "platform": "NOT_FOUND",
+                  "framework": "NOT_FOUND",
+                  "subAction": "GENERAL",
+                  "languageType": "NOT_FOUND"
+                },
+                "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+                "timestamp": "2025-06-13T14:42:13.445305",
+                "wrong_fields": [
+                  {
+                    "field": "subAction",
+                    "predicted_value": "CODING",
+                    "expected_value": "GENERAL"
+                  },
+                  {
+                    "field": "platform",
+                    "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                    "expected_value": "NOT_FOUND"
+                  }
+                ]
+              },
+              {
+                "example_idx": 37,
+                "input_prompt": "A real-time supply chain orchestrator for global enterprises.\nTracks shipments, predicts delays, and optimizes routes\u2014logistics chaos, terminated.(query)",
+                "ground_truth": {
+                  "action": "CODE_GENERATION",
+                  "platform": "NOT_FOUND",
+                  "framework": "NOT_FOUND",
+                  "subAction": "GENERAL",
+                  "languageType": "NOT_FOUND"
+                },
+                "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"CODING\",\n\"platform\": \"DYNAMIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+                "timestamp": "2025-06-13T14:42:13.445375",
+                "wrong_fields": [
+                  {
+                    "field": "subAction",
+                    "predicted_value": "CODING",
+                    "expected_value": "GENERAL"
+                  },
+                  {
+                    "field": "platform",
+                    "predicted_value": "DYNAMIC_WEB_APPLICATION",
+                    "expected_value": "NOT_FOUND"
+                  }
+                ]
+              },
+              {
+                "example_idx": 38,
+                "input_prompt": "updte the home page(query)",
+                "ground_truth": {
+                  "action": "CODE_GENERATION",
+                  "platform": "NOT_FOUND",
+                  "framework": "NOT_FOUND",
+                  "subAction": "VISUAL_EDITS",
+                  "languageType": "NOT_FOUND"
+                },
+                "prediction_text": "{\n\"action\": \"CODE_GENERATION\",\n\"subAction\": \"VISUAL_EDITS\",\n\"platform\": \"STATIC_WEB_APPLICATION\",\n\"framework\": \"NOT_FOUND\",\n\"languageType\": \"NOT_FOUND\"\n}",
+                "timestamp": "2025-06-13T14:42:13.445443",
+                "wrong_fields": [
+                  {
+                    "field": "platform",
+                    "predicted_value": "STATIC_WEB_APPLICATION",
+                    "expected_value": "NOT_FOUND"
+                  }
+                ]
+              }
+            ]
+          },
+          "overall_accuracy": 0.5641025641025641,
+          "evaluation_metadata": {
+            "evaluation_type": "dev_b_validation",
+            "model_used": "llama-3.3-70b-versatile",
+            "num_samples": 39,
+            "prompt_length": 2071
+          }
+        },
+        "human_feedback": {
+          "status": "traces_created",
+          "trace_ids": [
+            "325cd993-cea3-49bd-889b-f93fea1340b2",
+            "2bae789b-c3c0-415a-8175-dffadb0a9a96",
+            "ca641dd0-d3b7-4ee8-b440-b5f28e55ef89",
+            "52d92f94-c7f5-42d0-8f58-f1ca5e6a1344",
+            "727b3399-3377-421e-82b1-8efe872b26db",
+            "bf3f9b83-a89a-400f-9d8a-c6642d6fcf06",
+            "40371ccd-a656-43a0-b206-e4cceb8ee875",
+            "48fbcc18-be8f-452a-bc37-3e16032fde45",
+            "82075e0f-51a4-4bf0-80cf-3be3d7a4531a",
+            "c1370b82-5450-4c03-96f4-d828c8ec5755"
+          ],
+          "queue_name": "prompt_optimization_dev_b",
+          "total_traces": 10,
+          "instructions": [
+            "1. Go to LangFuse dashboard",
+            "2. Navigate to 'Annotate' tab",
+            "3. Add traces to annotation queue",
+            "4. Complete human annotations"
+          ]
+        },
+        "optimized_prompt": "You are a software development request classifier. Analyze the input to determine what type of development work is needed and route it to the appropriate code generation service.\n\n**CLASSIFICATION GUIDELINES:**\n\n**action**: Determine if this requires code generation\n- CODE_GENERATION: Clear software development requests (features, UI components, bug fixes)\n- NOT_FOUND: Non-coding requests, vague inquiries, or requests outside development scope\n\n**subAction**: Categorize the type of development work\n- CODING: New features, functionality, or components\n- VISUAL_EDITS: UI/styling changes, layout modifications, design updates\n- ERROR: Bug fixes, error resolution, debugging issues\n- GENERAL: Broad/vague requests without specific technical requirements\n\n**platform**: Identify target deployment environment (be conservative - use NOT_FOUND when unclear)\n- DYNAMIC_WEB_APPLICATION: Web apps with interactivity, login systems, databases\n- STATIC_WEB_APPLICATION: Simple websites, landing pages, portfolios\n- DYNAMIC_MOBILE_APP: Mobile apps with complex features\n- STATIC_MOBILE_APP: Simple mobile apps or prototypes\n- NOT_FOUND: Platform not specified or ambiguous\n\n**framework**: Specify development framework only when clearly indicated\n- REACT: Explicitly mentioned or clear web development context\n- FLUTTER: Explicitly mentioned or clear mobile development context\n- NOT_FOUND: Framework not specified or unclear\n\n**languageType**: Implementation language/framework combination\n- REACT_JAVASCRIPT: React-based implementations\n- NOT_FOUND: Not using React or unclear\n\n**KEY INDICATORS:**\n- UI terms (\"screen\", \"page\", \"button\", \"design\") \u2192 likely VISUAL_EDITS\n- Error messages, \"fix\", \"debug\" \u2192 ERROR\n- \"Login\", \"dashboard\", \"database\" \u2192 DYNAMIC platform\n- \"Website\", \"landing page\" \u2192 STATIC_WEB_APPLICATION\n- \"App\", \"mobile\" \u2192 mobile platform\n- Vague business descriptions without technical details \u2192 GENERAL\n\n**DECISION PRIORITY:** When in doubt, choose NOT_FOUND for platform/framework rather than guessing.\n\nReturn only a valid JSON object with all five fields:"
+      }
+    ],
+    "total_iterations": 1
+  }
+}

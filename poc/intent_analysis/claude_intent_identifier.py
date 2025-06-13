@@ -44,7 +44,7 @@ class ClaudeIntentIdentifier:
         """
         self.schema = schema
         self.baseline_metrics = baseline_metrics
-        self.api_key = os.getenv('anthropic_api_key')
+        self.api_key = os.getenv('ANTHROPIC_API_KEY')
         
         if not self.api_key:
             raise ValueError("ANTHROPIC_API_KEY environment variable is required")

@@ -1,0 +1,3952 @@
+[
+  {
+    "ticket_id": "TKT-0001",
+    "customer_query": "My app keeps crashing when I try to login",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.91,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0002",
+    "customer_query": "I'm thinking of switching to a competitor",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.62,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0003",
+    "customer_query": "My payment method needs to be updated",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.96,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0004",
+    "customer_query": "I've been waiting for help for hours",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.78,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0005",
+    "customer_query": "The search function is broken",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.93,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0006",
+    "customer_query": "The mobile app is very slow",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.98,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0007",
+    "customer_query": "I want to upgrade my plan",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.89,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0008",
+    "customer_query": "This is completely unacceptable",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Complaint"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.63,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0009",
+    "customer_query": "My data isn't syncing across devices",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Complex",
+      "is_support_related": true,
+      "confidence_score": 0.94,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0010",
+    "customer_query": "The search function is broken",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.9,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0011",
+    "customer_query": "The website won't load properly",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.93,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0012",
+    "customer_query": "What's the difference between plan A and B?",
+    "classification": {
+      "department": [
+        "Sales"
+      ],
+      "priority": "Low",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.89,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0013",
+    "customer_query": "Is there a tutorial for beginners?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Setup_Help"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.89,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0014",
+    "customer_query": "Why is everything so complicated?",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.72,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0015",
+    "customer_query": "What's the difference between plan A and B?",
+    "classification": {
+      "department": [
+        "Sales"
+      ],
+      "priority": "Low",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.89,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0016",
+    "customer_query": "I've been waiting for help for hours",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.63,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0017",
+    "customer_query": "When will the new feature be available?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Feature_Request"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.76,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0018",
+    "customer_query": "I can't upload files, getting error 500",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.97,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0019",
+    "customer_query": "I'm new here, where do I start?",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Low",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.8,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0020",
+    "customer_query": "I need an invoice for my purchase",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.98,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0021",
+    "customer_query": "The mobile app is very slow",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.92,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0022",
+    "customer_query": "I can't upload files, getting error 500",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.99,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0023",
+    "customer_query": "The website won't load properly",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.95,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0024",
+    "customer_query": "I didn't receive my refund yet",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Refund"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.91,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0025",
+    "customer_query": "I can't upload files, getting error 500",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.99,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0026",
+    "customer_query": "My data isn't syncing across devices",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Complex",
+      "is_support_related": true,
+      "confidence_score": 0.94,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0027",
+    "customer_query": "The website won't load properly",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.92,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0028",
+    "customer_query": "Why is my bill higher than usual?",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.94,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0029",
+    "customer_query": "My password reset isn't working",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.9,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0030",
+    "customer_query": "I want to upgrade my plan",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.95,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0031",
+    "customer_query": "My password reset isn't working",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.92,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0032",
+    "customer_query": "Do you have any documentation I can read?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.9,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0033",
+    "customer_query": "Tell me a funny joke",
+    "classification": {
+      "department": [],
+      "priority": "Low",
+      "category": [],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": false,
+      "confidence_score": 0.0,
+      "needs_human_review": true
+    }
+  },
+  {
+    "ticket_id": "TKT-0034",
+    "customer_query": "What's the difference between plan A and B?",
+    "classification": {
+      "department": [
+        "Sales"
+      ],
+      "priority": "Low",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.89,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0035",
+    "customer_query": "Your customer service is the worst",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Complaint"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.75,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0036",
+    "customer_query": "What's the difference between plan A and B?",
+    "classification": {
+      "department": [
+        "Sales"
+      ],
+      "priority": "Low",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.83,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0037",
+    "customer_query": "I'm very disappointed with your product",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Complaint"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.67,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0038",
+    "customer_query": "Why is my bill higher than usual?",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.97,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0039",
+    "customer_query": "Do you have any documentation I can read?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.83,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0040",
+    "customer_query": "I'd love to learn more about your advanced features",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Feature_Request"
+      ],
+      "sentiment": "Positive",
+      "urgency": "Not_Urgent",
+      "complexity": "Complex",
+      "is_support_related": true,
+      "confidence_score": 0.77,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0041",
+    "customer_query": "When will the new feature be available?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Feature_Request"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.87,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0042",
+    "customer_query": "When will the new feature be available?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Feature_Request"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.88,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0043",
+    "customer_query": "I'm getting a blank screen after login",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.9,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0044",
+    "customer_query": "My password reset isn't working",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.94,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0045",
+    "customer_query": "This is completely unacceptable",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Complaint"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.62,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0046",
+    "customer_query": "I DEMAND A FULL REFUND RIGHT NOW",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Low",
+      "category": [
+        "Refund"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.69,
+      "needs_human_review": true,
+      "query_type": "edge_cases"
+    }
+  },
+  {
+    "ticket_id": "TKT-0047",
+    "customer_query": "My data isn't syncing across devices",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Complex",
+      "is_support_related": true,
+      "confidence_score": 0.94,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0048",
+    "customer_query": "Do you have any documentation I can read?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.83,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0049",
+    "customer_query": "I can't upload files, getting error 500",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.86,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0050",
+    "customer_query": "I DEMAND A FULL REFUND RIGHT NOW",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Low",
+      "category": [
+        "Refund"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.63,
+      "needs_human_review": true,
+      "query_type": "edge_cases"
+    }
+  },
+  {
+    "ticket_id": "TKT-0051",
+    "customer_query": "I want to upgrade my plan",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.97,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0052",
+    "customer_query": "The mobile app is very slow",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.9,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0053",
+    "customer_query": "Could you walk me through the setup process?",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Low",
+      "category": [
+        "Setup_Help"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.84,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0054",
+    "customer_query": "My app keeps crashing when I try to login",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.87,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0055",
+    "customer_query": "My password reset isn't working",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.98,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0056",
+    "customer_query": "My password reset isn't working",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.87,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0057",
+    "customer_query": "I can't access my account and I have a deadline",
+    "classification": {
+      "department": [
+        "Account"
+      ],
+      "priority": "Critical",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.72,
+      "needs_human_review": true,
+      "query_type": "edge_cases"
+    }
+  },
+  {
+    "ticket_id": "TKT-0058",
+    "customer_query": "My app keeps crashing when I try to login",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.98,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0059",
+    "customer_query": "I've been waiting for help for hours",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.65,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0060",
+    "customer_query": "The mobile app is very slow",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.87,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0061",
+    "customer_query": "I lost 3 hours of work because of your bug",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Low",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.62,
+      "needs_human_review": true,
+      "query_type": "edge_cases"
+    }
+  },
+  {
+    "ticket_id": "TKT-0062",
+    "customer_query": "I can't access my account and I have a deadline",
+    "classification": {
+      "department": [
+        "Account"
+      ],
+      "priority": "Critical",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.76,
+      "needs_human_review": true,
+      "query_type": "edge_cases"
+    }
+  },
+  {
+    "ticket_id": "TKT-0063",
+    "customer_query": "The system went down during my presentation",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Critical",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.69,
+      "needs_human_review": true,
+      "query_type": "edge_cases"
+    }
+  },
+  {
+    "ticket_id": "TKT-0064",
+    "customer_query": "My payment method needs to be updated",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.94,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0065",
+    "customer_query": "How do I cook rice?",
+    "classification": {
+      "department": [],
+      "priority": "Low",
+      "category": [],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": false,
+      "confidence_score": 0.0,
+      "needs_human_review": true
+    }
+  },
+  {
+    "ticket_id": "TKT-0066",
+    "customer_query": "I'm very disappointed with your product",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Complaint"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.65,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0067",
+    "customer_query": "I want to cancel my subscription",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.87,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0068",
+    "customer_query": "I've been waiting for help for hours",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.77,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0069",
+    "customer_query": "When will the new feature be available?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Feature_Request"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.84,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0070",
+    "customer_query": "The search function is broken",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.92,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0071",
+    "customer_query": "This service is terrible, nothing works",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Complaint"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.67,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0072",
+    "customer_query": "How do I cook rice?",
+    "classification": {
+      "department": [],
+      "priority": "Low",
+      "category": [],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": false,
+      "confidence_score": 0.0,
+      "needs_human_review": true
+    }
+  },
+  {
+    "ticket_id": "TKT-0073",
+    "customer_query": "Why is my bill higher than usual?",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.91,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0074",
+    "customer_query": "Hi, could you please help me understand how to use feature X?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Setup_Help"
+      ],
+      "sentiment": "Positive",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.82,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0075",
+    "customer_query": "I was charged twice this month",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.98,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0076",
+    "customer_query": "My password reset isn't working",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.98,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0077",
+    "customer_query": "I'm very disappointed with your product",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Complaint"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.72,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0078",
+    "customer_query": "My credit card was declined",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.94,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0079",
+    "customer_query": "Can you recommend a good restaurant?",
+    "classification": {
+      "department": [],
+      "priority": "Low",
+      "category": [],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": false,
+      "confidence_score": 0.0,
+      "needs_human_review": true
+    }
+  },
+  {
+    "ticket_id": "TKT-0080",
+    "customer_query": "The website won't load properly",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.99,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0081",
+    "customer_query": "I want to cancel my subscription",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.99,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0082",
+    "customer_query": "I want to upgrade my plan",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.95,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0083",
+    "customer_query": "Your customer service is the worst",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Complaint"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.66,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0084",
+    "customer_query": "I want to cancel my subscription",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.96,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0085",
+    "customer_query": "The website won't load properly",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.88,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0086",
+    "customer_query": "I need an invoice for my purchase",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.95,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0087",
+    "customer_query": "Why is everything so complicated?",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.8,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0088",
+    "customer_query": "I can't access my account and I have a deadline",
+    "classification": {
+      "department": [
+        "Account"
+      ],
+      "priority": "Critical",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.72,
+      "needs_human_review": true,
+      "query_type": "edge_cases"
+    }
+  },
+  {
+    "ticket_id": "TKT-0089",
+    "customer_query": "My password reset isn't working",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.96,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0090",
+    "customer_query": "When will the new feature be available?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Feature_Request"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.81,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0091",
+    "customer_query": "I'd love to learn more about your advanced features",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Feature_Request"
+      ],
+      "sentiment": "Positive",
+      "urgency": "Not_Urgent",
+      "complexity": "Complex",
+      "is_support_related": true,
+      "confidence_score": 0.85,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0092",
+    "customer_query": "I'm getting a blank screen after login",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 1.0,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0093",
+    "customer_query": "Why is my bill higher than usual?",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 1.0,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0094",
+    "customer_query": "My data isn't syncing across devices",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Complex",
+      "is_support_related": true,
+      "confidence_score": 0.89,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0095",
+    "customer_query": "The search function is broken",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.91,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0096",
+    "customer_query": "I want to cancel my subscription",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.91,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0097",
+    "customer_query": "What's the difference between plan A and B?",
+    "classification": {
+      "department": [
+        "Sales"
+      ],
+      "priority": "Low",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.84,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0098",
+    "customer_query": "Can you recommend a good restaurant?",
+    "classification": {
+      "department": [],
+      "priority": "Low",
+      "category": [],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": false,
+      "confidence_score": 0.0,
+      "needs_human_review": true
+    }
+  },
+  {
+    "ticket_id": "TKT-0099",
+    "customer_query": "I'm new here, where do I start?",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Low",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.76,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0100",
+    "customer_query": "My password reset isn't working",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.87,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0101",
+    "customer_query": "I can't upload files, getting error 500",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.91,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0102",
+    "customer_query": "My data isn't syncing across devices",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Complex",
+      "is_support_related": true,
+      "confidence_score": 0.91,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0103",
+    "customer_query": "I need an invoice for my purchase",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.95,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0104",
+    "customer_query": "Can you help me with my homework?",
+    "classification": {
+      "department": [],
+      "priority": "Low",
+      "category": [],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": false,
+      "confidence_score": 0.0,
+      "needs_human_review": true
+    }
+  },
+  {
+    "ticket_id": "TKT-0105",
+    "customer_query": "I can't upload files, getting error 500",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.96,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0106",
+    "customer_query": "The mobile app is very slow",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.99,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0107",
+    "customer_query": "What's the weather forecast?",
+    "classification": {
+      "department": [],
+      "priority": "Low",
+      "category": [],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": false,
+      "confidence_score": 0.0,
+      "needs_human_review": true
+    }
+  },
+  {
+    "ticket_id": "TKT-0108",
+    "customer_query": "I need an invoice for my purchase",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.86,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0109",
+    "customer_query": "I'm getting a blank screen after login",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.96,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0110",
+    "customer_query": "I was charged twice this month",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.92,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0111",
+    "customer_query": "Could you walk me through the setup process?",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Low",
+      "category": [
+        "Setup_Help"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.82,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0112",
+    "customer_query": "I can't upload files, getting error 500",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.92,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0113",
+    "customer_query": "Could you walk me through the setup process?",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Low",
+      "category": [
+        "Setup_Help"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.83,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0114",
+    "customer_query": "The search function is broken",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.87,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0115",
+    "customer_query": "Your customer service is the worst",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Complaint"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.72,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0116",
+    "customer_query": "My credit card was declined",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.91,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0117",
+    "customer_query": "Is there a tutorial for beginners?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Setup_Help"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.81,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0118",
+    "customer_query": "The search function is broken",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.86,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0119",
+    "customer_query": "I've been waiting for help for hours",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.61,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0120",
+    "customer_query": "I'd love to learn more about your advanced features",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Feature_Request"
+      ],
+      "sentiment": "Positive",
+      "urgency": "Not_Urgent",
+      "complexity": "Complex",
+      "is_support_related": true,
+      "confidence_score": 0.79,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0121",
+    "customer_query": "I can't upload files, getting error 500",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.96,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0122",
+    "customer_query": "The website won't load properly",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.98,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0123",
+    "customer_query": "your app deleted all my important data",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "High",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Complex",
+      "is_support_related": true,
+      "confidence_score": 0.62,
+      "needs_human_review": true,
+      "query_type": "edge_cases"
+    }
+  },
+  {
+    "ticket_id": "TKT-0124",
+    "customer_query": "I need an invoice for my purchase",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.96,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0125",
+    "customer_query": "Is there a tutorial for beginners?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Setup_Help"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.83,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0126",
+    "customer_query": "Hi, could you please help me understand how to use feature X?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Setup_Help"
+      ],
+      "sentiment": "Positive",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.88,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0127",
+    "customer_query": "I was charged twice this month",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.94,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0128",
+    "customer_query": "Do you have any documentation I can read?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.89,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0129",
+    "customer_query": "The search function is broken",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.85,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0130",
+    "customer_query": "I didn't receive my refund yet",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Refund"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.91,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0131",
+    "customer_query": "I need an invoice for my purchase",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.89,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0132",
+    "customer_query": "Your customer service is the worst",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Complaint"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.61,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0133",
+    "customer_query": "My password reset isn't working",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.93,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0134",
+    "customer_query": "I want to cancel my subscription",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.99,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0135",
+    "customer_query": "I want to speak to your manager",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.72,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0136",
+    "customer_query": "My app keeps crashing when I try to login",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.99,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0137",
+    "customer_query": "My password reset isn't working",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.94,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0138",
+    "customer_query": "I'm thinking of switching to a competitor",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.78,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0139",
+    "customer_query": "I'm getting a blank screen after login",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.98,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0140",
+    "customer_query": "Why is everything so complicated?",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.78,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0141",
+    "customer_query": "I need an invoice for my purchase",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.9,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0142",
+    "customer_query": "What's the difference between plan A and B?",
+    "classification": {
+      "department": [
+        "Sales"
+      ],
+      "priority": "Low",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.76,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0143",
+    "customer_query": "I was charged twice this month",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.87,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0144",
+    "customer_query": "I'm getting a blank screen after login",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.88,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0145",
+    "customer_query": "My app keeps crashing when I try to login",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.87,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0146",
+    "customer_query": "Your customer service is the worst",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Complaint"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.71,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0147",
+    "customer_query": "The search function is broken",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.94,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0148",
+    "customer_query": "I can't upload files, getting error 500",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.9,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0149",
+    "customer_query": "I'm getting a blank screen after login",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.95,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0150",
+    "customer_query": "My data isn't syncing across devices",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Complex",
+      "is_support_related": true,
+      "confidence_score": 0.91,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0151",
+    "customer_query": "My credit card was declined",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.87,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0152",
+    "customer_query": "I'd love to learn more about your advanced features",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Feature_Request"
+      ],
+      "sentiment": "Positive",
+      "urgency": "Not_Urgent",
+      "complexity": "Complex",
+      "is_support_related": true,
+      "confidence_score": 0.8,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0153",
+    "customer_query": "I can't upload files, getting error 500",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.97,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0154",
+    "customer_query": "I can't upload files, getting error 500",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.96,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0155",
+    "customer_query": "When will the new feature be available?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Feature_Request"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.76,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0156",
+    "customer_query": "I can't upload files, getting error 500",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.98,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0157",
+    "customer_query": "I can't upload files, getting error 500",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.94,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0158",
+    "customer_query": "The website won't load properly",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.99,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0159",
+    "customer_query": "What's the weather forecast?",
+    "classification": {
+      "department": [],
+      "priority": "Low",
+      "category": [],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": false,
+      "confidence_score": 0.0,
+      "needs_human_review": true
+    }
+  },
+  {
+    "ticket_id": "TKT-0160",
+    "customer_query": "I can't upload files, getting error 500",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.89,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0161",
+    "customer_query": "What's the difference between plan A and B?",
+    "classification": {
+      "department": [
+        "Sales"
+      ],
+      "priority": "Low",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.84,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0162",
+    "customer_query": "This is completely unacceptable",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Complaint"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.71,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0163",
+    "customer_query": "I'd love to learn more about your advanced features",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Feature_Request"
+      ],
+      "sentiment": "Positive",
+      "urgency": "Not_Urgent",
+      "complexity": "Complex",
+      "is_support_related": true,
+      "confidence_score": 0.77,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0164",
+    "customer_query": "I'm getting a blank screen after login",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.93,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0165",
+    "customer_query": "Why is my bill higher than usual?",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.95,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0166",
+    "customer_query": "When will the new feature be available?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Feature_Request"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.78,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0167",
+    "customer_query": "My data isn't syncing across devices",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Complex",
+      "is_support_related": true,
+      "confidence_score": 0.99,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0168",
+    "customer_query": "I'm new here, where do I start?",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Low",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.8,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0169",
+    "customer_query": "I want to cancel my subscription",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.97,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0170",
+    "customer_query": "Why is my bill higher than usual?",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.91,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0171",
+    "customer_query": "The website won't load properly",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.86,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0172",
+    "customer_query": "My data isn't syncing across devices",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Complex",
+      "is_support_related": true,
+      "confidence_score": 0.91,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0173",
+    "customer_query": "Hi, could you please help me understand how to use feature X?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Setup_Help"
+      ],
+      "sentiment": "Positive",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.89,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0174",
+    "customer_query": "My app keeps crashing when I try to login",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.86,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0175",
+    "customer_query": "The website won't load properly",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.95,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0176",
+    "customer_query": "everything is broken fix it immediately",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Critical",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Emergency",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.64,
+      "needs_human_review": true,
+      "query_type": "edge_cases"
+    }
+  },
+  {
+    "ticket_id": "TKT-0177",
+    "customer_query": "I've been waiting for help for hours",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.76,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0178",
+    "customer_query": "I want to speak to your manager",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.7,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0179",
+    "customer_query": "I'm thinking of switching to a competitor",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.7,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0180",
+    "customer_query": "Is there a tutorial for beginners?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Setup_Help"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.9,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0181",
+    "customer_query": "The search function is broken",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Bug"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.99,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0182",
+    "customer_query": "My credit card was declined",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 1.0,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0183",
+    "customer_query": "The website won't load properly",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.97,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0184",
+    "customer_query": "I want to upgrade my plan",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.99,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0185",
+    "customer_query": "Can you recommend a good restaurant?",
+    "classification": {
+      "department": [],
+      "priority": "Low",
+      "category": [],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": false,
+      "confidence_score": 0.0,
+      "needs_human_review": true
+    }
+  },
+  {
+    "ticket_id": "TKT-0186",
+    "customer_query": "The system went down during my presentation",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Critical",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.69,
+      "needs_human_review": true,
+      "query_type": "edge_cases"
+    }
+  },
+  {
+    "ticket_id": "TKT-0187",
+    "customer_query": "What's the difference between plan A and B?",
+    "classification": {
+      "department": [
+        "Sales"
+      ],
+      "priority": "Low",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.84,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0188",
+    "customer_query": "Do you have any documentation I can read?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.79,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0189",
+    "customer_query": "Why is my bill higher than usual?",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.93,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0190",
+    "customer_query": "Tell me a funny joke",
+    "classification": {
+      "department": [],
+      "priority": "Low",
+      "category": [],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": false,
+      "confidence_score": 0.0,
+      "needs_human_review": true
+    }
+  },
+  {
+    "ticket_id": "TKT-0191",
+    "customer_query": "I want to speak to your manager",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.65,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0192",
+    "customer_query": "My credit card was declined",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.94,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0193",
+    "customer_query": "I want to speak to your manager",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.64,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0194",
+    "customer_query": "I'm thinking of switching to a competitor",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.71,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  },
+  {
+    "ticket_id": "TKT-0195",
+    "customer_query": "The website won't load properly",
+    "classification": {
+      "department": [
+        "Technical"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.96,
+      "needs_human_review": false,
+      "query_type": "technical_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0196",
+    "customer_query": "Could you walk me through the setup process?",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Low",
+      "category": [
+        "Setup_Help"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Moderate",
+      "is_support_related": true,
+      "confidence_score": 0.75,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0197",
+    "customer_query": "When will the new feature be available?",
+    "classification": {
+      "department": [
+        "Product"
+      ],
+      "priority": "Low",
+      "category": [
+        "Feature_Request"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.81,
+      "needs_human_review": false,
+      "query_type": "polite_questions"
+    }
+  },
+  {
+    "ticket_id": "TKT-0198",
+    "customer_query": "My payment method needs to be updated",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Question"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.85,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0199",
+    "customer_query": "I didn't receive my refund yet",
+    "classification": {
+      "department": [
+        "Billing"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Refund"
+      ],
+      "sentiment": "Neutral",
+      "urgency": "Standard",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.87,
+      "needs_human_review": false,
+      "query_type": "billing_direct"
+    }
+  },
+  {
+    "ticket_id": "TKT-0200",
+    "customer_query": "I'm very disappointed with your product",
+    "classification": {
+      "department": [
+        "General"
+      ],
+      "priority": "Medium",
+      "category": [
+        "Complaint"
+      ],
+      "sentiment": "Angry",
+      "urgency": "Not_Urgent",
+      "complexity": "Simple",
+      "is_support_related": true,
+      "confidence_score": 0.8,
+      "needs_human_review": true,
+      "query_type": "indirect_complaints"
+    }
+  }
+]
