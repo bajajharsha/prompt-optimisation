@@ -264,32 +264,101 @@ class CompleteOptimizationSystem:
             retry_attempts = 0
             
             print(f"✅ Best candidate selected: {best_candidate['strategy']}")
-            print(f"   Dev A Improvement: {best_candidate['improvement']:.3f}")
+            print(f"   Dev A Accuracy Improvement: {best_candidate['improvement']:.3f}")
+            print(f"   Composite Score: {best_candidate['composite_score']:+.3f}")
+            if best_candidate.get('f1_improvement', 0) != 0:
+                print(f"   F1 Score Improvement: {best_candidate['f1_improvement']:+.3f}")
+            if best_candidate.get('valid_json_improvement', 0) != 0:
+                print(f"   Valid JSON Improvement: {best_candidate['valid_json_improvement']:+.3f}")
+            if best_candidate.get('failed_cases_reduction', 0) != 0:
+                print(f"   Failed Cases Reduction: {best_candidate['failed_cases_reduction']:+d}")
             
             # Save the selected best prompt to intermediate results
             await self._save_selected_prompt(best_candidate, iteration)
             
-            # Add improvement to history for convergence tracking
-            improvement_history.append(best_candidate['improvement'])
+            # Add improvement to history for convergence tracking (use composite score for better tracking)
+            composite_score = best_candidate.get('composite_score', best_candidate['improvement'])
+            improvement_history.append(composite_score)
             
-            # Check convergence: if last 3 improvements are within threshold, stop
+            # Check convergence: more flexible convergence detection
             if len(improvement_history) >= convergence_patience:
                 recent_improvements = improvement_history[-convergence_patience:]
                 min_improvement = min(recent_improvements)
                 max_improvement = max(recent_improvements)
+                improvement_range = max_improvement - min_improvement
                 
-                if max_improvement - min_improvement <= convergence_threshold:
-                    print(f"🎯 Optimization converged! Improvements stable for {convergence_patience} iterations:")
+                # Only consider convergence if we're in a good performance region
+                recent_avg = sum(recent_improvements) / len(recent_improvements)
+                is_performing_well = recent_avg > 0.01  # Average composite score is positive
+                
+                if improvement_range <= convergence_threshold and is_performing_well:
+                    print(f"🎯 Optimization converged! Composite scores stable and performing well for {convergence_patience} iterations:")
                     for i, imp in enumerate(recent_improvements):
                         print(f"   Iteration {iteration - convergence_patience + i + 1}: {imp:.4f}")
-                    print(f"   Range: {max_improvement - min_improvement:.4f} ≤ {convergence_threshold:.4f}")
+                    print(f"   Range: {improvement_range:.4f} ≤ {convergence_threshold:.4f}")
+                    print(f"   Average performance: {recent_avg:.4f}")
                     print("✅ Using current best prompt as final optimization result")
                     break
+                elif improvement_range <= convergence_threshold and not is_performing_well:
+                    print(f"⚠️  Scores stable but performance is low (avg: {recent_avg:.4f})")
+                    print(f"   Continuing optimization to find better solutions...")
+                elif iteration >= self.config["max_iterations"] - 1:
+                    print(f"🔄 Reached maximum iterations ({self.config['max_iterations']})")
+                    print(f"   Recent performance range: {improvement_range:.4f}")
+                    print(f"   Will complete final iteration and stop")
             
-            # Check minimum improvement threshold (original logic preserved)
-            if best_candidate['improvement'] < self.config["improvement_threshold"]:
-                print(f"⏹️  Improvement below threshold ({self.config['improvement_threshold']:.3f}), stopping")
-                break
+            # Adaptive stopping criteria: consider multiple factors
+            accuracy_improvement = best_candidate['improvement']
+            composite_score = best_candidate.get('composite_score', accuracy_improvement)
+            f1_improvement = best_candidate.get('f1_improvement', 0)
+            failed_cases_reduction = best_candidate.get('failed_cases_reduction', 0)
+            
+            # Dynamic thresholds based on iteration and performance
+            base_threshold = self.config["improvement_threshold"]
+            
+            # Make thresholds more lenient as iterations progress (exploration vs exploitation)
+            iteration_factor = max(0.3, 1.0 - (iteration * 0.1))  # Gets more lenient over time
+            adaptive_accuracy_threshold = base_threshold * iteration_factor
+            adaptive_composite_threshold = base_threshold * iteration_factor * 0.3  # Even more lenient
+            
+            # Check for any meaningful improvement
+            has_meaningful_improvement = (
+                accuracy_improvement >= adaptive_accuracy_threshold or
+                composite_score >= adaptive_composite_threshold or
+                f1_improvement >= 0.02 or  # 2% F1 improvement is meaningful
+                failed_cases_reduction >= 2 or  # Reducing 2+ failed cases is meaningful
+                (accuracy_improvement > -0.01 and composite_score > 0)  # Small regression but positive composite
+            )
+            
+            if has_meaningful_improvement:
+                improvement_reasons = []
+                if accuracy_improvement >= adaptive_accuracy_threshold:
+                    improvement_reasons.append(f"accuracy improvement ({accuracy_improvement:.3f} ≥ {adaptive_accuracy_threshold:.3f})")
+                if composite_score >= adaptive_composite_threshold:
+                    improvement_reasons.append(f"composite score ({composite_score:.3f} ≥ {adaptive_composite_threshold:.3f})")
+                if f1_improvement >= 0.02:
+                    improvement_reasons.append(f"F1 improvement ({f1_improvement:.3f} ≥ 0.02)")
+                if failed_cases_reduction >= 2:
+                    improvement_reasons.append(f"failed cases reduction ({failed_cases_reduction} ≥ 2)")
+                if accuracy_improvement > -0.01 and composite_score > 0:
+                    improvement_reasons.append(f"stable accuracy with positive composite score")
+                
+                print(f"✅ Continuing optimization - meaningful improvement detected:")
+                for reason in improvement_reasons:
+                    print(f"   • {reason}")
+            else:
+                # Only stop if we've tried multiple iterations and see no improvement
+                if iteration >= 2:  # Give at least 2 iterations before considering stopping
+                    print(f"⏹️  No meaningful improvement detected after {iteration} iterations:")
+                    print(f"     Accuracy improvement: {accuracy_improvement:.3f} (threshold: {adaptive_accuracy_threshold:.3f})")
+                    print(f"     Composite score: {composite_score:.3f} (threshold: {adaptive_composite_threshold:.3f})")
+                    print(f"     F1 improvement: {f1_improvement:.3f} (threshold: 0.02)")
+                    print(f"     Failed cases reduction: {failed_cases_reduction} (threshold: 2)")
+                    print("⏹️  Stopping optimization")
+                    break
+                else:
+                    print(f"⚠️  Limited improvement in iteration {iteration}, but continuing to explore...")
+                    print(f"     Will reassess after iteration {iteration + 1}")
             
             # Evaluate on Dev B for human feedback
             print("🔬 Evaluating on Dev B...")
@@ -371,11 +440,14 @@ class CompleteOptimizationSystem:
         baseline_metrics: Dict[str, Any]
     ) -> Optional[Dict[str, Any]]:
         """
-        Evaluate all candidates on Dev A and return the best one
+        Evaluate all candidates on Dev A and return the best one using comprehensive scoring
         """
         best_candidate = None
-        best_improvement = 0.0
+        best_score = -float('inf')
         baseline_accuracy = baseline_metrics['overall_accuracy']
+        baseline_f1 = baseline_metrics['summary']['average_enum_macro_f1']
+        baseline_valid_json = baseline_metrics['validation_metrics']['valid_json_accuracy']
+        baseline_failed_cases = len(baseline_metrics['detailed_failed_cases']['wrong_classifications'])
         
         for candidate in candidates:
             print(f"   Evaluating: {candidate['strategy']}")
@@ -388,17 +460,37 @@ class CompleteOptimizationSystem:
                 evaluation_type="dev_a_candidate"
             )
             
-            # Calculate improvement
-            improvement = candidate_metrics['overall_accuracy'] - baseline_accuracy
+            # Calculate comprehensive score
+            accuracy_improvement = candidate_metrics['overall_accuracy'] - baseline_accuracy
+            f1_improvement = candidate_metrics['summary']['average_enum_macro_f1'] - baseline_f1
+            valid_json_improvement = candidate_metrics['validation_metrics']['valid_json_accuracy'] - baseline_valid_json
+            failed_cases_reduction = baseline_failed_cases - len(candidate_metrics['detailed_failed_cases']['wrong_classifications'])
             
-            print(f"     Accuracy: {candidate_metrics['overall_accuracy']:.3f} (Δ{improvement:+.3f})")
+            # Weighted composite score (prioritizing different aspects)
+            composite_score = (
+                accuracy_improvement * 3.0 +      # Primary metric (weight: 3)
+                f1_improvement * 2.0 +            # F1 score (weight: 2)
+                valid_json_improvement * 1.5 +    # JSON validity (weight: 1.5)
+                (failed_cases_reduction / max(baseline_failed_cases, 1)) * 1.0  # Failed cases reduction (weight: 1)
+            )
             
-            if improvement > best_improvement:
-                best_improvement = improvement
+            print(f"     Accuracy: {candidate_metrics['overall_accuracy']:.3f} (Δ{accuracy_improvement:+.3f})")
+            print(f"     F1 Score: {candidate_metrics['summary']['average_enum_macro_f1']:.3f} (Δ{f1_improvement:+.3f})")
+            print(f"     Valid JSON: {candidate_metrics['validation_metrics']['valid_json_accuracy']:.3f} (Δ{valid_json_improvement:+.3f})")
+            print(f"     Failed Cases: {len(candidate_metrics['detailed_failed_cases']['wrong_classifications'])} (Δ{-failed_cases_reduction:+d})")
+            print(f"     Composite Score: {composite_score:+.3f}")
+            
+            # Select candidate with best composite score (even if accuracy doesn't improve)
+            if composite_score > best_score:
+                best_score = composite_score
                 best_candidate = {
                     **candidate,
                     'dev_a_metrics': candidate_metrics,
-                    'improvement': improvement
+                    'improvement': accuracy_improvement,  # Keep for backward compatibility
+                    'composite_score': composite_score,
+                    'f1_improvement': f1_improvement,
+                    'valid_json_improvement': valid_json_improvement,
+                    'failed_cases_reduction': failed_cases_reduction
                 }
         
         return best_candidate
@@ -433,31 +525,66 @@ class CompleteOptimizationSystem:
             evaluation_type="baseline_test"
         )
         
-        # Compare and make decision
-        test_improvement = test_metrics['overall_accuracy'] - baseline_test_metrics['overall_accuracy']
+        # Calculate comprehensive comparison metrics
+        accuracy_improvement = test_metrics['overall_accuracy'] - baseline_test_metrics['overall_accuracy']
+        f1_improvement = test_metrics['summary']['average_enum_macro_f1'] - baseline_test_metrics['summary']['average_enum_macro_f1']
+        valid_json_improvement = test_metrics['validation_metrics']['valid_json_accuracy'] - baseline_test_metrics['validation_metrics']['valid_json_accuracy']
+        
+        baseline_failed_cases = len(baseline_test_metrics['detailed_failed_cases']['wrong_classifications'])
+        optimized_failed_cases = len(test_metrics['detailed_failed_cases']['wrong_classifications'])
+        failed_cases_reduction = baseline_failed_cases - optimized_failed_cases
+        
+        # Calculate comprehensive score (same weights as Dev A evaluation)
+        comprehensive_score = (
+            accuracy_improvement * 3.0 +      # Primary metric (weight: 3)
+            f1_improvement * 2.0 +            # F1 score (weight: 2)
+            valid_json_improvement * 1.5 +    # JSON validity (weight: 1.5)
+            (failed_cases_reduction / max(baseline_failed_cases, 1)) * 1.0  # Failed cases reduction (weight: 1)
+        )
         
         print(f"\n📈 Final Test Results:")
         print(f"   Baseline Test Accuracy: {baseline_test_metrics['overall_accuracy']:.3f}")
         print(f"   Optimized Test Accuracy: {test_metrics['overall_accuracy']:.3f}")
-        print(f"   Test Improvement: {test_improvement:+.3f}")
+        print(f"   Accuracy Improvement: {accuracy_improvement:+.3f}")
+        print(f"   F1 Score Improvement: {f1_improvement:+.3f}")
+        print(f"   Valid JSON Improvement: {valid_json_improvement:+.3f}")
+        print(f"   Failed Cases Reduction: {failed_cases_reduction:+d}")
+        print(f"   Comprehensive Score: {comprehensive_score:+.3f}")
         
-        # Deployment decision
-        if test_improvement > 0:
+        # Enhanced deployment decision based on comprehensive score
+        if comprehensive_score > 0.01:  # Positive comprehensive improvement
             deployment_decision = "DEPLOY"
             recommended_prompt = final_prompt
-            print("✅ RECOMMENDATION: Deploy optimized prompt")
+            print("✅ RECOMMENDATION: Deploy optimized prompt (comprehensive improvement)")
+        elif accuracy_improvement > 0.005:  # Small but positive accuracy improvement
+            deployment_decision = "DEPLOY"
+            recommended_prompt = final_prompt
+            print("✅ RECOMMENDATION: Deploy optimized prompt (accuracy improvement)")
+        elif f1_improvement > 0.02 and valid_json_improvement >= 0:  # Good F1 improvement with no JSON regression
+            deployment_decision = "DEPLOY"
+            recommended_prompt = final_prompt
+            print("✅ RECOMMENDATION: Deploy optimized prompt (F1 improvement)")
+        elif failed_cases_reduction > 0 and accuracy_improvement >= -0.01:  # Fewer failures with minimal accuracy loss
+            deployment_decision = "DEPLOY"
+            recommended_prompt = final_prompt
+            print("✅ RECOMMENDATION: Deploy optimized prompt (fewer failed cases)")
         else:
             deployment_decision = "KEEP_BASELINE"
             recommended_prompt = self._get_baseline_prompt()
-            print("⚠️  RECOMMENDATION: Keep baseline prompt")
+            print("⚠️  RECOMMENDATION: Keep baseline prompt (no significant improvement)")
         
         # Save final recommended prompt
-        await self._save_final_prompt(recommended_prompt, deployment_decision, test_improvement)
+        await self._save_final_prompt(recommended_prompt, deployment_decision, comprehensive_score)
         
         return {
             "deployment_decision": deployment_decision,
             "recommended_prompt": recommended_prompt,
-            "test_improvement": test_improvement,
+            "test_improvement": accuracy_improvement,  # Keep for backward compatibility
+            "comprehensive_score": comprehensive_score,
+            "accuracy_improvement": accuracy_improvement,
+            "f1_improvement": f1_improvement,
+            "valid_json_improvement": valid_json_improvement,
+            "failed_cases_reduction": failed_cases_reduction,
             "baseline_test_metrics": baseline_test_metrics,
             "optimized_test_metrics": test_metrics,
             "train_baseline_metrics": train_baseline_metrics,
@@ -632,7 +759,7 @@ class CompleteOptimizationSystem:
     def _get_baseline_prompt(self) -> str:
         """Get the baseline prompt"""
         # add schema and this important note, first line of the prompt
-        return self.baseline_prompt + "\n\n" + "The schema is as follows:\n" + json.dumps(self.schema, indent=2) + "\n\nIMPORTANT: Respond with a valid JSON object only. Do not include any explanations or text outside the JSON. Do not add any comments inside the JSON."
+        return self.baseline_prompt + "\n\n" + "The json schema with the fields and their possible values (enum values) is as follows:\n" + json.dumps(self.schema, indent=2) + "\n\nIMPORTANT: Respond with a valid JSON object only. The value should be from enum values only. Do not include any explanations or text outside the JSON. Do not add any comments inside the JSON."
 
 
 async def main():
@@ -656,7 +783,15 @@ async def main():
         # Print final summary
         print(f"\n📋 FINAL SUMMARY:")
         print(f"   Decision: {results['deployment_decision']}")
-        print(f"   Test Improvement: {results['test_improvement']:+.3f}")
+        print(f"   Accuracy Improvement: {results['test_improvement']:+.3f}")
+        if 'comprehensive_score' in results:
+            print(f"   Comprehensive Score: {results['comprehensive_score']:+.3f}")
+        if 'f1_improvement' in results:
+            print(f"   F1 Score Improvement: {results['f1_improvement']:+.3f}")
+        if 'valid_json_improvement' in results:
+            print(f"   Valid JSON Improvement: {results['valid_json_improvement']:+.3f}")
+        if 'failed_cases_reduction' in results:
+            print(f"   Failed Cases Reduction: {results['failed_cases_reduction']:+d}")
         print(f"   Total Iterations: {results['optimization_results']['total_iterations']}")
         print(f"   Stopping Reason: {results['optimization_results']['stopping_reason']}")
         

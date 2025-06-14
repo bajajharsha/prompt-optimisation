@@ -224,6 +224,7 @@ You MUST make significant improvements to the prompt. Analyze the failed cases c
 6. **EDGE CASE HANDLING**: Add specific instructions for ambiguous or edge cases
 7. **NOT STRICT STATEMENTS**: Do not add strict statements according to the failed cases
 8. **INTENT MATCHING**: The optimized prompt MUST be more aligned with the intent of the task
+9. **JSON SCHEMA**: On the basis of sample data, the schema is provided. The optimized prompt MUST be more aligned with the schema.
 
 **REQUIRED CHANGES:**
 - Add explicit examples of correct classifications for problematic cases but not strict statements according to the failed cases

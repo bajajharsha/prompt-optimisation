@@ -181,8 +181,22 @@ class JSONGenerationEvaluator:
             return False
         for field, enum_values in self.schema.items():
             if field in pred_json:
-                if pred_json[field] not in enum_values:
-                    return False
+                pred_val = pred_json[field]
+                if isinstance(pred_val, list):
+                    for item in pred_val:
+                        try:
+                            if item not in enum_values:
+                                return False
+                        except TypeError:
+                            # Unhashable type, consider it invalid
+                            return False
+                else:
+                    try:
+                        if pred_val not in enum_values:
+                            return False
+                    except TypeError:
+                        # Unhashable type, consider it invalid
+                        return False
         return True
     
     def _all_fields_present(self, pred_json: Dict[str, Any]) -> bool:
@@ -194,19 +208,16 @@ class JSONGenerationEvaluator:
     def _evaluate_fields_detailed(self, ref_json: Dict[str, Any], pred_json: Dict[str, Any], example_data: Dict[str, Any]):
         """Evaluate individual fields with detailed error tracking."""
         
-        # Safety check: ensure pred_json is a dictionary
         if not isinstance(pred_json, dict):
             print(f"⚠️ Warning: pred_json is not a dictionary, got {type(pred_json).__name__}: {pred_json}")
             return
         
-        # Track wrong fields for this example
         wrong_fields_for_example = []
         
         for field, enum_values in self.schema.items():
             pred_val = pred_json.get(field)
             ref_val = ref_json.get(field)
             
-            # Track missing fields
             if field not in pred_json:
                 self.field_error_patterns[field]["missing_count"] += 1
                 self.failed_cases["missing_fields"].append({
@@ -215,36 +226,65 @@ class JSONGenerationEvaluator:
                     "expected_value": ref_val
                 })
                 continue
-            
-            # Track invalid enum values
-            if pred_val not in enum_values:
-                # Convert unhashable types to string for dictionary key
-                key_val = str(pred_val) if not isinstance(pred_val, (str, int, float, bool, type(None))) else pred_val
+
+            pred_vals = pred_val if isinstance(pred_val, list) else [pred_val]
+            invalid_vals = []
+            for v in pred_vals:
+                if v is None:
+                    continue
+                try:
+                    if v not in enum_values:
+                        invalid_vals.append(v)
+                except TypeError:
+                    # Handle unhashable types (like dict, list)
+                    invalid_vals.append(v)
+
+            if invalid_vals:
+                key_val = str(pred_val)
                 self.field_error_patterns[field]["invalid_values"][key_val] += 1
                 self.failed_cases["schema_violations"].append({
                     **example_data,
                     "field": field,
                     "invalid_value": pred_val,
+                    "error_details": f"The following values are not in schema: {invalid_vals}",
                     "expected_value": ref_val,
                     "valid_options": enum_values
                 })
                 continue
+
+            ref_vals = ref_val if isinstance(ref_val, list) else [ref_val]
             
-            # Track wrong classifications (valid enum but wrong choice)
-            if pred_val != ref_val and ref_val in enum_values:
-                self.field_error_patterns[field]["confusion_pairs"][f"{ref_val} -> {pred_val}"] += 1
-                
-                # Add to wrong fields for this example
-                wrong_fields_for_example.append({
-                    "field": field,
-                    "predicted_value": pred_val,
-                    "expected_value": ref_val
-                })
+            # Convert to hashable types for comparison
+            def make_hashable(val):
+                if isinstance(val, (dict, list)):
+                    return str(val)
+                return val
             
-            # Update confusion matrix
-            self._update_enum_confusion(field, ref_val, pred_val, enum_values)
+            pred_vals_hashable = [make_hashable(v) for v in pred_vals]
+            ref_vals_hashable = [make_hashable(v) for v in ref_vals]
+            
+            if set(pred_vals_hashable) != set(ref_vals_hashable):
+                all_refs_valid = True
+                for v in ref_vals:
+                    if v is None:
+                        continue
+                    try:
+                        if v not in enum_values:
+                            all_refs_valid = False
+                            break
+                    except TypeError:
+                        all_refs_valid = False
+                        break
+                if all_refs_valid:
+                    self.field_error_patterns[field]["confusion_pairs"][f"{sorted([str(v) for v in ref_vals])} -> {sorted([str(v) for v in pred_vals])}"] += 1
+                    wrong_fields_for_example.append({
+                        "field": field,
+                        "predicted_value": pred_vals,
+                        "expected_value": ref_vals
+                    })
+
+            self._update_enum_confusion(field, ref_vals, pred_vals, enum_values)
         
-        # If there are wrong classifications for this example, group them together
         if wrong_fields_for_example:
             grouped_wrong_classification = {
                 **example_data,
@@ -252,22 +292,36 @@ class JSONGenerationEvaluator:
             }
             self.failed_cases["wrong_classifications"].append(grouped_wrong_classification)
     
-    def _update_enum_confusion(self, field: str, ref_val: Any, pred_val: Any, enum_values: List[str]):
-        """Update confusion matrix for an enum field."""
-        # Only process if reference value is valid
-        if ref_val not in enum_values:
-            return
+    def _update_enum_confusion(self, field: str, ref_vals: list, pred_vals: list, enum_values: List[str]):
+        """Update confusion matrix for a single field based on reference and prediction lists."""
+        # Filter out unhashable types and None values for set operations
+        def filter_hashable(vals):
+            hashable_vals = []
+            for v in vals:
+                if v is None:
+                    continue
+                try:
+                    # Test if value is hashable by trying to add to set
+                    {v}
+                    hashable_vals.append(v)
+                except TypeError:
+                    # Skip unhashable types
+                    continue
+            return hashable_vals
         
-        # True Positive: predicted correctly
-        if pred_val == ref_val:
-            self.enum_confusion[field][ref_val]["TP"] += 1
-        else:
-            # False Negative: missed the true class
-            self.enum_confusion[field][ref_val]["FN"] += 1
+        ref_set = set(filter_hashable(ref_vals))
+        pred_set = set(filter_hashable(pred_vals))
+        
+        for label in enum_values:
+            is_in_ref = label in ref_set
+            is_in_pred = label in pred_set
             
-            # False Positive: predicted wrong class (if prediction is valid enum value)
-            if pred_val in enum_values:
-                self.enum_confusion[field][pred_val]["FP"] += 1
+            if is_in_ref and is_in_pred:
+                self.enum_confusion[field][label]["TP"] += 1
+            elif is_in_pred and not is_in_ref:
+                self.enum_confusion[field][label]["FP"] += 1
+            elif is_in_ref and not is_in_pred:
+                self.enum_confusion[field][label]["FN"] += 1
     
     def _compute_final_metrics(self) -> Dict[str, Any]:
         """Compute all final metrics from collected statistics."""
