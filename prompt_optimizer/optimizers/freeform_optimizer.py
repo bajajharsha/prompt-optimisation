@@ -49,7 +49,7 @@ class FreeformOptimizer(BaseOptimizer):
             with open("freeform_response.md", "w") as f:
                 f.write(json.dumps(optimization_response, indent=2))
             
-            # Parse the JSON response
+            # Parse the JSON response with robust error handling
             try:
                 # Handle the response format: {'content': '```json\n{...}\n```', 'usage': {...}}
                 if isinstance(optimization_response, dict) and 'content' in optimization_response:
@@ -66,6 +66,7 @@ class FreeformOptimizer(BaseOptimizer):
                 else:
                     json_content = content.strip()
                 
+                # Parse the JSON - handle the specific format we're getting
                 result_data = json.loads(json_content)
                 
                 optimized_prompt = result_data.get("optimized_prompt", context.base_prompt)

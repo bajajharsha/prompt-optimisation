@@ -85,6 +85,9 @@ class CompleteOptimizationSystem:
             os.makedirs(f"complete_optimization_system/intermediate_results/{request_id}", exist_ok=True)
             with open(f"complete_optimization_system/intermediate_results/{request_id}/data_splits.json", "w") as f:
                 json.dump(data_splits, f, indent=2, default=str)
+            
+            # Save baseline prompt
+            await self._save_baseline_prompt(request_id)
                 
             
             # Step 2: Train Baseline & Intent Analysis
@@ -206,15 +209,28 @@ class CompleteOptimizationSystem:
                 print(f"   (Retry attempt {retry_attempts}/{max_retry_attempts})")
             print("-" * 50)
             
-            # Generate candidate prompts
+            # Generate candidate prompts with human feedback from previous iterations
             print("📝 Generating candidate prompts...")
+            
+            # Get human feedback from previous iteration if available
+            previous_human_feedback = None
+            if iteration > 1 and optimization_history:
+                previous_iteration = optimization_history[-1]  # Get last iteration
+                previous_human_feedback = previous_iteration.get('human_feedback_summary')
+            
             candidates = await self.optimization_controller.generate_candidates(
                 current_prompt=current_prompt,
                 current_metrics=current_metrics,
                 intent_analysis=intent_analysis,
                 schema=self.schema,
-                iteration=iteration
+                iteration=iteration,
+                human_feedback_summary=previous_human_feedback,
+                optimization_history=optimization_history
             )
+            
+            # Save generated candidate prompts to intermediate results
+            if candidates:
+                await self._save_candidate_prompts(candidates, iteration)
             
             if not candidates:
                 print("❌ No candidates generated")
@@ -249,6 +265,9 @@ class CompleteOptimizationSystem:
             
             print(f"✅ Best candidate selected: {best_candidate['strategy']}")
             print(f"   Dev A Improvement: {best_candidate['improvement']:.3f}")
+            
+            # Save the selected best prompt to intermediate results
+            await self._save_selected_prompt(best_candidate, iteration)
             
             # Add improvement to history for convergence tracking
             improvement_history.append(best_candidate['improvement'])
@@ -432,6 +451,9 @@ class CompleteOptimizationSystem:
             recommended_prompt = self._get_baseline_prompt()
             print("⚠️  RECOMMENDATION: Keep baseline prompt")
         
+        # Save final recommended prompt
+        await self._save_final_prompt(recommended_prompt, deployment_decision, test_improvement)
+        
         return {
             "deployment_decision": deployment_decision,
             "recommended_prompt": recommended_prompt,
@@ -442,6 +464,170 @@ class CompleteOptimizationSystem:
             "dev_a_baseline_metrics": dev_a_baseline_metrics,
             "optimization_results": optimization_results
         }
+    
+    async def _save_baseline_prompt(self, request_id: str):
+        """Save the baseline prompt to intermediate results folder"""
+        try:
+            baseline_dir = f"complete_optimization_system/intermediate_results/{request_id}/baseline"
+            os.makedirs(baseline_dir, exist_ok=True)
+            
+            baseline_prompt = self._get_baseline_prompt()
+            
+            # Save baseline prompt metadata
+            baseline_data = {
+                "timestamp": datetime.now().isoformat(),
+                "prompt_type": "baseline",
+                "schema": self.schema,
+                "baseline_prompt": baseline_prompt
+            }
+            
+            # Save as JSON
+            baseline_file = f"{baseline_dir}/baseline_prompt.json"
+            with open(baseline_file, "w") as f:
+                json.dump(baseline_data, f, indent=2, default=str)
+            
+            # Save as readable text file
+            prompt_file = f"{baseline_dir}/baseline_prompt.txt"
+            with open(prompt_file, "w") as f:
+                f.write("BASELINE PROMPT\n")
+                f.write("=" * 80 + "\n")
+                f.write(f"Timestamp: {datetime.now().isoformat()}\n")
+                f.write(f"Schema: {json.dumps(self.schema, indent=2)}\n")
+                f.write("\nBASELINE PROMPT:\n")
+                f.write("=" * 80 + "\n")
+                f.write(baseline_prompt)
+            
+            print(f"💾 Saved baseline prompt to: {baseline_dir}")
+            
+        except Exception as e:
+            print(f"⚠️  Failed to save baseline prompt: {e}")
+    
+    async def _save_candidate_prompts(self, candidates: List[Dict[str, Any]], iteration: int):
+        """Save all generated candidate prompts to intermediate results folder"""
+        try:
+            request_id = get_request_id()
+            candidates_dir = f"complete_optimization_system/intermediate_results/{request_id}/iteration_{iteration:02d}_candidates"
+            os.makedirs(candidates_dir, exist_ok=True)
+            
+            # Save all candidates in a single file
+            candidates_data = {
+                "iteration": iteration,
+                "timestamp": datetime.now().isoformat(),
+                "total_candidates": len(candidates),
+                "candidates": candidates
+            }
+            
+            candidates_file = f"{candidates_dir}/all_candidates.json"
+            with open(candidates_file, "w") as f:
+                json.dump(candidates_data, f, indent=2, default=str)
+            
+            # Save individual prompt files for easy reading
+            for i, candidate in enumerate(candidates):
+                strategy = candidate.get('strategy', f'candidate_{i}')
+                prompt_file = f"{candidates_dir}/{i+1:02d}_{strategy}_prompt.txt"
+                
+                with open(prompt_file, "w") as f:
+                    f.write(f"Strategy: {candidate.get('strategy', 'Unknown')}\n")
+                    f.write(f"Confidence: {candidate.get('confidence', 0.0):.3f}\n")
+                    f.write(f"Execution Time: {candidate.get('execution_time', 0.0):.2f}s\n")
+                    f.write(f"Changes Made: {', '.join(candidate.get('changes_made', []))}\n")
+                    f.write(f"Reasoning: {candidate.get('reasoning', 'No reasoning provided')}\n")
+                    f.write("-" * 80 + "\n")
+                    f.write("OPTIMIZED PROMPT:\n")
+                    f.write("-" * 80 + "\n")
+                    f.write(candidate.get('optimized_prompt', ''))
+            
+            print(f"💾 Saved {len(candidates)} candidate prompts to: {candidates_dir}")
+            
+        except Exception as e:
+            print(f"⚠️  Failed to save candidate prompts: {e}")
+    
+    async def _save_selected_prompt(self, best_candidate: Dict[str, Any], iteration: int):
+        """Save the selected best prompt to intermediate results folder"""
+        try:
+            request_id = get_request_id()
+            selected_dir = f"complete_optimization_system/intermediate_results/{request_id}/iteration_{iteration:02d}_selected"
+            os.makedirs(selected_dir, exist_ok=True)
+            
+            # Save selected prompt metadata
+            selected_data = {
+                "iteration": iteration,
+                "timestamp": datetime.now().isoformat(),
+                "strategy": best_candidate.get('strategy', 'Unknown'),
+                "confidence": best_candidate.get('confidence', 0.0),
+                "dev_a_improvement": best_candidate.get('improvement', 0.0),
+                "execution_time": best_candidate.get('execution_time', 0.0),
+                "changes_made": best_candidate.get('changes_made', []),
+                "reasoning": best_candidate.get('reasoning', ''),
+                "dev_a_metrics": best_candidate.get('dev_a_metrics', {}),
+                "optimized_prompt": best_candidate.get('optimized_prompt', '')
+            }
+            
+            # Save as JSON
+            selected_file = f"{selected_dir}/selected_prompt.json"
+            with open(selected_file, "w") as f:
+                json.dump(selected_data, f, indent=2, default=str)
+            
+            # Save as readable text file
+            prompt_file = f"{selected_dir}/selected_prompt.txt"
+            with open(prompt_file, "w") as f:
+                f.write(f"ITERATION {iteration} - SELECTED PROMPT\n")
+                f.write("=" * 80 + "\n")
+                f.write(f"Strategy: {best_candidate.get('strategy', 'Unknown')}\n")
+                f.write(f"Confidence: {best_candidate.get('confidence', 0.0):.3f}\n")
+                f.write(f"Dev A Improvement: {best_candidate.get('improvement', 0.0):+.3f}\n")
+                f.write(f"Execution Time: {best_candidate.get('execution_time', 0.0):.2f}s\n")
+                f.write(f"Changes Made: {', '.join(best_candidate.get('changes_made', []))}\n")
+                f.write(f"Timestamp: {datetime.now().isoformat()}\n")
+                f.write("\nReasoning:\n")
+                f.write("-" * 40 + "\n")
+                f.write(best_candidate.get('reasoning', 'No reasoning provided'))
+                f.write("\n\n")
+                f.write("OPTIMIZED PROMPT:\n")
+                f.write("=" * 80 + "\n")
+                f.write(best_candidate.get('optimized_prompt', ''))
+            
+            print(f"💾 Saved selected prompt to: {selected_dir}")
+            
+        except Exception as e:
+            print(f"⚠️  Failed to save selected prompt: {e}")
+    
+    async def _save_final_prompt(self, recommended_prompt: str, deployment_decision: str, test_improvement: float):
+        """Save the final recommended prompt to intermediate results folder"""
+        try:
+            request_id = get_request_id()
+            final_dir = f"complete_optimization_system/intermediate_results/{request_id}/final"
+            os.makedirs(final_dir, exist_ok=True)
+            
+            # Save final prompt metadata
+            final_data = {
+                "timestamp": datetime.now().isoformat(),
+                "deployment_decision": deployment_decision,
+                "test_improvement": test_improvement,
+                "recommended_prompt": recommended_prompt
+            }
+            
+            # Save as JSON
+            final_file = f"{final_dir}/final_prompt.json"
+            with open(final_file, "w") as f:
+                json.dump(final_data, f, indent=2, default=str)
+            
+            # Save as readable text file
+            prompt_file = f"{final_dir}/final_prompt.txt"
+            with open(prompt_file, "w") as f:
+                f.write("FINAL RECOMMENDED PROMPT\n")
+                f.write("=" * 80 + "\n")
+                f.write(f"Timestamp: {datetime.now().isoformat()}\n")
+                f.write(f"Deployment Decision: {deployment_decision}\n")
+                f.write(f"Test Improvement: {test_improvement:+.3f}\n")
+                f.write("\nRECOMMENDED PROMPT:\n")
+                f.write("=" * 80 + "\n")
+                f.write(recommended_prompt)
+            
+            print(f"💾 Saved final recommended prompt to: {final_dir}")
+            
+        except Exception as e:
+            print(f"⚠️  Failed to save final prompt: {e}")
     
     def _get_baseline_prompt(self) -> str:
         """Get the baseline prompt"""

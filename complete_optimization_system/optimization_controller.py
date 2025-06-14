@@ -90,7 +90,9 @@ class OptimizationController:
         current_metrics: Dict[str, Any],
         intent_analysis: Dict[str, Any],
         schema: Dict[str, List[str]],
-        iteration: int
+        iteration: int,
+        human_feedback_summary: Optional[Dict[str, Any]] = None,
+        optimization_history: Optional[List[Dict[str, Any]]] = None
     ) -> List[Dict[str, Any]]:
         """
         Generate candidate prompts using existing optimization pipeline
@@ -101,19 +103,23 @@ class OptimizationController:
             intent_analysis: Intent analysis results
             schema: JSON schema
             iteration: Current iteration number
+            human_feedback_summary: Human feedback from previous iterations
+            optimization_history: History of previous optimization attempts
             
         Returns:
             List of candidate prompts with metadata
         """
         print(f"📝 Generating candidates for iteration {iteration}...")
         
-        # Create optimization context
+        # Create optimization context with human feedback
         context = self._create_optimization_context(
             current_prompt=current_prompt,
             current_metrics=current_metrics,
             intent_analysis=intent_analysis,
             schema=schema,
-            iteration=iteration
+            iteration=iteration,
+            human_feedback_summary=human_feedback_summary,
+            optimization_history=optimization_history
         )
         
         # Select optimization strategy
@@ -162,7 +168,9 @@ class OptimizationController:
         current_metrics: Dict[str, Any],
         intent_analysis: Dict[str, Any],
         schema: Dict[str, List[str]],
-        iteration: int
+        iteration: int,
+        human_feedback_summary: Optional[Dict[str, Any]] = None,
+        optimization_history: Optional[List[Dict[str, Any]]] = None
     ) -> OptimizationContext:
         """
         Create optimization context for the current iteration
@@ -173,6 +181,8 @@ class OptimizationController:
             intent_analysis: Intent analysis
             schema: JSON schema
             iteration: Iteration number
+            human_feedback_summary: Human feedback from previous iterations
+            optimization_history: History of previous optimization attempts
             
         Returns:
             OptimizationContext object
@@ -191,18 +201,52 @@ class OptimizationController:
             model_name="llama-3.3-70b-versatile"
         )
         
-        # Create context using context manager
-        context = self.context_manager.create_initial_context(
-            json_schema=schema,
-            failed_cases_summary=failed_cases_summary,
-            failed_cases=failed_cases,
-            baseline_metrics=current_metrics,
-            intent=intent_analysis,
-            base_prompt=current_prompt,
-            target_model=target_model
-        )
+        # For iteration 1, create initial context
+        if iteration == 1:
+            context = self.context_manager.create_initial_context(
+                json_schema=schema,
+                failed_cases_summary=failed_cases_summary,
+                failed_cases=failed_cases,
+                baseline_metrics=current_metrics,
+                intent=intent_analysis,
+                base_prompt=current_prompt,
+                target_model=target_model
+            )
+        else:
+            # For subsequent iterations, get the previous context and update it
+            context_history = self.context_manager.get_context_history()
+            if context_history:
+                previous_context = context_history[-1]  # Get the most recent context
+                
+                # Extract human feedback from optimization history
+                human_feedback_text = None
+                if human_feedback_summary:
+                    human_feedback_text = self._format_human_feedback_for_context(human_feedback_summary)
+                
+                # Update context with new results and human feedback
+                context = self.context_manager.update_context_with_results(
+                    current_context=previous_context,
+                    new_prompt=current_prompt,
+                    new_metrics=current_metrics,
+                    optimizer_used="previous_iteration",
+                    human_feedback=human_feedback_text,
+                    human_feedback_summary=human_feedback_summary,
+                    new_failed_cases=failed_cases.get('wrong_classifications', []) if isinstance(failed_cases, dict) else [],
+                    new_failed_cases_summary=failed_cases_summary
+                )
+            else:
+                # Fallback to creating initial context if no history
+                context = self.context_manager.create_initial_context(
+                    json_schema=schema,
+                    failed_cases_summary=failed_cases_summary,
+                    failed_cases=failed_cases,
+                    baseline_metrics=current_metrics,
+                    intent=intent_analysis,
+                    base_prompt=current_prompt,
+                    target_model=target_model
+                )
         
-        # Update iteration number
+        # Ensure iteration number is correct
         context.iteration_number = iteration
         
         return context
@@ -269,6 +313,45 @@ class OptimizationController:
             })
         
         return key_failures[:3]  # Limit to top 3 issues
+    
+    def _format_human_feedback_for_context(self, human_feedback_summary: Dict[str, Any]) -> str:
+        """
+        Format human feedback summary into a concise text for optimization context
+        """
+        if not human_feedback_summary:
+            return ""
+        
+        # Handle both dataclass and dict formats
+        if hasattr(human_feedback_summary, 'total_cases'):
+            # Dataclass format
+            total = human_feedback_summary.total_cases
+            correct = human_feedback_summary.correct_count
+            incorrect = human_feedback_summary.incorrect_count
+            skipped = human_feedback_summary.skipped_count
+            confidence = human_feedback_summary.average_confidence
+            themes = getattr(human_feedback_summary, 'key_feedback_themes', [])
+            suggestions = getattr(human_feedback_summary, 'improvement_suggestions', [])
+        else:
+            # Dict format
+            total = human_feedback_summary.get('total_cases', 0)
+            correct = human_feedback_summary.get('correct_count', 0)
+            incorrect = human_feedback_summary.get('incorrect_count', 0)
+            skipped = human_feedback_summary.get('skipped_count', 0)
+            confidence = human_feedback_summary.get('average_confidence', 0.0)
+            themes = human_feedback_summary.get('key_feedback_themes', [])
+            suggestions = human_feedback_summary.get('improvement_suggestions', [])
+        
+        feedback_text = f"HUMAN_FEEDBACK: Reviewed {total} cases - "
+        feedback_text += f"Correct: {correct}, Incorrect: {incorrect}, Skipped: {skipped}. "
+        feedback_text += f"Reviewer confidence: {confidence:.2f}. "
+        
+        if themes:
+            feedback_text += f"Key issues identified: {', '.join(themes[:3])}. "
+        
+        if suggestions:
+            feedback_text += f"Main improvement suggestion: {suggestions[0][:100]}..."
+        
+        return feedback_text
     
     async def close(self):
         """Close all resources"""
