@@ -54,6 +54,7 @@ class EvaluationEngine:
             base_prompt=prompt,
             model=self.groq_model
         )
+        print(f"Length of predicted texts: {len(predicted_texts)}")
         
         # Run evaluation using existing evaluator
         print("📊 Computing metrics...")

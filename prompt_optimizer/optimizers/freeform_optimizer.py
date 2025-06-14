@@ -141,13 +141,37 @@ class FreeformOptimizer(BaseOptimizer):
         # Get model information for context (no specific guidance)
         model_info = self._get_model_info_context(context.target_model)
         
-        # Build failed cases summary
+        # Build failed cases summary with better field handling
         failed_cases_text = ""
         if failed_cases:
-            failed_cases_text = "\n".join([
-                f"- Input: '{case.get('input_text', '')}' | Expected: {case.get('expected_intent', '')} | Got: {case.get('predicted_intent', '')}"
-                for case in failed_cases
-            ])
+            failed_cases_examples = []
+            for case in failed_cases:
+                # Handle different case formats
+                input_text = case.get('input_text') or case.get('input_prompt') or case.get('input', '')
+                expected = case.get('expected_intent') or case.get('expected_output') or case.get('ground_truth', '')
+                predicted = case.get('predicted_intent') or case.get('model_output') or case.get('prediction_text', '')
+                
+                # Format the case for better analysis
+                case_text = f"- Input: '{input_text}'"
+                if isinstance(expected, dict):
+                    case_text += f" | Expected: {json.dumps(expected)}"
+                else:
+                    case_text += f" | Expected: {expected}"
+                    
+                if isinstance(predicted, dict):
+                    case_text += f" | Got: {json.dumps(predicted)}"
+                else:
+                    case_text += f" | Got: {predicted}"
+                
+                # Add wrong fields if available
+                if 'wrong_fields' in case:
+                    wrong_fields = case['wrong_fields']
+                    if wrong_fields:
+                        case_text += f" | Issues: {[f['field'] for f in wrong_fields if isinstance(f, dict) and 'field' in f]}"
+                
+                failed_cases_examples.append(case_text)
+            
+            failed_cases_text = "\n".join(failed_cases_examples)
         
         # Build optimization history context
         history_context = ""
@@ -189,27 +213,44 @@ Iteration: {context.iteration_number}
 {feedback_context}
 
 **OPTIMIZATION INSTRUCTIONS:**
-1. Analyze the failed cases to identify patterns in misclassification
-2. Consider the target model characteristics when optimizing the prompt
-3. Make the prompt more generalizable and robust to edge cases
-4. Ensure the prompt works well with the specified JSON schema
-5. Maintain consistency with the task intent while improving accuracy
+You MUST make significant improvements to the prompt. Analyze the failed cases carefully and make aggressive changes:
+
+1. **CRITICAL ANALYSIS**: Look at each failed case and identify exactly why the model made the wrong prediction
+2. **PATTERN IDENTIFICATION**: Find common patterns in the failures (e.g., specific fields being misclassified)
+3. **AGGRESSIVE OPTIMIZATION**: Make substantial changes to the prompt structure, not just minor tweaks
+4. **SPECIFIC GUIDANCE**: Add explicit instructions for handling the types of cases that are failing
+5. **SCHEMA ENFORCEMENT**: Ensure the model strictly follows the JSON schema format
+6. **EDGE CASE HANDLING**: Add specific instructions for ambiguous or edge cases
+7. **NOT STRICT STATEMENTS**: Do not add strict statements according to the failed cases
+8. **INTENT MATCHING**: The optimized prompt MUST be more aligned with the intent of the task
+
+**REQUIRED CHANGES:**
+- Add explicit examples of correct classifications for problematic cases but not strict statements according to the failed cases
+- Include specific instructions for each field in the schema but not strict statements according to the failed cases
+- Add clear decision-making criteria for ambiguous inputs
+- Restructure the prompt for better clarity and specificity
+- Add validation instructions to ensure JSON format compliance
+
+**FAILED CASE FOCUS:**
+Pay special attention to the failed cases provided. For each pattern you see:
+- Add specific instructions to handle that type of input but not strict statements according to the failed cases
+- Include examples that demonstrate the correct classification
+- Add decision-making criteria to avoid similar mistakes
 
 Provide your optimization as a JSON response with this structure:
 {{
-    "optimized_prompt": "Your improved prompt here",
-    "reasoning": "Detailed explanation of what you changed and why",
+    "optimized_prompt": "Your significantly improved prompt here - MUST be substantially different from the original",
+    "reasoning": "Detailed explanation of the major changes you made and why they address the specific failed cases",
     "confidence": 0.8,
-    "changes_made": ["List of specific changes made"]
+    "changes_made": ["List of specific major changes made - should be substantial improvements"]
 }}
 
-Focus on making prompts that are:
-- Clear and unambiguous for the target model
-- Robust to edge cases and variations
-- Well-suited for the target model's capabilities
-- Consistent with the JSON schema requirements
-
-NOTE: Do not add strict statements according to the failed cases.
+**REQUIREMENTS:**
+- The optimized prompt MUST be significantly better than the original
+- MUST address the specific patterns seen in failed cases
+- MUST include explicit examples and decision criteria but not strict statements according to the failed cases
+- MUST be more structured and comprehensive than the original
+- MUST include field-specific guidance for the JSON schema
 """
         
         return message

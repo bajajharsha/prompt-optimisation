@@ -142,8 +142,8 @@ class JSONGenerationEvaluator:
         #     })
         self.tallies["exact_json_match"]["total"] += 1
         
-        # 3. Detailed evaluation only if JSON is valid
-        if parsed_pred is not None:
+        # 3. Detailed evaluation only if JSON is valid and is a dictionary
+        if parsed_pred is not None and isinstance(parsed_pred, dict):
             self._evaluate_fields_detailed(ref_json, parsed_pred, example_data)
             
             # Check schema compliance
@@ -155,6 +155,13 @@ class JSONGenerationEvaluator:
             if self._all_fields_present(parsed_pred):
                 self.tallies["all_fields_present"]["correct"] += 1
             self.tallies["all_fields_present"]["total"] += 1
+        elif parsed_pred is not None and not isinstance(parsed_pred, dict):
+            # Handle case where JSON parsing succeeded but didn't return a dict
+            self.failed_cases["invalid_json"].append({
+                **example_data,
+                "error": f"Parsed JSON is not a dictionary, got {type(parsed_pred).__name__}: {parsed_pred}",
+                "cleaned_text": cleaned_pred_text
+            })
     
     def _clean_prediction_text(self, pred_text: str) -> str:
         """Clean and extract JSON from prediction text."""
@@ -170,6 +177,8 @@ class JSONGenerationEvaluator:
     
     def _is_schema_compliant(self, pred_json: Dict[str, Any]) -> bool:
         """Check if prediction follows schema constraints."""
+        if not isinstance(pred_json, dict):
+            return False
         for field, enum_values in self.schema.items():
             if field in pred_json:
                 if pred_json[field] not in enum_values:
@@ -178,10 +187,17 @@ class JSONGenerationEvaluator:
     
     def _all_fields_present(self, pred_json: Dict[str, Any]) -> bool:
         """Check if all required fields are present."""
+        if not isinstance(pred_json, dict):
+            return False
         return all(field in pred_json for field in self.schema.keys())
     
     def _evaluate_fields_detailed(self, ref_json: Dict[str, Any], pred_json: Dict[str, Any], example_data: Dict[str, Any]):
         """Evaluate individual fields with detailed error tracking."""
+        
+        # Safety check: ensure pred_json is a dictionary
+        if not isinstance(pred_json, dict):
+            print(f"⚠️ Warning: pred_json is not a dictionary, got {type(pred_json).__name__}: {pred_json}")
+            return
         
         # Track wrong fields for this example
         wrong_fields_for_example = []
@@ -935,7 +951,7 @@ def run_groq_inference(prompts: List[str], base_prompt: str, model: str = "llama
                 print(f"Token logging failed: {e}")
             
             # Extract response content
-            print(response_data)
+            # print(response_data)
             response_text = response_data["choices"][0]["message"]["content"]
             responses.append(response_text)
         except Exception as e:
