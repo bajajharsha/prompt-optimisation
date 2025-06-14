@@ -120,6 +120,7 @@ class ContextManager:
         new_metrics: Dict[str, Any],
         optimizer_used: str,
         human_feedback: Optional[str] = None,
+        human_feedback_summary: Optional[Dict[str, Any]] = None,
         new_failed_cases: Optional[List[Dict[str, Any]]] = None,
         new_failed_cases_summary: Optional[Dict[str, Any]] = None
     ) -> OptimizationContext:
@@ -151,12 +152,19 @@ class ContextManager:
         if len(updated_history) > 3:  # Keep last 3 attempts
             updated_history = updated_history[-3:]
         
-        # Update human feedback (keep recent ones)
+        # Update human feedback (keep recent ones) with smart summarization
         updated_feedback = current_context.human_feedback.copy()
         if human_feedback:
             updated_feedback.append(human_feedback)
-            if len(updated_feedback) > self._max_human_feedback:
-                updated_feedback = updated_feedback[-self._max_human_feedback:]
+        
+        # Add summarized human feedback if available (much more efficient than raw data)
+        if human_feedback_summary:
+            # Convert feedback summary to concise text format for context
+            summary_text = self._format_feedback_summary(human_feedback_summary)
+            updated_feedback.append(summary_text)
+        
+        if len(updated_feedback) > self._max_human_feedback:
+            updated_feedback = updated_feedback[-self._max_human_feedback:]
         
         # Update failed cases if provided
         updated_failed_cases = current_context.failed_cases
@@ -277,6 +285,42 @@ class ContextManager:
     def get_context_history(self) -> List[OptimizationContext]:
         """Get context history"""
         return self._context_history.copy()
+    
+    def _format_feedback_summary(self, feedback_summary: Dict[str, Any]) -> str:
+        """
+        Format feedback summary into concise text for context management
+        This avoids passing all raw human feedback data while preserving insights
+        """
+        if hasattr(feedback_summary, 'total_cases'):
+            # Handle dataclass format
+            total = feedback_summary.total_cases
+            correct = feedback_summary.correct_count
+            incorrect = feedback_summary.incorrect_count
+            skipped = feedback_summary.skipped_count
+            confidence = feedback_summary.average_confidence
+            themes = feedback_summary.key_feedback_themes
+            suggestions = feedback_summary.improvement_suggestions
+        else:
+            # Handle dict format
+            total = feedback_summary.get('total_cases', 0)
+            correct = feedback_summary.get('correct_count', 0)
+            incorrect = feedback_summary.get('incorrect_count', 0)
+            skipped = feedback_summary.get('skipped_count', 0)
+            confidence = feedback_summary.get('average_confidence', 0.0)
+            themes = feedback_summary.get('key_feedback_themes', [])
+            suggestions = feedback_summary.get('improvement_suggestions', [])
+        
+        summary_text = f"HUMAN_FEEDBACK_SUMMARY: {total} cases reviewed - "
+        summary_text += f"Correct: {correct}, Incorrect: {incorrect}, Skipped: {skipped}. "
+        summary_text += f"Reviewer confidence: {confidence:.2f}. "
+        
+        if themes:
+            summary_text += f"Key issues: {', '.join(themes[:2])}. "
+        
+        if suggestions:
+            summary_text += f"Main suggestion: {suggestions[0][:100]}..."
+        
+        return summary_text
     
     async def close(self):
         """Cleanup resources"""

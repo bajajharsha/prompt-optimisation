@@ -40,6 +40,9 @@ LANGFUSE_SECRET_KEY=your-langfuse-secret-key
 LANGFUSE_PUBLIC_KEY=your-langfuse-public-key
 LANGFUSE_HOST=https://cloud.langfuse.com
 
+# Optional: LangFuse Project ID (auto-detected if not provided)
+LANGFUSE_PROJECT_ID=your-project-id
+
 # Optional: MongoDB connection (defaults to localhost)
 MONGODB_URI=mongodb://localhost:27017/
 """
@@ -70,6 +73,7 @@ def main():
     
     optional_vars = [
         ("LANGFUSE_HOST", "LangFuse host URL (defaults to cloud.langfuse.com)"),
+        ("LANGFUSE_PROJECT_ID", "LangFuse project ID (auto-detected if not provided)"),
         ("MONGODB_URI", "MongoDB connection URI (defaults to localhost)"),
     ]
     

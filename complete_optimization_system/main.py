@@ -19,7 +19,7 @@ sys.path.insert(0, project_root)
 from complete_optimization_system.data_manager import DataManager
 from complete_optimization_system.evaluation_engine import EvaluationEngine
 from complete_optimization_system.optimization_controller import OptimizationController
-from complete_optimization_system.human_feedback_integration import HumanFeedbackIntegration
+from complete_optimization_system.enhanced_human_feedback_fixed import create_simple_human_feedback_manager
 from complete_optimization_system.request_id import initialize_request_id, get_request_id
 
 class CompleteOptimizationSystem:
@@ -31,12 +31,12 @@ class CompleteOptimizationSystem:
         self.data_manager = DataManager()
         self.evaluation_engine = EvaluationEngine()
         self.optimization_controller = OptimizationController()
-        self.human_feedback = HumanFeedbackIntegration()
+        self.enhanced_human_feedback = create_simple_human_feedback_manager()
         self.baseline_prompt = """You are a classification model. Classify the input into the correct category. Return the result in JSON format."""
         # Configuration
         self.config = {
             "max_iterations": 5,
-            "improvement_threshold": 0.05,  # 5% improvement to continue
+            "improvement_threshold": 0.01,  # 1% improvement to continue
             "convergence_threshold": 0.005,  # Within 0.5% improvement considered same
             "convergence_patience": 3,  # Stop if stable for 3 iterations
             "max_retry_attempts": 2,  # Maximum retries when no improvement found
@@ -225,9 +225,7 @@ class CompleteOptimizationSystem:
                 else:
                     print("❌ Maximum retry attempts reached, stopping optimization")
                     break
-            
-            print(f"✅ Generated {len(candidates)} candidate prompts")
-            
+                        
             # Evaluate candidates on Dev A
             print("📊 Evaluating candidates on Dev A...")
             best_candidate = await self._evaluate_candidates_dev_a(
@@ -287,11 +285,12 @@ class CompleteOptimizationSystem:
             print(f"   Overall Accuracy: {dev_b_results['overall_accuracy']:.3f}")
             print(f"   Average F1: {dev_b_results['summary']['average_enum_macro_f1']:.3f}")
             
-            # Collect human feedback
-            print("👥 Collecting human feedback...")
-            human_feedback_results = await self.human_feedback.collect_feedback(
+            # Collect enhanced human feedback with waiting mechanism
+            print("👥 Collecting enhanced human feedback...")
+            feedback_summary, human_feedback_results = await self.enhanced_human_feedback.collect_human_feedback_complete_workflow(
                 candidate_prompt=best_candidate['optimized_prompt'],
                 dev_b_results=dev_b_results,
+                iteration=iteration,
                 baseline_metrics=dev_a_baseline_metrics  # Use dev A baseline for comparison
             )
             
@@ -299,16 +298,27 @@ class CompleteOptimizationSystem:
             current_prompt = best_candidate['optimized_prompt']
             current_metrics = dev_b_results
             
-            # Store iteration results
+            # Store iteration results with enhanced feedback
             iteration_result = {
                 "iteration": iteration,
                 "strategy": best_candidate['strategy'],
                 "dev_a_improvement": best_candidate['improvement'],
                 "dev_b_metrics": dev_b_results,
-                "human_feedback": human_feedback_results,
+                "human_feedback_summary": feedback_summary,  # Summarized feedback for context
+                "human_feedback_details": human_feedback_results,  # Detailed results for analysis
                 "optimized_prompt": best_candidate['optimized_prompt']
             }
             optimization_history.append(iteration_result)
+            
+            # Print human feedback summary for transparency
+            if feedback_summary.total_cases > 0:
+                print(f"📊 Human Feedback Summary:")
+                print(f"   Correct: {feedback_summary.correct_count}, Incorrect: {feedback_summary.incorrect_count}, Skipped: {feedback_summary.skipped_count}")
+                print(f"   Reviewer confidence: {feedback_summary.average_confidence:.2f}")
+                if feedback_summary.key_feedback_themes:
+                    print(f"   Key themes: {', '.join(feedback_summary.key_feedback_themes[:3])}")
+                if feedback_summary.improvement_suggestions:
+                    print(f"   Suggestions: {feedback_summary.improvement_suggestions[0][:50]}...")
             
             print(f"✅ Iteration {iteration} completed")
             iteration += 1
