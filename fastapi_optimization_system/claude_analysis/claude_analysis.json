@@ -1,0 +1,26 @@
+{
+  "classification_intent": {
+    "primary_purpose": "This system classifies software development requests/queries to understand what type of code generation or development assistance is needed, specifically focusing on web and mobile application development with React and Flutter frameworks."
+  },
+  "schema_understanding": {
+    "field_purposes": {
+      "action": "Determines if the request is asking for code generation or if the intent cannot be determined - this is the primary action classifier",
+      "subAction": "Specifies the type of development work needed - whether it's general coding, visual/UI work, error resolution, or general assistance",
+      "platform": "Identifies the target deployment platform - distinguishing between web applications, mobile apps, and whether they are static or dynamic",
+      "framework": "Determines the specific development framework being used or requested (React for web, Flutter for mobile)",
+      "languageType": "Specifies the programming language variant, currently only supporting React JavaScript with room for expansion"
+    },
+    "classification_logic": "The system should work hierarchically: first determine if it's a code generation request, then identify the specific type of work (UI vs logic vs error-fixing), then determine the target platform and framework, and finally the language specifics.",
+    "decision_criteria": "Classification should be based on keywords and context clues in the user query: framework mentions (Flutter, React), platform indicators (mobile, web, app), task type indicators (UI, screen, error messages, integration), and technical terminology.",
+    "field_relationships": "The fields are interdependent: platform and framework should align (Flutter\u2192mobile, React\u2192web), languageType should match the framework, and subAction should reflect the complexity and nature of the request."
+  },
+  "domain_insights": {
+    "input_patterns": "Training data shows queries are typically short, informal requests for creating UI components (login screens, splash screens), adding functionality (sign up screens, database integration), or solving technical problems. Queries often mention specific frameworks explicitly and focus heavily on mobile app development with Flutter."
+  },
+  "classification_challenges": {
+    "ambiguous_cases": "Queries that don't specify a framework or platform (like 'add a sign up screen') require inference from context or previous conversation. Generic requests for applications without technical specifics are difficult to classify precisely.",
+    "edge_cases": "Error messages with technical details need to be classified as ERROR subAction while still identifying the correct framework and platform. Requests for multi-screen applications may not clearly indicate if they want static or dynamic functionality.",
+    "human_decision_factors": "A human expert would consider: explicit framework mentions, implied platform from context, complexity of the request (simple UI vs full functionality), presence of error messages or technical problems, and whether the request is about visual design or backend integration.",
+    "current_confusion_points": "The system is failing to produce valid JSON responses and is using incorrect case formatting (lowercase 'flutter' instead of 'FLUTTER'). It's also generating explanatory text instead of just classification JSON, and appears to be missing required fields in responses."
+  }
+}
