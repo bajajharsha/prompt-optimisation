@@ -430,7 +430,9 @@ class CompleteOptimizationSystem:
             "optimization_history": optimization_history,
             "total_iterations": iteration - 1,
             "improvement_history": improvement_history,
-            "stopping_reason": stopping_reason
+            "stopping_reason": stopping_reason,
+            "human_feedback_summary": feedback_summary,
+            "human_feedback_results": human_feedback_results
         }
     
     async def _evaluate_candidates_dev_a(

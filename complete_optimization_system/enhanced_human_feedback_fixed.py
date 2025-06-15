@@ -347,80 +347,177 @@ class SimpleHumanFeedbackManager:
             return False
     
     def collect_feedback_from_trace(self, trace_id: str, batch: HumanFeedbackBatch) -> List[Dict[str, Any]]:
-        """Collect feedback from the trace"""
+        """Collect feedback from the trace using the current LangFuse API"""
         print(f"📊 Collecting feedback from trace {trace_id}...")
         
         feedback_results = []
         
         try:
-            # Get the trace with all its data
-            trace = self.langfuse.api.trace.get(trace_id)
+            # Use direct trace API call (most reliable method)
+            print(f"🔍 Fetching trace data from LangFuse...")
             
-            # Get all observations (spans) for this trace
-            observations = self.langfuse.api.observations.list(trace_id=trace_id)
-            
-            for obs in observations.data:
-                if obs.type == "SPAN":  # Only process spans (our cases)
-                    # Get scores for this observation
-                    scores = self.langfuse.api.scores.list(trace_id=trace_id, observation_id=obs.id)
+            try:
+                import requests
+                import os
+                
+                # Get keys from environment variables
+                public_key = os.getenv('LANGFUSE_PUBLIC_KEY')
+                secret_key = os.getenv('LANGFUSE_SECRET_KEY')
+                
+                if not public_key or not secret_key:
+                    print("⚠️  LangFuse API keys not found in environment variables")
+                    print("   Please set LANGFUSE_PUBLIC_KEY and LANGFUSE_SECRET_KEY")
+                    return []
+                
+                # Use the direct trace API endpoint
+                host = getattr(self.langfuse, 'host', 'https://cloud.langfuse.com')
+                trace_url = f"{host}/api/public/traces/{trace_id}"
+                
+                print(f"📡 Fetching trace from: {trace_url}")
+                response = requests.get(
+                    trace_url,
+                    auth=(public_key, secret_key),
+                )
+                
+                if response.status_code == 200:
+                    trace_data = response.json()
+                    scores = trace_data.get('scores', [])
+                    observations = trace_data.get('observations', [])
+#                      "scores": [
+#     {
+#       "dataType": "NUMERIC",
+#       "value": 1,
+#       "id": "string",
+#       "traceId": "string",
+#       "name": "string",
+#       "source": "ANNOTATION",
+#       "observationId": null,
+#       "timestamp": "2025-06-14T09:02:51.900Z",
+#       "createdAt": "2025-06-14T09:02:51.900Z",
+#       "updatedAt": "2025-06-14T09:02:51.900Z",
+#       "authorUserId": null,
+#       "comment": null,
+#       "...": "[Additional Properties Truncated]"
+#     }
+#   ],
+                    # access all comments
+                    comments = [score["comment"] for score in scores if score["comment"]]
                     
-                    # Process scores
-                    case_feedback = {
-                        "observation_id": obs.id,
-                        "case_name": obs.name,
-                        "classification_correctness": None,
-                        "natural_language_feedback": None,
-                        "reviewer_confidence": None
+                    print(f"✅ Direct trace API call successful")
+                    print(f"📊 Found {len(scores)} scores and {len(observations)} observations")
+                    
+                    if not scores:
+                        print("   No scores found - human hasn't provided feedback yet")
+                        return []
+                        
+                else:
+                    print(f"⚠️  Direct trace API call failed: {response.status_code}")
+                    print(f"   Response: {response.text[:200]}...")
+                    return []
+                        
+            except Exception as api_error:
+                print(f"⚠️  Direct trace API call failed: {api_error}")
+                return []
+            
+            # Process scores into feedback format
+            try:
+                if scores:
+                    # Group scores by observation ID to create comprehensive feedback
+                    observation_scores = {}
+                    
+                    for score in scores:
+                        # Handle the direct API response format (always dict)
+                        score_name = score.get('name', 'unknown')
+                        score_value = score.get('value', 0)
+                        string_value = score.get('stringValue', '')
+                        score_comment = score.get('comment', '')
+                        observation_id = score.get('observationId', 'unknown')
+                        timestamp = score.get('timestamp', score.get('createdAt', ''))
+                        
+                        if observation_id not in observation_scores:
+                            observation_scores[observation_id] = {}
+                        
+                        observation_scores[observation_id][score_name] = {
+                            'value': score_value,
+                            'string_value': string_value,
+                            'comment': score_comment,
+                            'timestamp': timestamp
+                        }
+                    
+                    # Create feedback results from grouped scores
+                    for obs_id, scores_dict in observation_scores.items():
+                        # Get classification correctness (primary score)
+                        classification_score = scores_dict.get('classification_correctness', {})
+                        classification_value = classification_score.get('string_value', 'unknown').lower()
+                        
+                        # Map LangFuse values to our format
+                        if classification_value in ['correct']:
+                            classification_correctness = 'correct'
+                        elif classification_value in ['incorrect']:
+                            classification_correctness = 'incorrect'
+                        elif classification_value in ['skip']:
+                            classification_correctness = 'skip'
+                        else:
+                            classification_correctness = 'unclear'
+                        
+                        # Get natural language feedback
+                        feedback_score = scores_dict.get('natural_language_feedback', {})
+                        natural_feedback = feedback_score.get('string_value', '') or feedback_score.get('comment', '')
+                        
+                        # Get reviewer confidence
+                        confidence_score = scores_dict.get('reviewer_confidence', {})
+                        reviewer_confidence = confidence_score.get('value', 0.5)
+                        if isinstance(reviewer_confidence, (int, float)):
+                            reviewer_confidence = min(max(reviewer_confidence / 3.0, 0.0), 1.0)  # Normalize 1-3 to 0-1
+                        
+                        feedback_result = {
+                            "case_name": f"Observation: {obs_id[:8]}...",
+                            "classification_correctness": classification_correctness,
+                            "natural_language_feedback": natural_feedback or f"Classification: {classification_value}",
+                            "reviewer_confidence": reviewer_confidence,
+                            "observation_id": obs_id,
+                            "scores": scores_dict,
+                            "timestamp": classification_score.get('timestamp', '')
+                        }
+                        feedback_results.append(feedback_result)
+                        
+                    print(f"✅ Processed {len(feedback_results)} feedback items from {len(scores)} scores")
+                else:
+                    print(f"ℹ️  No scores found for trace {trace_id}")
+                    print(f"   No human feedback has been provided yet")
+                    return []
+                
+                # Process comments
+                for comment in comments:
+                    comment_result = {
+                        "comment": comment,
                     }
+                    print(f"   Comment: {comment_result}")
+                    feedback_results.append(comment_result)
                     
-                    for score in scores.data:
-                        if score.name == "classification_correctness":
-                            case_feedback["classification_correctness"] = score.value
-                        elif score.name == "natural_language_feedback":
-                            case_feedback["natural_language_feedback"] = score.comment or score.value
-                        elif score.name == "reviewer_confidence":
-                            case_feedback["reviewer_confidence"] = score.value
-                    
-                    feedback_results.append(case_feedback)
+            except Exception as score_error:
+                print(f"⚠️  Error processing scores: {score_error}")
+                print(f"   Unable to process feedback from LangFuse")
+                return []
             
-            print(f"✅ Collected feedback for {len(feedback_results)} cases")
+            print(f"✅ Collected {len(feedback_results)} feedback items")
             return feedback_results
             
         except Exception as e:
             print(f"⚠️  Error collecting feedback: {e}")
-            # Return mock feedback for testing
-            return self._create_mock_feedback(batch)
+            print(f"   Falling back to waiting for manual feedback...")
+            return []
     
-    def _create_mock_feedback(self, batch: HumanFeedbackBatch) -> List[Dict[str, Any]]:
-        """Create mock feedback for testing"""
-        print("📝 Creating mock feedback for testing...")
-        
-        mock_results = []
-        for i, case in enumerate(batch.cases):
-            # Create realistic mock feedback
-            if case.confidence_score < 0.3:
-                classification = "incorrect"
-                feedback = f"The model seems confused about {case.failure_type}. Needs improvement."
-                confidence = 0.8
-            elif case.confidence_score < 0.6:
-                classification = "incorrect" if i % 2 == 0 else "correct"
-                feedback = f"Borderline case for {case.failure_type}. Could go either way."
-                confidence = 0.6
-            else:
-                classification = "correct"
-                feedback = f"This {case.failure_type} case looks reasonable."
-                confidence = 0.9
-            
-            result = {
-                "case_name": f"Case {i+1}: {case.failure_type}",
-                "classification_correctness": classification,
-                "natural_language_feedback": feedback,
-                "reviewer_confidence": confidence
-            }
-            mock_results.append(result)
-        
-        print(f"✅ Created {len(mock_results)} mock feedback results")
-        return mock_results
+    def _score_to_classification(self, score_value: float) -> str:
+        """Convert a numeric score to a classification"""
+        if score_value >= 0.7:
+            return "correct"
+        elif score_value <= 0.3:
+            return "incorrect"
+        else:
+            return "unclear"
+    
+
     
     def create_feedback_summary(
         self, 
@@ -574,6 +671,31 @@ class SimpleHumanFeedbackManager:
             # Step 5: Collect feedback
             feedback_results = self.collect_feedback_from_trace(trace_id, batch)
             
+            # Handle case where no feedback is available yet
+            if not feedback_results:
+                print("\n⚠️  No feedback scores found in LangFuse!")
+                print("   This means you haven't added any scores/annotations yet.")
+                print("   To provide feedback:")
+                print("   1. Go to the LangFuse dashboard (should be open)")
+                print("   2. Find your trace and click on it")
+                print("   3. Add scores using the annotation interface")
+                print("   4. Come back and run this again")
+                print("\n   For now, continuing without human feedback...")
+                
+                # Create empty summary
+                empty_summary = self._create_empty_feedback_summary(batch)
+                detailed_results = {
+                    "status": "no_feedback_yet",
+                    "batch_id": batch.batch_id,
+                    "trace_id": trace_id,
+                    "session_id": batch.request_id,
+                    "total_cases_reviewed": 0,
+                    "dashboard_auto_opened": dashboard_opened,
+                    "iteration": iteration,
+                    "message": "No feedback scores found - user needs to add annotations in LangFuse UI"
+                }
+                return empty_summary, detailed_results
+            
             # Step 6: Summarize feedback
             feedback_summary = self.create_feedback_summary(feedback_results, batch)
             
@@ -589,6 +711,9 @@ class SimpleHumanFeedbackManager:
             }
             
             print(f"✅ Human feedback workflow completed!")
+            print("--------------------------------")
+            print(f"  %^$&*() Feedback results: {feedback_summary}")
+            print("--------------------------------")
             print(f"   Reviewed: {feedback_summary.correct_count} correct, {feedback_summary.incorrect_count} incorrect, {feedback_summary.skipped_count} skipped")
             
             return feedback_summary, detailed_results

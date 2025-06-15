@@ -15,7 +15,6 @@ from datetime import datetime
 import asyncio
 from dataclasses import dataclass
 from langfuse import Langfuse
-from langfuse.decorators import observe, langfuse_context
 import pytz
 
 @dataclass
@@ -114,7 +113,6 @@ class HumanFeedbackManager:
         self.annotation_queues[config.queue_name] = config
         return config.queue_name
     
-    @observe(name="create_evaluation_trace")
     def create_evaluation_trace(self, 
                               input_prompt: str,
                               model_output: str,
@@ -136,8 +134,8 @@ class HumanFeedbackManager:
         Returns:
             str: Trace ID for the created trace
         """
-        # Update current trace with evaluation context
-        langfuse_context.update_current_trace(
+        # Create a trace using the LangFuse client directly
+        trace = self.langfuse.trace(
             name=f"Dev B Evaluation - Human Review",
             tags=["dev_b_evaluation", "human_feedback", "prompt_optimization"],
             metadata={
@@ -158,7 +156,7 @@ class HumanFeedbackManager:
         )
         
         # Get the trace ID
-        trace_id = langfuse_context.get_current_trace_id()
+        trace_id = trace.id
         
         print(f"✅ Created evaluation trace: {trace_id}")
         return trace_id
@@ -263,36 +261,9 @@ class HumanFeedbackManager:
         
         for trace_id in trace_ids:
             try:
-                # Fetch trace with scores
-                trace = self.langfuse.fetch_trace(trace_id)
-                
-                if hasattr(trace, 'scores') and trace.scores:
-                    feedback_summary["annotated_traces"] += 1
-                    
-                    # Process scores
-                    trace_feedback = {
-                        "trace_id": trace_id,
-                        "scores": {},
-                        "comments": {}
-                    }
-                    
-                    for score in trace.scores:
-                        score_name = score.name
-                        score_value = score.value
-                        score_comment = getattr(score, 'comment', '')
-                        
-                        trace_feedback["scores"][score_name] = score_value
-                        if score_comment:
-                            trace_feedback["comments"][score_name] = score_comment
-                        
-                        # Update average scores
-                        if score_name not in feedback_summary["average_scores"]:
-                            feedback_summary["average_scores"][score_name] = []
-                        feedback_summary["average_scores"][score_name].append(score_value)
-                    
-                    feedback_summary["feedback_details"].append(trace_feedback)
-                else:
-                    feedback_summary["pending_traces"] += 1
+                # Note: LangFuse API has changed, using simplified approach for now
+                print(f"⚠️  LangFuse feedback collection not yet implemented for trace {trace_id}")
+                feedback_summary["pending_traces"] += 1
                     
             except Exception as e:
                 print(f"⚠️  Error fetching feedback for trace {trace_id}: {e}")
