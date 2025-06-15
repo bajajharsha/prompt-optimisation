@@ -4,5 +4,6 @@ existing_solutions/
 complete_optimization_system/intermediate_results/
 complete_optimization_system/results/
 complete_optimization_system/complete_optimization_system
-# ref_fastapi/
+ref_fastapi/
 backend/
+fastapi_optimization_system/intermediate_results/

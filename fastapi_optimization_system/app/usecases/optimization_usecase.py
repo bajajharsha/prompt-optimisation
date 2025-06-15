@@ -123,7 +123,7 @@ class OptimizationUseCase:
         await self._validate_optimization_parameters(request, request_id)
     
     async def _validate_schema(self, schema: Dict[str, Any], request_id: str):
-        """Validate the JSON schema"""
+        """Validate the JSON schema (supports nested structures)"""
         if not schema:
             raise ValidationError(
                 "Schema cannot be empty", 
@@ -131,35 +131,66 @@ class OptimizationUseCase:
                 field="schema"
             )
         
+        def validate_enum_values(field_name, enum_values, parent_path=""):
+            """Recursively validate enum values (handles nested structures)"""
+            full_path = f"{parent_path}.{field_name}" if parent_path else field_name
+            
+            if isinstance(enum_values, list):
+                # Simple list of enum values
+                if len(enum_values) == 0:
+                    raise ValidationError(
+                        f"Schema field '{full_path}' must have at least one enum value",
+                        request_id=request_id,
+                        field="schema"
+                    )
+                
+                # Check for duplicate enum values
+                if len(enum_values) != len(set(enum_values)):
+                    raise ValidationError(
+                        f"Schema field '{full_path}' has duplicate enum values",
+                        request_id=request_id,
+                        field="schema"
+                    )
+                
+                # Validate each enum value
+                for enum_val in enum_values:
+                    if not isinstance(enum_val, str) or not enum_val.strip():
+                        raise ValidationError(
+                            f"Schema field '{full_path}' contains invalid enum value: {enum_val}",
+                            request_id=request_id,
+                            field="schema"
+                        )
+            elif isinstance(enum_values, dict):
+                # Nested structure - validate each sub-field
+                if len(enum_values) == 0:
+                    raise ValidationError(
+                        f"Schema field '{full_path}' cannot be empty dictionary",
+                        request_id=request_id,
+                        field="schema"
+                    )
+                for sub_field, sub_values in enum_values.items():
+                    if not isinstance(sub_field, str) or not sub_field.strip():
+                        raise ValidationError(
+                            f"Schema field '{full_path}' contains invalid sub-field name: {sub_field}",
+                            request_id=request_id,
+                            field="schema"
+                        )
+                    validate_enum_values(sub_field, sub_values, full_path)
+            else:
+                raise ValidationError(
+                    f"Schema field '{full_path}' must be either a list of strings or a dictionary of lists",
+                    request_id=request_id,
+                    field="schema"
+                )
+        
         for field_name, enum_values in schema.items():
-            if not field_name.strip():
+            if not isinstance(field_name, str) or not field_name.strip():
                 raise ValidationError(
-                    "Schema field names cannot be empty", 
-                    request_id=request_id, 
+                    f"Schema field name cannot be empty: {field_name}",
+                    request_id=request_id,
                     field="schema"
                 )
-            
-            if not isinstance(enum_values, list):
-                raise ValidationError(
-                    f"Schema field '{field_name}' must have a list of enum values", 
-                    request_id=request_id, 
-                    field="schema"
-                )
-            
-            if len(enum_values) == 0:
-                raise ValidationError(
-                    f"Schema field '{field_name}' must have at least one enum value", 
-                    request_id=request_id, 
-                    field="schema"
-                )
-            
-            # Check for duplicate enum values
-            if len(enum_values) != len(set(enum_values)):
-                raise ValidationError(
-                    f"Schema field '{field_name}' has duplicate enum values", 
-                    request_id=request_id, 
-                    field="schema"
-                )
+            validate_enum_values(field_name, enum_values)
     
     async def _validate_model_configuration(self, model_config, request_id: str):
         """Validate model configuration"""

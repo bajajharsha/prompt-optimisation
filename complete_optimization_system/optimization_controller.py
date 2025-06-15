@@ -36,7 +36,8 @@ class OptimizationController:
         schema: Dict[str, List[str]],
         baseline_metrics: Dict[str, Any],
         train_samples: List[Dict[str, Any]],
-        base_prompt: str
+        base_prompt: str,
+        user_prompt_template: str = None
     ) -> Dict[str, Any]:
         """
         Analyze intent using existing Claude intent identifier
@@ -45,7 +46,8 @@ class OptimizationController:
             schema: JSON schema
             baseline_metrics: Baseline metrics
             train_samples: Training samples for context
-            base_prompt: Base prompt
+            base_prompt: Base prompt (system prompt if user_prompt_template provided)
+            user_prompt_template: Optional user prompt template
             
         Returns:
             Intent analysis results
@@ -67,7 +69,8 @@ class OptimizationController:
             'failed_cases': key_failures,  # Use extracted key failures instead
             'failed_cases_summary': baseline_metrics.get('failed_cases_summary', {}),
             'train_samples': train_samples,
-            'base_prompt': base_prompt
+            'base_prompt': base_prompt,
+            'user_prompt_template': user_prompt_template
         }
         
         # Run intent analysis
@@ -92,7 +95,8 @@ class OptimizationController:
         schema: Dict[str, List[str]],
         iteration: int,
         human_feedback_summary: Optional[Dict[str, Any]] = None,
-        optimization_history: Optional[List[Dict[str, Any]]] = None
+        optimization_history: Optional[List[Dict[str, Any]]] = None,
+        user_prompt_template: str = None
     ) -> List[Dict[str, Any]]:
         """
         Generate candidate prompts using existing optimization pipeline
@@ -105,6 +109,7 @@ class OptimizationController:
             iteration: Current iteration number
             human_feedback_summary: Human feedback from previous iterations
             optimization_history: History of previous optimization attempts
+            user_prompt_template: Optional user prompt template
             
         Returns:
             List of candidate prompts with metadata

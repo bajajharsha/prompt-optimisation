@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, field_validator
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Union
 from enum import Enum
 
 class ModelProvider(str, Enum):
@@ -31,7 +31,7 @@ class OptimizationRequest(BaseModel):
     
     system_prompt: str = Field(..., description="System prompt to optimize")
     user_prompt: str = Field(..., description="User prompt context")
-    json_schema: Dict[str, List[str]] = Field(..., description="JSON schema with enum values", alias="schema")
+    json_schema: Dict[str, Union[List[str], Dict[str, List[str]]]] = Field(..., description="JSON schema with enum values (supports nested structures)", alias="schema")
     model_configuration: ModelConfiguration = Field(..., description="Model configuration")
     dataset: str = Field(..., description="Dataset name or path")
     
@@ -52,9 +52,34 @@ class OptimizationRequest(BaseModel):
     def validate_schema(cls, v):
         if not v:
             raise ValueError("Schema cannot be empty")
+        
+        def validate_enum_values(field_name, enum_values, parent_path=""):
+            """Recursively validate enum values (handles nested structures)"""
+            full_path = f"{parent_path}.{field_name}" if parent_path else field_name
+            
+            if isinstance(enum_values, list):
+                # Simple list of enum values
+                if len(enum_values) == 0:
+                    raise ValueError(f"Schema field '{full_path}' must have at least one enum value")
+                for enum_val in enum_values:
+                    if not isinstance(enum_val, str) or not enum_val.strip():
+                        raise ValueError(f"Schema field '{full_path}' contains invalid enum value: {enum_val}")
+            elif isinstance(enum_values, dict):
+                # Nested structure - validate each sub-field
+                if len(enum_values) == 0:
+                    raise ValueError(f"Schema field '{full_path}' cannot be empty dictionary")
+                for sub_field, sub_values in enum_values.items():
+                    if not isinstance(sub_field, str) or not sub_field.strip():
+                        raise ValueError(f"Schema field '{full_path}' contains invalid sub-field name: {sub_field}")
+                    validate_enum_values(sub_field, sub_values, full_path)
+            else:
+                raise ValueError(f"Schema field '{full_path}' must be either a list of strings or a dictionary of lists")
+        
         for field_name, enum_values in v.items():
-            if not isinstance(enum_values, list) or len(enum_values) == 0:
-                raise ValueError(f"Schema field '{field_name}' must have at least one enum value")
+            if not isinstance(field_name, str) or not field_name.strip():
+                raise ValueError(f"Schema field name cannot be empty: {field_name}")
+            validate_enum_values(field_name, enum_values)
+        
         return v
 
 class OptimizationIterationResult(BaseModel):

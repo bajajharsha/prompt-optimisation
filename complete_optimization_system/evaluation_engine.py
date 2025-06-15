@@ -27,16 +27,18 @@ class EvaluationEngine:
         prompt: str,
         data: List[Dict[str, Any]],
         schema: Dict[str, List[str]],
-        evaluation_type: str = "general"
+        evaluation_type: str = "general",
+        user_prompt_template: str = None
     ) -> Dict[str, Any]:
         """
         Evaluate a prompt on given data
         
         Args:
-            prompt: The prompt to evaluate
+            prompt: The system prompt to evaluate (or combined prompt for backward compatibility)
             data: List of data samples with 'input' and 'expected_output'
             schema: JSON schema for validation
             evaluation_type: Type of evaluation for logging
+            user_prompt_template: Optional user prompt template (if provided, prompt is treated as system prompt)
             
         Returns:
             Enhanced metrics with overall accuracy
@@ -47,13 +49,30 @@ class EvaluationEngine:
         input_prompts = [sample['input'] for sample in data]
         ground_truth_jsons = [sample['expected_output'] for sample in data]
         
-        # Run inference
-        print("🤖 Running model inference...")
-        predicted_texts = run_groq_inference(
-            prompts=input_prompts,
-            base_prompt=prompt,
-            model=self.groq_model
-        )
+        # Prepare prompts for inference
+        if user_prompt_template:
+            # New mode: separate system and user prompts
+            system_prompt = prompt  # prompt is the system prompt
+            # Combine user template with actual input data
+            formatted_prompts = []
+            for input_text in input_prompts:
+                user_message = f"{user_prompt_template}\n\nInput to classify: {input_text}"
+                formatted_prompts.append(user_message)
+            
+            print("🤖 Running model inference with separate system/user prompts...")
+            predicted_texts = self._run_inference_with_system_user_prompts(
+                system_prompt=system_prompt,
+                user_prompts=formatted_prompts,
+                model=self.groq_model
+            )
+        else:
+            # Backward compatibility: combined prompt
+            print("🤖 Running model inference with combined prompt...")
+            predicted_texts = run_groq_inference(
+                prompts=input_prompts,
+                base_prompt=prompt,
+                model=self.groq_model
+            )
         print(f"Length of predicted texts: {len(predicted_texts)}")
         
         # Run evaluation using existing evaluator
@@ -200,4 +219,92 @@ class EvaluationEngine:
         with open(filepath, 'w') as f:
             json.dump(results, f, indent=2, default=str)
         
-        print(f"💾 Evaluation results saved to: {filepath}") 
+        print(f"💾 Evaluation results saved to: {filepath}")
+    
+    def _run_inference_with_system_user_prompts(
+        self,
+        system_prompt: str,
+        user_prompts: List[str],
+        model: str
+    ) -> List[str]:
+        """
+        Run inference with separate system and user prompts
+        
+        Args:
+            system_prompt: The system prompt (classification instructions)
+            user_prompts: List of user prompts (queries to classify)
+            model: Model name to use
+            
+        Returns:
+            List of model responses
+        """
+        import httpx
+        import os
+        from datetime import datetime
+        from pymongo import MongoClient
+        import pytz
+        
+        groq_api_key = os.getenv("groq_api_key")
+        responses = []
+        
+        for user_prompt in user_prompts:
+            try:
+                # Setup the API request payload with separate system/user messages
+                url = "https://api.groq.com/openai/v1/chat/completions"
+                headers = {
+                    "Content-Type": "application/json",
+                    "Authorization": f"Bearer {groq_api_key}"
+                }
+                payload = {
+                    "messages": [
+                        {
+                            "role": "system",
+                            "content": system_prompt
+                        },
+                        {
+                            "role": "user",
+                            "content": user_prompt
+                        }
+                    ],
+                    "model": model,
+                    "temperature": 0.2,
+                    "max_completion_tokens": 1024,
+                    "stream": False,
+                    "stop": None
+                }
+                
+                # Make API request
+                response = httpx.post(url, json=payload, headers=headers, verify=False)
+                response_data = response.json()
+                
+                # Log tokens to MongoDB
+                try:
+                    client = MongoClient("mongodb://localhost:27017/")
+                    db = client["personal_project_log_usage"]
+                    collection = db["llm_usage"]
+                    
+                    usage = response_data.get("usage", {})
+                    log_entry = {
+                        "timestamp": datetime.now(pytz.timezone('Asia/Kolkata')).strftime('%Y-%m-%d %H:%M:%S'),
+                        "provider": "groq",
+                        "model": model,
+                        "input_tokens": usage.get("prompt_tokens", 0),
+                        "output_tokens": usage.get("completion_tokens", 0),
+                        "total_tokens": usage.get("total_tokens", 0),
+                        "file_name": "/Users/harshabajaj/Desktop/PERSONAL_PROJECT/complete_optimization_system/evaluation_engine.py",
+                        "component": "evaluation_engine",
+                        "operation": "system_user_inference"
+                    }
+                    collection.insert_one(log_entry)
+                except Exception as e:
+                    print(f"Token logging failed: {e}")
+                
+                # Extract response content
+                response_text = response_data["choices"][0]["message"]["content"]
+                responses.append(response_text)
+                
+            except Exception as e:
+                print(f"Error in Groq API call: {e}")
+                responses.append("")  # Add empty string on error
+        
+        return responses 

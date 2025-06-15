@@ -30,7 +30,7 @@ class ClaudeClient:
         self,
         api_key: Optional[str] = None,
         model: str = "claude-sonnet-4-20250514",
-        max_tokens: int = 4000,
+        max_tokens: int = 14000,
         temperature: float = 0.1,
         timeout: int = 60
     ):

@@ -84,7 +84,7 @@ class ClaudeIntentIdentifier:
         
         payload = {
             "model": "claude-sonnet-4-20250514",
-            "max_tokens": 4000,
+            "max_tokens": 14000,
             "temperature": 0.1,
             "messages": [{
                 "role": "user",
