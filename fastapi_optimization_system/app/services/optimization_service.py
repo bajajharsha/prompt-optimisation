@@ -11,11 +11,11 @@ from pathlib import Path
 project_root = Path(__file__).parent.parent.parent.parent
 sys.path.insert(0, str(project_root))
 
-from complete_optimization_system.main import CompleteOptimizationSystem
-from complete_optimization_system.data_manager import DataManager
-from complete_optimization_system.evaluation_engine import EvaluationEngine
-from complete_optimization_system.optimization_controller import OptimizationController
-from complete_optimization_system.enhanced_human_feedback_fixed import create_simple_human_feedback_manager
+from prompt_optimizer.main import CompleteOptimizationSystem
+from prompt_optimizer.core.data_manager import DataManager
+from prompt_optimizer.core.evaluation_engine import EvaluationEngine
+from prompt_optimizer.core.optimization_controller import OptimizationController
+from prompt_optimizer.core.enhanced_human_feedback_fixed import create_simple_human_feedback_manager
 
 from app.models.optimization_models import (
     OptimizationRequest, 
@@ -141,11 +141,12 @@ class OptimizationService:
         """
         try:
             # Initialize request ID in the existing system
-            from complete_optimization_system.request_id import initialize_request_id
+            from prompt_optimizer.core.request_id import initialize_request_id
             initialize_request_id()
             
-            # Create intermediate results directory
+            # Create intermediate results directory and copy baseline files
             await self._create_intermediate_results_dir(request_id)
+            await self._copy_baseline_files_to_request_folder(request_id)
             
             # Set up the enhanced system prompt (only system prompt gets optimized)
             enhanced_system_prompt = self._create_enhanced_system_prompt(
@@ -186,6 +187,9 @@ class OptimizationService:
             
             # Save train baseline metrics
             await self._save_train_baseline_metrics(request_id, train_baseline_metrics)
+            
+            # Save in the format expected by existing components (for compatibility)
+            await self._save_enhanced_baseline_results(request_id, train_baseline_metrics)
             
             # Evaluate baseline on dev_a (hidden comparison dataset)
             dev_a_baseline_metrics = await evaluation_engine.evaluate_prompt(
@@ -899,6 +903,17 @@ class OptimizationService:
         except Exception as e:
             print(f"⚠️  Failed to create intermediate results directory: {e}")
     
+    async def _copy_baseline_files_to_request_folder(self, request_id: str):
+        """Initialize request-specific folder structure (no copying needed - fresh results per request)"""
+        try:
+            request_dir = f"intermediate_results/{request_id}"
+            # Directory already created by _create_intermediate_results_dir
+            print(f"💾 Request folder ready: {request_dir}")
+            print(f"📝 All baseline files will be generated fresh for this request")
+            
+        except Exception as e:
+            print(f"⚠️  Failed to initialize request folder: {e}")
+    
     async def _save_baseline_prompt(self, request_id: str, enhanced_system_prompt: str, user_prompt_template: str, schema: Dict[str, Any]):
         """Save the baseline prompt to intermediate results folder"""
         try:
@@ -957,6 +972,16 @@ class OptimizationService:
             print(f"💾 Saved train baseline metrics to: {metrics_file}")
         except Exception as e:
             print(f"⚠️  Failed to save train baseline metrics: {e}")
+    
+    async def _save_enhanced_baseline_results(self, request_id: str, train_baseline_metrics: Dict[str, Any]):
+        """Save baseline metrics in the format expected by existing components"""
+        try:
+            metrics_file = f"intermediate_results/{request_id}/enhanced_baseline_results.json"
+            with open(metrics_file, "w") as f:
+                json.dump(train_baseline_metrics, f, indent=2, default=str)
+            print(f"💾 Saved enhanced baseline results to: {metrics_file}")
+        except Exception as e:
+            print(f"⚠️  Failed to save enhanced baseline results: {e}")
     
     async def _save_dev_a_baseline_metrics(self, request_id: str, dev_a_baseline_metrics: Dict[str, Any]):
         """Save dev_a baseline metrics to intermediate results folder"""

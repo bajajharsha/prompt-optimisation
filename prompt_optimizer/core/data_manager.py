@@ -128,7 +128,7 @@ class DataManager:
         
         return random.sample(train_data, num_samples)
     
-    def save_data_splits(self, data_splits: Dict[str, List], output_dir: str = "complete_optimization_system/data"):
+    def save_data_splits(self, data_splits: Dict[str, List], output_dir: str = "fastapi_optimization_system/data"):
         """
         Save data splits to files for debugging/analysis
         

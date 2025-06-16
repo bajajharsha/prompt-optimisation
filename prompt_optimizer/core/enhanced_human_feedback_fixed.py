@@ -18,7 +18,7 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 
 from langfuse import Langfuse
-from complete_optimization_system.request_id import get_request_id
+from prompt_optimizer.core.request_id import get_request_id
 
 @dataclass
 class HumanFeedbackCase:

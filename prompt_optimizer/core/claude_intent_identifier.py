@@ -17,6 +17,7 @@ import httpx
 from dotenv import load_dotenv
 from pymongo import MongoClient
 import pytz
+from prompt_optimizer.core.request_id import get_request_id
 
 load_dotenv()
 
@@ -116,7 +117,7 @@ class ClaudeIntentIdentifier:
                     "input_tokens": result.get("usage", {}).get("input_tokens", 0),
                     "output_tokens": result.get("usage", {}).get("output_tokens", 0),
                     "total_tokens": result.get("usage", {}).get("input_tokens", 0) + result.get("usage", {}).get("output_tokens", 0),
-                    "file_name": "/Users/harshabajaj/Desktop/PERSONAL_PROJECT/claude_intent_identifier.py"
+                    "file_name": "/Users/harshabajaj/Desktop/PERSONAL_PROJECT/prompt_optimizer/core/claude_intent_identifier.py"
                 }
                 collection.insert_one(log_entry)
                 
@@ -227,8 +228,11 @@ Your goal is to deeply understand the classification intent so that optimization
                 json_str = claude_response[json_start:json_end]
             
             claude_analysis = json.loads(json_str)
-            os.makedirs("claude_analysis", exist_ok=True)
-            with open("claude_analysis/claude_analysis.json", "w") as f:
+            # Save to request-specific intermediate results folder
+            request_id = get_request_id() or "default"
+            claude_analysis_dir = f"fastapi_optimization_system/intermediate_results/{request_id}/claude_analysis"
+            os.makedirs(claude_analysis_dir, exist_ok=True)
+            with open(f"{claude_analysis_dir}/claude_analysis.json", "w") as f:
                 json.dump(claude_analysis, f, indent=2)
             # Create IntentAnalysis object
             analysis = IntentAnalysis(
@@ -393,7 +397,9 @@ async def main():
     }
     
     # Load data files
-    all_metrics = load_baseline_metrics("poc/metrics/enhanced_baseline_results.json")
+    # Load from request-specific intermediate results folder
+    request_id = get_request_id() or "default"
+    all_metrics = load_baseline_metrics(f"fastapi_optimization_system/intermediate_results/{request_id}/enhanced_baseline_results.json")
     
     failed_cases_summary = all_metrics.get("failed_cases_summary", {})
     failed_cases = all_metrics["detailed_failed_cases"]["wrong_classifications"]
@@ -436,7 +442,9 @@ async def main():
     analysis = await identifier.analyze_intent(analysis_context)
     
     # Save results
-    filepath = identifier.save_analysis(analysis, "claude_intent_analysis_results.json")
+    # Save to request-specific intermediate results folder
+    request_id = get_request_id() or "default"
+    filepath = identifier.save_analysis(analysis, f"fastapi_optimization_system/intermediate_results/{request_id}/claude_intent_analysis_results.json")
     
     # Print summary
     print("\n" + "="*60)

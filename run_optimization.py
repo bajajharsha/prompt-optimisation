@@ -19,7 +19,8 @@ from prompt_optimizer.core.orchestrator import Orchestrator
 from prompt_optimizer.core.simple_executor import SimpleExecutor
 from prompt_optimizer.models.types import ModelConfiguration
 from prompt_optimizer.utils.claude_client import ClaudeClient
-from poc.intent_analysis.claude_intent_identifier import load_baseline_metrics
+from prompt_optimizer.core.claude_intent_identifier import load_baseline_metrics
+from prompt_optimizer.core.request_id import get_request_id
 
 
 async def run_optimization_pipeline():
@@ -39,9 +40,11 @@ async def run_optimization_pipeline():
     
     # Load your existing data (same as your pattern)
     print("📊 Loading baseline data...")
-    all_metrics = load_baseline_metrics("poc/metrics/enhanced_baseline_results.json")
+    # Load from request-specific intermediate results folder
+    request_id = get_request_id() or "default"
+    all_metrics = load_baseline_metrics(f"fastapi_optimization_system/intermediate_results/{request_id}/enhanced_baseline_results.json")
     
-    with open("poc/intent_analysis/claude_intent_analysis_results.json", 'r', encoding='utf-8') as f:
+    with open(f"fastapi_optimization_system/intermediate_results/{request_id}/claude_intent_analysis_results.json", 'r', encoding='utf-8') as f:
         intent_analysis = json.load(f)
     
     # Your base prompt
@@ -150,7 +153,7 @@ async def run_optimization_pipeline():
             
             # Simulate new metrics (in real scenario, you'd evaluate the new prompt)
             
-            with open("poc/metrics/enhanced_baseline_results_new.json", "r") as f:
+            with open(f"fastapi_optimization_system/intermediate_results/{request_id}/enhanced_baseline_results_new.json", "r") as f:
                 new_all_metrics = json.load(f)
             
             new_baseline_metrics = {k: v for k, v in new_all_metrics.items() if k != "detailed_failed_cases"}
@@ -210,9 +213,9 @@ if __name__ == "__main__":
     
     # Check if required files exist
     # required_files = [
-    #     "poc/metrics/enhanced_baseline_results.json",
-    #     "poc/intent_analysis/claude_intent_analysis_results.json",
-    #     # "poc/metrics/enhanced_baseline_results_new.json"
+    #     "fastapi_optimization_system/enhanced_baseline_results.json",
+    #     "fastapi_optimization_system/claude_intent_analysis_results.json",
+    #     # "fastapi_optimization_system/enhanced_baseline_results_new.json"
     # ]
     
     # missing_files = []

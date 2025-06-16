@@ -16,11 +16,11 @@ import uuid
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 
-from complete_optimization_system.data_manager import DataManager
-from complete_optimization_system.evaluation_engine import EvaluationEngine
-from complete_optimization_system.optimization_controller import OptimizationController
-from complete_optimization_system.enhanced_human_feedback_fixed import create_simple_human_feedback_manager
-from complete_optimization_system.request_id import initialize_request_id, get_request_id
+from prompt_optimizer.core.data_manager import DataManager
+from prompt_optimizer.core.evaluation_engine import EvaluationEngine
+from prompt_optimizer.core.optimization_controller import OptimizationController
+from prompt_optimizer.core.enhanced_human_feedback_fixed import create_simple_human_feedback_manager
+from prompt_optimizer.core.request_id import initialize_request_id, get_request_id
 
 class CompleteOptimizationSystem:
     """
@@ -82,8 +82,8 @@ class CompleteOptimizationSystem:
             print(f"   Test: {len(data_splits['test'])} samples (20%)")
             
             # save data splits to folder with request id
-            os.makedirs(f"complete_optimization_system/intermediate_results/{request_id}", exist_ok=True)
-            with open(f"complete_optimization_system/intermediate_results/{request_id}/data_splits.json", "w") as f:
+            os.makedirs(f"fastapi_optimization_system/intermediate_results/{request_id}", exist_ok=True)
+            with open(f"fastapi_optimization_system/intermediate_results/{request_id}/data_splits.json", "w") as f:
                 json.dump(data_splits, f, indent=2, default=str)
             
             # Save baseline prompt
@@ -103,7 +103,7 @@ class CompleteOptimizationSystem:
             )
             
             # save train baseline metrics to folder with request id
-            with open(f"complete_optimization_system/intermediate_results/{request_id}/train_baseline_metrics.json", "w") as f:
+            with open(f"fastapi_optimization_system/intermediate_results/{request_id}/train_baseline_metrics.json", "w") as f:
                 json.dump(train_baseline_metrics, f, indent=2, default=str)
             
             print(f"✅ Train baseline evaluation completed:")
@@ -121,7 +121,7 @@ class CompleteOptimizationSystem:
             )
             
             # save intent analysis to folder with request id
-            with open(f"complete_optimization_system/intermediate_results/{request_id}/intent_analysis.json", "w") as f:
+            with open(f"fastapi_optimization_system/intermediate_results/{request_id}/intent_analysis.json", "w") as f:
                 json.dump(intent_analysis, f, indent=2, default=str)
             
             print("✅ Intent analysis completed (based on train data)")
@@ -136,7 +136,7 @@ class CompleteOptimizationSystem:
             )
             
             # save dev a baseline metrics to folder with request id
-            with open(f"complete_optimization_system/intermediate_results/{request_id}/dev_a_baseline_metrics.json", "w") as f:
+            with open(f"fastapi_optimization_system/intermediate_results/{request_id}/dev_a_baseline_metrics.json", "w") as f:
                 json.dump(dev_a_baseline_metrics, f, indent=2, default=str)
             
             print(f"✅ Dev A baseline evaluation completed:")
@@ -155,7 +155,7 @@ class CompleteOptimizationSystem:
             )
             
             # save optimization results to folder with request id
-            with open(f"complete_optimization_system/intermediate_results/{request_id}/optimization_results.json", "w") as f:
+            with open(f"fastapi_optimization_system/intermediate_results/{request_id}/optimization_results.json", "w") as f:
                 json.dump(optimization_results, f, indent=2, default=str)
             
             # Step 6: Final Test Evaluation
@@ -597,7 +597,7 @@ class CompleteOptimizationSystem:
     async def _save_baseline_prompt(self, request_id: str):
         """Save the baseline prompt to intermediate results folder"""
         try:
-            baseline_dir = f"complete_optimization_system/intermediate_results/{request_id}/baseline"
+            baseline_dir = f"fastapi_optimization_system/intermediate_results/{request_id}/baseline"
             os.makedirs(baseline_dir, exist_ok=True)
             
             baseline_prompt = self._get_baseline_prompt()
@@ -635,7 +635,7 @@ class CompleteOptimizationSystem:
         """Save all generated candidate prompts to intermediate results folder"""
         try:
             request_id = get_request_id()
-            candidates_dir = f"complete_optimization_system/intermediate_results/{request_id}/iteration_{iteration:02d}_candidates"
+            candidates_dir = f"fastapi_optimization_system/intermediate_results/{request_id}/iteration_{iteration:02d}_candidates"
             os.makedirs(candidates_dir, exist_ok=True)
             
             # Save all candidates in a single file
@@ -675,7 +675,7 @@ class CompleteOptimizationSystem:
         """Save the selected best prompt to intermediate results folder"""
         try:
             request_id = get_request_id()
-            selected_dir = f"complete_optimization_system/intermediate_results/{request_id}/iteration_{iteration:02d}_selected"
+            selected_dir = f"fastapi_optimization_system/intermediate_results/{request_id}/iteration_{iteration:02d}_selected"
             os.makedirs(selected_dir, exist_ok=True)
             
             # Save selected prompt metadata
@@ -725,7 +725,7 @@ class CompleteOptimizationSystem:
         """Save the final recommended prompt to intermediate results folder"""
         try:
             request_id = get_request_id()
-            final_dir = f"complete_optimization_system/intermediate_results/{request_id}/final"
+            final_dir = f"fastapi_optimization_system/intermediate_results/{request_id}/final"
             os.makedirs(final_dir, exist_ok=True)
             
             # Save final prompt metadata
@@ -774,7 +774,7 @@ async def main():
         # Save results
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         req_id = get_request_id()
-        results_file = f"complete_optimization_system/results/optimization_results_{timestamp}_{req_id}.json"
+        results_file = f"fastapi_optimization_system/results/optimization_results_{timestamp}_{req_id}.json"
         
         os.makedirs(os.path.dirname(results_file), exist_ok=True)
         with open(results_file, 'w') as f:

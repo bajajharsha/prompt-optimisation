@@ -36,9 +36,6 @@ class FreeformOptimizer(BaseOptimizer):
             # Build comprehensive context message including model information
             context_message = self._build_context_message(context)
             
-            with open("freeform_context.md", "w") as f:
-                f.write(context_message)
-            
             # Get optimization from Claude
             optimization_response = await self.claude_client.complete(
                 messages=context_message,
@@ -46,61 +43,44 @@ class FreeformOptimizer(BaseOptimizer):
                 operation="prompt_optimization"
             )
             
-            with open("freeform_response.md", "w") as f:
-                f.write(json.dumps(optimization_response, indent=2))
+            # Note: Raw response debugging removed to avoid unnecessary files
             
             # Parse the JSON response with robust error handling
             try:
-                # Handle the response format: {'content': '```json\n{...}\n```', 'usage': {...}}
+                # Handle the response format: {'content': '...'}
                 if isinstance(optimization_response, dict) and 'content' in optimization_response:
                     content = optimization_response['content']
                 else:
                     content = optimization_response
-                
+
                 print(f"🔍 Raw Claude response content (first 500 chars): {content[:500]}")
-                
-                # Extract JSON from markdown code blocks if present
-                json_content = content.strip()
-                if '```json' in content:
-                    # Find the JSON content between ```json and ```
-                    start = content.find('```json') + 7  # Skip ```json
-                    end = content.find('```', start)
-                    if end != -1:
-                        json_content = content[start:end].strip()
-                    else:
-                        # No closing ```, try to find the JSON object
-                        json_start = content.find('{', start)
-                        if json_start != -1:
-                            # Find the last } in the content
-                            json_end = content.rfind('}')
-                            if json_end != -1:
-                                json_content = content[json_start:json_end + 1]
-                
+
+                # Extract and parse JSON more robustly
+                json_content = self._extract_json_content(content)
                 print(f"🔍 Extracted JSON content (first 300 chars): {json_content[:300]}")
-                
-                # Try to fix common JSON issues
-                json_content = self._fix_common_json_issues(json_content)
-                
-                # Parse the JSON - handle the specific format we're getting
+
+                # Parse the JSON
                 result_data = json.loads(json_content)
-                
+
                 optimized_prompt = result_data.get("optimized_prompt", context.base_prompt)
                 reasoning = result_data.get("reasoning", "No reasoning provided")
                 confidence = float(result_data.get("confidence", 0.5))
                 changes_made = result_data.get("changes_made", [])
-                
+
+                # Note: Optimized prompt saved in request-specific intermediate results folder by FastAPI service
+
             except (json.JSONDecodeError, ValueError) as e:
-                print(f"⚠️ Failed to parse optimization response: {e}")
-                print(f"🔍 Problematic JSON content: {json_content[:1000] if 'json_content' in locals() else 'Not extracted'}")
-                
-                # Try to extract at least the optimized_prompt using regex
+                print(f"⚠️ Failed to parse JSON: {e}")
+                print(f"🔍 Problematic content: {content[:500]}")
+
+                # Try to extract using the robust fallback
                 optimized_prompt = self._extract_prompt_fallback(content, context.base_prompt)
-                reasoning = f"Failed to parse optimization response: {str(e)}. Used fallback extraction."
-                confidence = 0.1
-                changes_made = ["Parsing failed - used fallback extraction"]
-            
+                reasoning = f"JSON parsing failed: {str(e)}. Used regex fallback."
+                confidence = 0.3
+                changes_made = ["Used regex fallback due to JSON parsing error"]
+
             execution_time = time.time() - start_time
-            
+
             return OptimizerResult(
                 optimizer_name=self.name,
                 candidate_prompt=optimized_prompt,
@@ -256,12 +236,13 @@ Pay special attention to the failed cases provided. For each pattern you see:
 - Include examples that demonstrate the correct classification
 - Add decision-making criteria to avoid similar mistakes
 
-Provide your optimization as a JSON response with this structure:
+You MUST provide your optimization as a valid JSON response in this exact format (no markdown code blocks):
+
 {{
-    "optimized_prompt": "Your significantly improved prompt here - MUST be substantially different from the original and should only return the prompt with no extra text or comments",
-    "reasoning": "Detailed explanation of the major changes you made and why they address the specific failed cases",
+    "optimized_prompt": "Your significantly improved prompt here - MUST be substantially different from the original",
+    "reasoning": "Detailed explanation of the major changes made",
     "confidence": 0.8,
-    "changes_made": ["List of specific major changes made - should be substantial improvements"]
+    "changes_made": ["List of specific major changes made"]
 }}
 
 **REQUIREMENTS:**
@@ -274,65 +255,72 @@ Provide your optimization as a JSON response with this structure:
         
         return message
     
+    def _extract_json_content(self, content: str) -> str:
+        """Simple and robust JSON extraction from Claude response"""
+        import re
+
+        # First try to extract from markdown code blocks
+        json_content = content
+        if '```json' in content:
+            start = content.find('```json') + 7
+            end = content.find('```', start)
+            if end != -1:
+                json_content = content[start:end].strip()
+            else: # No closing ```
+                json_start = content.find('{', start)
+                json_content = content[json_start:].strip() if json_start != -1 else content[start:].strip()
+        else:
+            # Look for JSON object if no markdown
+            json_start = content.find('{')
+            if json_start != -1:
+                # Find matching closing brace to avoid grabbing extra text
+                brace_count = 0
+                json_end = -1
+                in_string = False
+                for i, char in enumerate(content[json_start:]):
+                    if char == '"' and (i == 0 or content[json_start + i - 1] != '\\'):
+                        in_string = not in_string
+                    if not in_string:
+                        if char == '{': brace_count += 1
+                        elif char == '}': brace_count -= 1
+                    if brace_count == 0:
+                        json_end = json_start + i + 1
+                        break
+                json_content = content[json_start:json_end] if json_end != -1 else content[json_start:]
+            else: # No JSON object found
+                json_content = content
+
+        return json_content.strip()
+    
     def _fix_common_json_issues(self, json_content: str) -> str:
         """Fix common JSON formatting issues"""
         import re
-        
+
         # Remove any trailing commas before closing braces/brackets
         json_content = re.sub(r',(\s*[}\]])', r'\1', json_content)
-        
-        # Fix unterminated strings by adding closing quotes
-        # This is a simple heuristic - look for lines that start with a quote but don't end with one
-        lines = json_content.split('\n')
-        fixed_lines = []
-        
-        for line in lines:
-            stripped = line.strip()
-            # If line starts with a quote but doesn't end with quote or comma, try to fix it
-            if (stripped.startswith('"') and 
-                not stripped.endswith('"') and 
-                not stripped.endswith('",') and
-                not stripped.endswith('",')):
-                # Add closing quote if it seems to be missing
-                if ':' in stripped:
-                    # This looks like a key-value pair
-                    parts = stripped.split(':', 1)
-                    if len(parts) == 2:
-                        key_part = parts[0].strip()
-                        value_part = parts[1].strip()
-                        if key_part.startswith('"') and not key_part.endswith('"'):
-                            key_part += '"'
-                        if value_part.startswith('"') and not value_part.endswith('"') and not value_part.endswith('",'):
-                            value_part += '"'
-                        line = f"  {key_part}: {value_part}"
-            
-            fixed_lines.append(line)
-        
-        return '\n'.join(fixed_lines)
+
+        # This function is kept for minor fixes but major parsing is handled by extraction.
+        return json_content
     
     def _extract_prompt_fallback(self, content: str, original_prompt: str) -> str:
-        """Extract optimized prompt using regex fallback when JSON parsing fails"""
+        """Robust fallback to extract optimized prompt from malformed JSON-like text"""
         import re
-        
-        # Try to find optimized_prompt value using regex
-        patterns = [
-            r'"optimized_prompt"\s*:\s*"([^"]*(?:\\.[^"]*)*)"',  # Standard JSON string
-            r'"optimized_prompt"\s*:\s*"([^"]*)',  # Unterminated string
-            r'optimized_prompt["\s]*:\s*["\s]*([^"]*)',  # Loose matching
-        ]
-        
-        for pattern in patterns:
-            match = re.search(pattern, content, re.DOTALL)
-            if match:
-                extracted = match.group(1)
-                # Clean up the extracted text
-                extracted = extracted.replace('\\"', '"')  # Unescape quotes
-                extracted = extracted.strip()
-                if len(extracted) > 50:  # Only use if it looks substantial
-                    print(f"✅ Extracted prompt using fallback: {extracted[:100]}...")
-                    return extracted
-        
-        print("⚠️ Fallback extraction failed, returning original prompt")
+
+        # This pattern looks for the optimized_prompt key and captures everything
+        # until the *next* top-level JSON key (like "reasoning"), which is more robust.
+        pattern = r'"optimized_prompt"\s*:\s*"((?:.|\n)*?)"\s*,\s*"\w+"\s*:'
+        match = re.search(pattern, content, re.DOTALL)
+
+        if match:
+            # The value is in group 1. Clean it up.
+            extracted = match.group(1)
+            extracted = extracted.replace('\\"', '"').replace('\\n', '\n').replace('\\t', '    ').strip()
+
+            if len(extracted) > 50: # Sanity check for a meaningful prompt
+                print(f"✅ Extracted prompt using robust fallback: {extracted[:100]}...")
+                return extracted
+
+        print("⚠️ Robust extraction fallback failed, returning original prompt")
         return original_prompt
 
     def _get_model_info_context(self, model_config) -> str:

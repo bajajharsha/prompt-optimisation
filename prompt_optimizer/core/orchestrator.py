@@ -16,7 +16,8 @@ sys.path.insert(0, project_root)
 from prompt_optimizer.models.types import OptimizationContext, OptimizerSelection, ModelConfiguration
 from prompt_optimizer.utils.claude_client import ClaudeClient, ClaudeAPIError
 from prompt_optimizer.optimizers.simple_registry import get_available_optimizers, get_optimizer_names
-from poc.intent_analysis.claude_intent_identifier import load_baseline_metrics
+from prompt_optimizer.core.claude_intent_identifier import load_baseline_metrics
+from prompt_optimizer.core.request_id import get_request_id
 from .human_feedback import HumanFeedbackManager, DevBHumanFeedbackIntegration
 
 class Orchestrator:
@@ -38,7 +39,10 @@ class Orchestrator:
             print("select_optimization_strategy")
             analysis_message = self._build_analysis_message(context)
             print("analysis_message", analysis_message)
-            with open("analysis_message.txt", "w") as f:
+            # Save analysis message in request-specific intermediate results folder
+            request_id = get_request_id() or "default"
+            os.makedirs(f"fastapi_optimization_system/intermediate_results/{request_id}", exist_ok=True)
+            with open(f"fastapi_optimization_system/intermediate_results/{request_id}/analysis_message.txt", "w") as f:
                 f.write(analysis_message)
             # return analysis_message
             
@@ -445,8 +449,10 @@ Focus on optimizers that can address the specific issues shown in the failed cas
 
 if __name__ == "__main__":
     
-    all_metrics = load_baseline_metrics("poc/metrics/enhanced_baseline_results.json")
-    with open("poc/intent_analysis/claude_intent_analysis_results.json", 'r', encoding='utf-8') as f:
+    # These should be loaded from the request-specific intermediate results folder
+    request_id = get_request_id() or "default"
+    all_metrics = load_baseline_metrics(f"fastapi_optimization_system/intermediate_results/{request_id}/enhanced_baseline_results.json")
+    with open(f"fastapi_optimization_system/intermediate_results/{request_id}/claude_intent_analysis_results.json", 'r', encoding='utf-8') as f:
         intent_analysis = json.load(f)
     base_prompt = """
     You are an expert code generation classifier. Analyze the user's request and classify it according to the provided schema.
@@ -486,10 +492,4 @@ if __name__ == "__main__":
     print("=" * 50)
     print(analysis_message)
     print("=" * 50)
-    
-    # Also write to file as your code already does
-    with open("analysis_message.md", "w") as f:
-        f.write(analysis_message)
-    print("Analysis message saved to analysis_message.md")
-
 

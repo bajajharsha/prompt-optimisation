@@ -11,7 +11,7 @@ import json
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 
-from poc.metric import JSONGenerationEvaluator, run_groq_inference
+from prompt_optimizer.core.metric import JSONGenerationEvaluator, run_groq_inference
 
 
 class EvaluationEngine:
@@ -291,7 +291,7 @@ class EvaluationEngine:
                         "input_tokens": usage.get("prompt_tokens", 0),
                         "output_tokens": usage.get("completion_tokens", 0),
                         "total_tokens": usage.get("total_tokens", 0),
-                        "file_name": "/Users/harshabajaj/Desktop/PERSONAL_PROJECT/complete_optimization_system/evaluation_engine.py",
+                        "file_name": "/Users/harshabajaj/Desktop/PERSONAL_PROJECT/prompt_optimizer/core/evaluation_engine.py",
                         "component": "evaluation_engine",
                         "operation": "system_user_inference"
                     }

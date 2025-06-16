@@ -16,7 +16,7 @@ from prompt_optimizer.core.orchestrator import Orchestrator
 from prompt_optimizer.core.simple_executor import SimpleExecutor
 from prompt_optimizer.models.types import ModelConfiguration, OptimizationContext
 from prompt_optimizer.utils.claude_client import ClaudeClient
-from poc.intent_analysis.claude_intent_identifier import ClaudeIntentIdentifier
+from prompt_optimizer.core.claude_intent_identifier import ClaudeIntentIdentifier
 
 
 class OptimizationController:

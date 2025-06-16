@@ -998,7 +998,7 @@ def run_groq_inference(prompts: List[str], base_prompt: str, model: str = "llama
                     "input_tokens": usage.get("prompt_tokens", 0),
                     "output_tokens": usage.get("completion_tokens", 0),
                     "total_tokens": usage.get("total_tokens", 0),
-                    "file_name": "/Users/harshabajaj/Desktop/PERSONAL_PROJECT/poc/metric.py"
+                    "file_name": "/Users/harshabajaj/Desktop/PERSONAL_PROJECT/prompt_optimizer/core/metric.py"
                 }
                 collection.insert_one(log_entry)
             except Exception as e:
