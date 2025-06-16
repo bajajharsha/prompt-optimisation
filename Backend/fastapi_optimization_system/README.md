@@ -133,11 +133,51 @@ POST /api/v1/optimize
 GET /api/v1/optimize/{request_id}/status
 ```
 
+#### Dataset Upload Endpoints
+```http
+POST /api/v1/upload-dataset
+```
+
+Upload CSV datasets to LangFuse for use in optimization:
+
+**Form Data:**
+```
+file: dataset.csv (CSV file)
+dataset_name: "my_classification_dataset"
+description: "Dataset for text classification" (optional)
+metadata: '{"version": "1.0", "source": "manual"}' (optional JSON string)
+```
+
+**CSV Format:**
+```csv
+input,expected_output,category
+"Classify this text","{"sentiment": "positive", "intent": "feedback"}","example"
+"Another text","{"sentiment": "negative", "intent": "complaint"}","example"
+```
+
+**Response:**
+```json
+{
+  "dataset_name": "my_classification_dataset",
+  "dataset_info": {...},
+  "upload_results": {
+    "total_items": 100,
+    "successful": 98,
+    "failed": 2
+  },
+  "file_info": {...},
+  "request_id": "uuid-here"
+}
+```
+
 #### Helper Endpoints
 - `GET /api/v1/health` - Health check
 - `GET /api/v1/models` - List supported models
 - `GET /api/v1/examples` - Get request examples
 - `POST /api/v1/validate` - Validate request format
+- `GET /api/v1/dataset/{dataset_name}` - Get dataset information
+- `GET /api/v1/dataset-upload-examples` - Get CSV format examples
+- `POST /api/v1/validate-dataset-upload` - Validate upload parameters
 
 ## 📊 Optimization Process
 
@@ -169,6 +209,24 @@ Each iteration:
 - **OpenAI**: Wide model selection
 - **Google**: Gemini models support
 
+### Dataset Upload Performance Tuning
+Based on LangFuse API rate limits:
+- **Free tier** (100 req/min ≈ 1.67/sec): `max_concurrent=1-2, retry_attempts=3`
+- **Paid tier** (1000 req/min ≈ 16.67/sec): `max_concurrent=3-10, retry_attempts=3-5`
+- **Large datasets** (1000+ items): Increase `retry_attempts=5-7` for reliability
+- **Unstable networks**: Lower `max_concurrent=1-2`, higher `retry_attempts=5`
+
+#### Upload Performance Examples:
+```bash
+# Free tier - conservative settings
+curl -X POST "http://localhost:8000/api/v1/upload-dataset" \
+  -F "max_concurrent=2" -F "retry_attempts=3"
+
+# Paid tier - aggressive settings  
+curl -X POST "http://localhost:8000/api/v1/upload-dataset" \
+  -F "max_concurrent=8" -F "retry_attempts=5"
+```
+
 ### Optimization Parameters
 - `max_iterations`: Maximum optimization rounds (1-10)
 - `improvement_threshold`: Minimum improvement to continue (0.01-0.2)
@@ -184,6 +242,39 @@ This FastAPI wrapper integrates seamlessly with the existing `complete_optimizat
 - **HumanFeedbackIntegration**: Handles LangFuse integration
 
 The core business logic remains unchanged - this is purely a FastAPI interface layer.
+
+## 📤 Dataset Upload Workflow
+
+### 1. Prepare Your CSV Dataset
+Create a CSV file with the following required columns:
+- `input`: The input text/prompt for each example
+- `expected_output`: The expected JSON output (as JSON string or object)
+
+Additional columns will be added as metadata.
+
+### 2. Upload via API
+```bash
+curl -X POST "http://localhost:8000/api/v1/upload-dataset" \
+  -F "file=@your_dataset.csv" \
+  -F "dataset_name=your_dataset_name" \
+  -F "description=Your dataset description" \
+  -F "metadata={\"version\": \"1.0\", \"source\": \"manual\"}"
+```
+
+### 3. Use in Optimization
+Reference the uploaded dataset in your optimization requests:
+```json
+{
+  "dataset": "your_dataset_name",
+  "system_prompt": "...",
+  "schema": {...}
+}
+```
+
+### 4. Dataset Management
+- View dataset info: `GET /api/v1/dataset/{dataset_name}`
+- Get upload examples: `GET /api/v1/dataset-upload-examples`
+- Validate before upload: `POST /api/v1/validate-dataset-upload`
 
 ## 🧪 Example Use Cases
 

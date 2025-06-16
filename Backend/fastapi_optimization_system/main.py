@@ -7,6 +7,7 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes.optimization_routes import router as optimization_router
+from app.routes.upload_dataset_routes import router as upload_dataset_router
 from app.utils.context_util import request_context
 from app.utils.error_handler import OptimizationError
 
@@ -35,6 +36,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(optimization_router, prefix="/api/v1")
+app.include_router(upload_dataset_router, prefix="/api/v1")
 
 @app.exception_handler(OptimizationError)
 async def optimization_error_handler(request: Request, exc: OptimizationError):
