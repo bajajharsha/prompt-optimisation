@@ -5,5 +5,6 @@ complete_optimization_system/intermediate_results/
 complete_optimization_system/results/
 complete_optimization_system/complete_optimization_system
 ref_fastapi/
-backend/
 fastapi_optimization_system/intermediate_results/
+Backend/fastapi_optimization_system/intermediate_results/
+Backend/fastapi_optimization_system/fastapi_optimization_system
