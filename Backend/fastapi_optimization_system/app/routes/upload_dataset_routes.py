@@ -147,6 +147,90 @@ async def upload_csv_dataset(
                 "request_id": request_id
             }
         )
+
+@router.get(
+    "/datasets",
+    summary="Get All Datasets from LangFuse",
+    description="""
+    Retrieve all datasets available in LangFuse for the current project.
+    
+    This endpoint fetches datasets directly from LangFuse, not just session uploads.
+    Useful for selecting existing datasets for prompt optimization.
+    
+    **Query Parameters:**
+    - `page`: Page number for pagination (default: 1)
+    - `limit`: Number of datasets per page (default: 50, max: 100)
+    
+    **Response includes:**
+    - List of available datasets with metadata
+    - Pagination information
+    - Total count and pages
+    """
+)
+async def get_all_datasets(
+    page: int = Query(1, ge=1, description="Page number (starts from 1)"),
+    limit: int = Query(50, ge=1, le=100, description="Number of datasets per page (max 100)")
+) -> Dict[str, Any]:
+    """
+    Get all datasets from LangFuse
+    
+    **Query Parameters:**
+    - `page`: Page number for pagination (default: 1)
+    - `limit`: Number of datasets per page (default: 50, max: 100)
+    
+    **Response format:**
+    ```json
+    {
+      "datasets": [
+        {
+          "id": "dataset_id",
+          "name": "dataset_name", 
+          "description": "Optional description",
+          "metadata": {...},
+          "createdAt": "2024-01-15T10:30:00Z",
+          "updatedAt": "2024-01-15T10:30:00Z"
+        }
+      ],
+      "pagination": {
+        "page": 1,
+        "limit": 50,
+        "total_items": 150,
+        "total_pages": 3,
+        "has_next_page": true
+      },
+      "request_id": "uuid-here",
+      "timestamp": "2024-01-15T10:30:00Z"
+    }
+    ```
+    """
+    # Generate request ID
+    request_id = str(uuid.uuid4())
+    set_request_id(request_id)
+    
+    try:
+        result = await upload_dataset_controller.get_all_datasets(page=page, limit=limit)
+        return result
+        
+    except HTTPException:
+        # Re-raise HTTP exceptions from controller
+        raise
+    except Exception as e:
+        # Handle unexpected errors
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "error": "internal_error",
+                "message": f"Unexpected error: {str(e)}",
+                "request_id": request_id
+            }
+        )
+
+@router.get(
+    "/dataset-upload-status",
+    summary="Health check for dataset upload service",
+    description="Returns service status and configuration information"
+)
+async def dataset_upload_health_check() -> Dict[str, Any]:
     """
     Health check for dataset upload service
     

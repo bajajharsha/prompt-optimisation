@@ -347,3 +347,38 @@ class UploadDatasetUseCase:
                 e, request_id, "get dataset info"
             )
             raise optimization_error
+
+    async def get_all_datasets(self, page: int = 1, limit: int = 50) -> Dict[str, Any]:
+        """
+        Get all datasets from LangFuse
+        
+        Args:
+            page: Page number (default: 1)
+            limit: Number of datasets per page (default: 50)
+            
+        Returns:
+            Dict containing datasets list and pagination info
+        """
+        request_id = get_request_id()
+        
+        try:
+            datasets_result = await self.langfuse_service.get_all_datasets(page=page, limit=limit)
+            
+            return {
+                "datasets": datasets_result.get("data", []),
+                "pagination": {
+                    "page": page,
+                    "limit": limit,
+                    "total_items": datasets_result.get("totalItems", 0),
+                    "total_pages": datasets_result.get("totalPages", 0),
+                    "has_next_page": datasets_result.get("hasNextPage", False)
+                },
+                "request_id": request_id,
+                "timestamp": datetime.now().isoformat()
+            }
+            
+        except Exception as e:
+            optimization_error = handle_optimization_exception(
+                e, request_id, "get all datasets"
+            )
+            raise optimization_error

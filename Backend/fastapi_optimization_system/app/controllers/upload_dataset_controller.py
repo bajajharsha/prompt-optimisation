@@ -168,6 +168,65 @@ class UploadDatasetController:
                 }
             )
     
+    async def get_all_datasets(self, page: int = 1, limit: int = 50) -> Dict[str, Any]:
+        """
+        Get all datasets from LangFuse
+        
+        Args:
+            page: Page number (default: 1)
+            limit: Number of datasets per page (default: 50)
+            
+        Returns:
+            Dict containing datasets list and pagination info
+            
+        Raises:
+            HTTPException: If fetching datasets fails
+        """
+        request_id = get_request_id()
+        
+        try:
+            print(f"[{request_id}] Getting all datasets from LangFuse (page: {page}, limit: {limit})")
+            
+            result = await self.upload_dataset_usecase.get_all_datasets(page=page, limit=limit)
+            
+            print(f"[{request_id}] Retrieved {len(result['datasets'])} datasets successfully")
+            
+            return result
+            
+        except (ValidationError, DatasetError) as e:
+            print(f"[{request_id}] Dataset error: {e.detail}")
+            raise HTTPException(
+                status_code=e.status_code,
+                detail={
+                    "error": e.error_type,
+                    "message": e.detail,
+                    "request_id": request_id,
+                    "details": e.additional_details
+                }
+            )
+        
+        except OptimizationError as e:
+            print(f"[{request_id}] Error getting datasets: {e.detail}")
+            raise HTTPException(
+                status_code=e.status_code,
+                detail={
+                    "error": e.error_type,
+                    "message": e.detail,
+                    "request_id": request_id
+                }
+            )
+        
+        except Exception as e:
+            print(f"[{request_id}] Unexpected error getting datasets: {str(e)}")
+            raise HTTPException(
+                status_code=500,
+                detail={
+                    "error": "internal_error",
+                    "message": "Failed to get datasets from LangFuse",
+                    "request_id": request_id
+                }
+            )
+    
     def validate_upload_request_format(self, request_data: Dict[str, Any]) -> Dict[str, str]:
         """
         Validate the basic format of the upload request data

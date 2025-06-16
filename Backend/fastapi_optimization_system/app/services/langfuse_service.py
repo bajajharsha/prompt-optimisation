@@ -136,6 +136,59 @@ class LangFuseService:
                 dataset_name=dataset_name
             )
     
+    async def get_all_datasets(self, page: int = 1, limit: int = 50) -> Dict[str, Any]:
+        """
+        Get all datasets from LangFuse
+        
+        Args:
+            page: Page number (default: 1)
+            limit: Number of datasets per page (default: 50)
+            
+        Returns:
+            Dict containing datasets list and pagination info
+            
+        Raises:
+            DatasetError: If fetching datasets fails
+        """
+        request_id = get_request_id()
+        
+        try:
+            async with httpx.AsyncClient() as client:
+                # Use query parameters for pagination
+                params = {
+                    "page": page,
+                    "limit": limit
+                }
+                
+                response = await client.get(
+                    f"{self.base_url}/api/public/v2/datasets",
+                    params=params,
+                    auth=(self.public_key, self.secret_key),
+                    timeout=30.0
+                )
+                
+                if response.status_code == 200:
+                    result = response.json()
+                    print(f"✅ Retrieved {len(result.get('data', []))} datasets from LangFuse")
+                    return result
+                else:
+                    error_detail = response.text
+                    raise DatasetError(
+                        f"Failed to get datasets from LangFuse: {response.status_code} - {error_detail}",
+                        request_id=request_id
+                    )
+                    
+        except httpx.HTTPError as e:
+            raise DatasetError(
+                f"HTTP error while fetching datasets: {str(e)}",
+                request_id=request_id
+            )
+        except Exception as e:
+            raise DatasetError(
+                f"Unexpected error while fetching datasets: {str(e)}",
+                request_id=request_id
+            )
+    
     async def create_dataset_item(self, dataset_name: str, input_data: Any, expected_output: Any, metadata: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
         Create a dataset item in LangFuse
