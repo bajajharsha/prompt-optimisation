@@ -258,13 +258,11 @@ Pay special attention to the failed cases provided. For each pattern you see:
 
 Provide your optimization as a JSON response with this structure:
 {{
-    "optimized_prompt": "Your significantly improved prompt here - MUST be substantially different from the original",
+    "optimized_prompt": "Your significantly improved prompt here - MUST be substantially different from the original and should only return the prompt with no extra text or comments",
     "reasoning": "Detailed explanation of the major changes you made and why they address the specific failed cases",
     "confidence": 0.8,
     "changes_made": ["List of specific major changes made - should be substantial improvements"]
 }}
-
-Note: In the "optimized_prompt" field, only add the prompt with no extra text or comments.
 
 **REQUIREMENTS:**
 - The optimized prompt MUST be significantly better than the original
