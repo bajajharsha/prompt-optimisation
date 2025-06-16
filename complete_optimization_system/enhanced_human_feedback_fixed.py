@@ -122,13 +122,17 @@ class SimpleHumanFeedbackManager:
                 existing_configs = response.json()
                 self.score_config_ids = {}
                 
-                # Map config names to their IDs
+                # Map config names to their IDs (only active ones)
                 for config in existing_configs.get('data', []):
                     config_name = config.get('name')
                     config_id = config.get('id')
-                    if config_name and config_id:
+                    is_archived = config.get('isArchived', False)
+                    
+                    if config_name and config_id and not is_archived:
                         self.score_config_ids[config_name] = config_id
-                        print(f"✅ Found score config: {config_name} (ID: {config_id})")
+                        print(f"✅ Found active score config: {config_name} (ID: {config_id})")
+                    elif config_name and config_id and is_archived:
+                        print(f"⚠️  Found archived score config: {config_name} (ID: {config_id}) - skipping")
                 
                 # Check for required configs
                 required_configs = [
@@ -140,15 +144,25 @@ class SimpleHumanFeedbackManager:
                 missing_configs = [name for name in required_configs if name not in self.score_config_ids]
                 
                 if missing_configs:
-                    print(f"⚠️  Missing score configs: {', '.join(missing_configs)}")
-                    print("   Please create them manually in LangFuse UI:")
-                    for config_name in missing_configs:
-                        if config_name == "classification_correctness":
-                            print(f"   • {config_name} (CATEGORICAL: Correct, Incorrect, Skip)")
-                        elif config_name == "natural_language_feedback":
-                            print(f"   • {config_name} (CATEGORICAL: Good, Needs Improvement, Poor)")
-                        elif config_name == "reviewer_confidence":
-                            print(f"   • {config_name} (NUMERIC: 0-1)")
+                    print(f"⚠️  Missing active score configs: {', '.join(missing_configs)}")
+                    print("🔧 Attempting to create missing score configurations...")
+                    self._create_missing_score_configs(missing_configs, public_key, secret_key, host)
+                    
+                    # Check if we still have missing configs after creation attempt
+                    still_missing = [name for name in missing_configs if name not in self.score_config_ids]
+                    if still_missing:
+                        print(f"⚠️  Still missing score configs: {', '.join(still_missing)}")
+                        print("   The system will continue but human feedback collection may be limited")
+                        print("   You can manually create these score configs in LangFuse UI:")
+                        for config_name in still_missing:
+                            if config_name == "classification_correctness":
+                                print(f"   • {config_name} (CATEGORICAL: Correct, Incorrect, Skip)")
+                            elif config_name == "natural_language_feedback":
+                                print(f"   • {config_name} (CATEGORICAL: Good, Needs Improvement, Poor)")
+                            elif config_name == "reviewer_confidence":
+                                print(f"   • {config_name} (NUMERIC: 0-1)")
+                    else:
+                        print("✅ All required score configs are now available")
                 else:
                     print("✅ All required score configs found and ready for use")
                     
@@ -159,6 +173,111 @@ class SimpleHumanFeedbackManager:
         except Exception as e:
             print(f"⚠️  Error fetching score configs: {e}")
             self.score_config_ids = {}
+    
+    def _create_missing_score_configs(self, missing_configs: List[str], public_key: str, secret_key: str, host: str):
+        """Create missing score configurations"""
+        import requests
+        
+        config_definitions = {
+            "classification_correctness": {
+                "name": "classification_correctness",
+                "dataType": "CATEGORICAL",
+                "categories": [
+                    {"label": "Correct", "value": 1},
+                    {"label": "Incorrect", "value": 0}, 
+                    {"label": "Skip", "value": -1}
+                ],
+                "description": "Human evaluation of classification correctness"
+            },
+            "natural_language_feedback": {
+                "name": "natural_language_feedback", 
+                "dataType": "CATEGORICAL",
+                "categories": [
+                    {"label": "Good", "value": 2},
+                    {"label": "Needs Improvement", "value": 1},
+                    {"label": "Poor", "value": 0}
+                ],
+                "description": "Natural language feedback quality assessment"
+            },
+            "reviewer_confidence": {
+                "name": "reviewer_confidence",
+                "dataType": "NUMERIC",
+                "minValue": 0,
+                "maxValue": 1,
+                "description": "Reviewer confidence score (0-1)"
+            }
+        }
+        
+        for config_name in missing_configs:
+            if config_name in config_definitions:
+                try:
+                    config_data = config_definitions[config_name]
+                    
+                    response = requests.post(
+                        f"{host}/api/public/score-configs",
+                        auth=(public_key, secret_key),
+                        headers={'Content-Type': 'application/json'},
+                        json=config_data
+                    )
+                    
+                    if response.status_code in [200, 201]:
+                        created_config = response.json()
+                        config_id = created_config.get('id')
+                        if config_id:
+                            self.score_config_ids[config_name] = config_id
+                            print(f"✅ Created score config: {config_name} (ID: {config_id})")
+                        else:
+                            print(f"⚠️  Created score config {config_name} but no ID returned")
+                            print(f"   Response: {created_config}")
+                    else:
+                        print(f"❌ Failed to create score config {config_name}: {response.status_code} - {response.text}")
+                        # Try to parse error details
+                        try:
+                            error_details = response.json()
+                            print(f"   Error details: {error_details}")
+                        except:
+                            pass
+                        
+                        # Try to find and use an archived config as fallback
+                        print(f"🔄 Trying to find archived config for {config_name}...")
+                        archived_config_id = self._find_archived_config(config_name, public_key, secret_key, host)
+                        if archived_config_id:
+                            self.score_config_ids[config_name] = archived_config_id
+                            print(f"✅ Using archived score config: {config_name} (ID: {archived_config_id})")
+                            print(f"   Note: This is an archived config - it may still work for scoring")
+                        
+                except Exception as e:
+                    print(f"❌ Error creating score config {config_name}: {e}")
+            else:
+                print(f"⚠️  No definition found for score config: {config_name}")
+    
+    def _find_archived_config(self, config_name: str, public_key: str, secret_key: str, host: str) -> Optional[str]:
+        """Find an archived configuration by name"""
+        try:
+            import requests
+            
+            # Fetch all configs again to find archived ones
+            response = requests.get(
+                f"{host}/api/public/score-configs",
+                auth=(public_key, secret_key),
+                headers={'Content-Type': 'application/json'}
+            )
+            
+            if response.status_code == 200:
+                existing_configs = response.json()
+                
+                # Look for archived configs with matching name
+                for config in existing_configs.get('data', []):
+                    if (config.get('name') == config_name and 
+                        config.get('isArchived', False) and 
+                        config.get('id')):
+                        return config.get('id')
+            
+            return None
+            
+        except Exception as e:
+            print(f"⚠️  Error finding archived config: {e}")
+            return None
     
     def filter_cases_for_human_review(
         self, 
@@ -448,14 +567,15 @@ class SimpleHumanFeedbackManager:
                     for obs_id, scores_dict in observation_scores.items():
                         # Get classification correctness (primary score)
                         classification_score = scores_dict.get('classification_correctness', {})
-                        classification_value = classification_score.get('string_value', 'unknown').lower()
+                        classification_value = classification_score.get('string_value', '').lower()
+                        numeric_value = classification_score.get('value', None)
                         
-                        # Map LangFuse values to our format
-                        if classification_value in ['correct']:
+                        # Map LangFuse values to our format (handle both string and numeric)
+                        if classification_value in ['correct'] or numeric_value == 1:
                             classification_correctness = 'correct'
-                        elif classification_value in ['incorrect']:
+                        elif classification_value in ['incorrect'] or numeric_value == 0:
                             classification_correctness = 'incorrect'
-                        elif classification_value in ['skip']:
+                        elif classification_value in ['skip'] or numeric_value == -1:
                             classification_correctness = 'skip'
                         else:
                             classification_correctness = 'unclear'

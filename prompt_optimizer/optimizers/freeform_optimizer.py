@@ -264,6 +264,8 @@ Provide your optimization as a JSON response with this structure:
     "changes_made": ["List of specific major changes made - should be substantial improvements"]
 }}
 
+Note: In the "optimized_prompt" field, only add the prompt with no extra text or comments.
+
 **REQUIREMENTS:**
 - The optimized prompt MUST be significantly better than the original
 - MUST address the specific patterns seen in failed cases
