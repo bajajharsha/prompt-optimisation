@@ -11,7 +11,7 @@ import json
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 
-from prompt_optimizer.core.metric import JSONGenerationEvaluator
+from prompt_optimizer.core.metric import JSONGenerationEvaluator, EnhancedJSONGenerationEvaluator
 
 # Import model configuration types
 try:
@@ -133,9 +133,9 @@ class EvaluationEngine:
             )
         print(f"Length of predicted texts: {len(predicted_texts)}")
         
-        # Run evaluation using existing evaluator
+        # Run evaluation using enhanced evaluator with auto-detection
         print("📊 Computing metrics...")
-        evaluator = JSONGenerationEvaluator(schema)
+        evaluator = EnhancedJSONGenerationEvaluator(schema, evaluation_mode="auto")
         results = evaluator.evaluate_batch(
             ground_truth_jsons=ground_truth_jsons,
             predicted_texts=predicted_texts,
@@ -169,15 +169,22 @@ class EvaluationEngine:
     
     def _calculate_overall_accuracy(self, results: Dict[str, Any]) -> float:
         """
-        Calculate overall accuracy as correctly generated responses out of all
+        Calculate overall accuracy adaptively based on schema complexity
         
         Args:
-            results: Results from JSONGenerationEvaluator
+            results: Results from EnhancedJSONGenerationEvaluator
             
         Returns:
             Overall accuracy (0.0 to 1.0)
         """
-        # Overall accuracy = exact match accuracy (correctly generated responses)
+        # Use adaptive primary accuracy metric based on evaluation mode
+        summary = results.get('summary', {})
+        
+        # If using enhanced evaluation, use the primary metric
+        if 'primary_accuracy' in summary:
+            return summary['primary_accuracy']
+        
+        # Fallback to exact match accuracy for backward compatibility
         return results['validation_metrics']['exact_match_accuracy']
     
     def compare_metrics(

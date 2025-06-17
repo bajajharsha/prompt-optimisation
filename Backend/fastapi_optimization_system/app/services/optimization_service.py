@@ -996,14 +996,14 @@ class OptimizationService:
     ) -> str:
         """
         Create enhanced system prompt with schema and instructions
-        Only the system prompt gets optimized - user prompt stays separate as query template
+        Always append schema to improve baseline performance regardless of user prompt quality
         """
         import json
         
-        # Start with the system prompt only
+        # Start with the user's system prompt
         enhanced_prompt = system_prompt
         
-        # Add schema information
+        # Always add schema information to improve baseline performance
         schema_section = "\n\nThe json schema with the fields and their possible values (enum values) is as follows:\n"
         schema_section += json.dumps(schema, indent=2)
         

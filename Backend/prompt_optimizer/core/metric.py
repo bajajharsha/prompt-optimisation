@@ -284,7 +284,11 @@ class JSONGenerationEvaluator:
                     if v is None:
                         continue
                     try:
-                        if v not in enum_values:
+                        # Handle nested schema (dict) vs regular enum (list)
+                        if isinstance(enum_values, dict):
+                            # For nested schemas like topic, skip validation
+                            continue
+                        elif v not in enum_values:
                             all_refs_valid = False
                             break
                     except TypeError:
@@ -298,7 +302,9 @@ class JSONGenerationEvaluator:
                         "expected_value": ref_vals
                     })
 
-            self._update_enum_confusion(field, ref_vals, pred_vals, enum_values)
+            # Update confusion matrix (only for regular enum fields)
+            if not isinstance(enum_values, dict):
+                self._update_enum_confusion(field, ref_vals, pred_vals, enum_values)
         
         if wrong_fields_for_example:
             grouped_wrong_classification = {
@@ -327,6 +333,10 @@ class JSONGenerationEvaluator:
         ref_set = set(filter_hashable(ref_vals))
         pred_set = set(filter_hashable(pred_vals))
         
+        # Skip nested dict schemas  
+        if isinstance(enum_values, dict):
+            return
+            
         for label in enum_values:
             is_in_ref = label in ref_set
             is_in_pred = label in pred_set
@@ -1150,3 +1160,726 @@ def extract_input_prompts(dataset_items, limit: int = 2) -> List[str]:
             prompts.append("")  # Add empty string on error
     
     return prompts
+
+class EnhancedJSONGenerationEvaluator:
+    """
+    Enhanced evaluator for JSON generation tasks with intelligent multi-layered validation.
+    Specifically designed to handle both single-class and multivariate multi-class scenarios.
+    
+    Key improvements:
+    1. Partial Credit Scoring - If 2/3 fields are correct, gives partial credit instead of full failure
+    2. Flexible Accuracy Metrics - Offers both exact match and field-weighted accuracy
+    3. Multi-Class Aware Evaluation - Properly handles multivariate schemas
+    4. Adaptive Scoring - Automatically detects schema complexity and adjusts evaluation strategy
+    5. Backward Compatibility - Works with existing single-class evaluations
+    """
+    
+    def __init__(self, schema: Dict[str, List[str]], evaluation_mode: str = "auto"):
+        """
+        Initialize evaluator with enhanced schema handling.
+        
+        Args:
+            schema: Dictionary mapping field names to lists of possible enum values
+            evaluation_mode: "strict" (exact match), "partial" (field-weighted), or "auto" (adaptive)
+        """
+        self.schema = schema
+        self.evaluation_mode = evaluation_mode
+        self.client = MongoClient("mongodb://localhost:27017/")
+        self.db = self.client["personal_project_log_usage"]
+        self.collection = self.db["llm_usage"]
+        
+        # Detect schema complexity for adaptive evaluation
+        self.schema_complexity = self._analyze_schema_complexity()
+        
+        # Automatically choose evaluation strategy if mode is "auto"
+        if evaluation_mode == "auto":
+            if self.schema_complexity["is_multivariate"] and self.schema_complexity["total_fields"] > 1:
+                self.evaluation_mode = "partial"
+                print(f"🎯 Auto-detected multivariate schema with {self.schema_complexity['total_fields']} fields - using partial credit evaluation")
+            else:
+                self.evaluation_mode = "strict"
+                print(f"🎯 Auto-detected simple schema - using strict evaluation")
+        
+        self.reset_metrics()
+    
+    def _analyze_schema_complexity(self) -> Dict[str, Any]:
+        """Analyze schema to determine evaluation strategy."""
+        total_fields = len(self.schema)
+        field_complexities = []
+        
+        for field, enum_values in self.schema.items():
+            field_complexities.append(len(enum_values))
+        
+        avg_field_complexity = sum(field_complexities) / len(field_complexities) if field_complexities else 1
+        max_field_complexity = max(field_complexities) if field_complexities else 1
+        
+        # Determine if this is a multivariate multi-class problem
+        is_multivariate = total_fields > 1
+        is_multiclass = max_field_complexity > 2
+        
+        return {
+            "total_fields": total_fields,
+            "avg_field_complexity": avg_field_complexity,
+            "max_field_complexity": max_field_complexity,
+            "is_multivariate": is_multivariate,
+            "is_multiclass": is_multiclass,
+            "complexity_score": total_fields * avg_field_complexity
+        }
+    
+    def reset_metrics(self):
+        """Reset all internal metrics counters."""
+        # Binary validation tallies
+        self.tallies = {
+            "valid_json_structure": {"correct": 0, "total": 0},
+            "exact_json_match": {"correct": 0, "total": 0},
+            "schema_compliance": {"correct": 0, "total": 0},
+            "all_fields_present": {"correct": 0, "total": 0},
+            # Enhanced metrics for partial credit
+            "field_weighted_accuracy": {"correct": 0.0, "total": 0.0},
+            "partial_credit_score": {"score": 0.0, "total": 0.0}
+        }
+        
+        # Field-level tracking
+        self.field_statistics = {}
+        for field in self.schema.keys():
+            self.field_statistics[field] = {
+                "correct": 0,
+                "total": 0,
+                "accuracy": 0.0
+            }
+        
+        # Confusion matrix storage for enum fields
+        self.enum_confusion = {}
+        
+        # Enhanced failed cases tracking
+        self.failed_cases = {
+            "invalid_json": [],
+            "schema_violations": [],
+            "missing_fields": [],
+            "wrong_classifications": [],
+            "partial_failures": []  # New: track cases with some correct fields
+        }
+        
+        # Field-specific error patterns
+        self.field_error_patterns = {}
+        
+        # Initialize confusion matrices for enum fields
+        for field, enum_values in self.schema.items():
+            self.enum_confusion[field] = defaultdict(lambda: {"TP": 0, "FP": 0, "FN": 0})
+            self.field_error_patterns[field] = {
+                "missing_count": 0,
+                "invalid_values": defaultdict(int),
+                "confusion_pairs": defaultdict(int)
+            }
+    
+    def evaluate_batch(self, 
+                      ground_truth_jsons: List[Dict[str, Any]], 
+                      predicted_texts: List[str],
+                      input_prompts: Optional[List[str]] = None) -> Dict[str, Any]:
+        """
+        Enhanced batch evaluation with partial credit scoring.
+        """
+        if len(ground_truth_jsons) != len(predicted_texts):
+            raise ValueError("Reference and prediction lists must have same length")
+        
+        if input_prompts and len(input_prompts) != len(predicted_texts):
+            raise ValueError("Input prompts and prediction lists must have same length")
+        
+        self.reset_metrics()
+        
+        for i, (ref_json, pred_text) in enumerate(zip(ground_truth_jsons, predicted_texts)):
+            input_prompt = input_prompts[i] if input_prompts else f"Example {i+1}"
+            self._evaluate_single_example_enhanced(ref_json, pred_text, input_prompt, i)
+        
+        return self._compute_enhanced_final_metrics()
+    
+    def _evaluate_single_example_enhanced(self, ref_json: Dict[str, Any], pred_text: str, input_prompt: str, example_idx: int):
+        """Enhanced single example evaluation with partial credit scoring."""
+        
+        example_data = {
+            "example_idx": example_idx,
+            "input_prompt": input_prompt,
+            "ground_truth": ref_json,
+            "prediction_text": pred_text,
+            "timestamp": datetime.now().isoformat()
+        }
+        
+        # Clean up markdown code block formatting if present
+        cleaned_pred_text = self._clean_prediction_text(pred_text)
+        
+        # 1. Check JSON structure validity
+        try:
+            parsed_pred = json.loads(cleaned_pred_text)
+            self.tallies["valid_json_structure"]["correct"] += 1
+        except json.JSONDecodeError as e:
+            parsed_pred = None
+            self.failed_cases["invalid_json"].append({
+                **example_data,
+                "error": str(e),
+                "cleaned_text": cleaned_pred_text
+            })
+        self.tallies["valid_json_structure"]["total"] += 1
+        
+        # 2. Check exact JSON match (for backward compatibility)
+        if parsed_pred == ref_json:
+            self.tallies["exact_json_match"]["correct"] += 1
+        self.tallies["exact_json_match"]["total"] += 1
+        
+        # 3. Enhanced field-by-field evaluation with partial credit
+        if parsed_pred is not None and isinstance(parsed_pred, dict):
+            field_scores = self._evaluate_fields_with_partial_credit(ref_json, parsed_pred, example_data)
+            
+            # Update field-weighted accuracy
+            total_field_weight = len(self.schema)
+            correct_field_weight = sum(field_scores.values())
+            
+            self.tallies["field_weighted_accuracy"]["correct"] += correct_field_weight
+            self.tallies["field_weighted_accuracy"]["total"] += total_field_weight
+            
+            # Update partial credit score (0.0 to 1.0 scale)
+            partial_credit = correct_field_weight / total_field_weight if total_field_weight > 0 else 0.0
+            self.tallies["partial_credit_score"]["score"] += partial_credit
+            self.tallies["partial_credit_score"]["total"] += 1.0
+            
+            # Update individual field statistics
+            for field in self.schema.keys():
+                self.field_statistics[field]["total"] += 1
+                if field_scores.get(field, 0) > 0:
+                    self.field_statistics[field]["correct"] += field_scores[field]
+                    
+            # Calculate field accuracies
+            for field in self.schema.keys():
+                if self.field_statistics[field]["total"] > 0:
+                    self.field_statistics[field]["accuracy"] = (
+                        self.field_statistics[field]["correct"] / 
+                        self.field_statistics[field]["total"]
+                    )
+            
+            # Check schema compliance
+            if self._is_schema_compliant(parsed_pred):
+                self.tallies["schema_compliance"]["correct"] += 1
+            self.tallies["schema_compliance"]["total"] += 1
+            
+            # Check if all required fields are present
+            if self._all_fields_present(parsed_pred):
+                self.tallies["all_fields_present"]["correct"] += 1
+            self.tallies["all_fields_present"]["total"] += 1
+            
+            # Track partial failures (some fields correct, some wrong)
+            if 0 < partial_credit < 1.0:
+                self.failed_cases["partial_failures"].append({
+                    **example_data,
+                    "parsed_prediction": parsed_pred,
+                    "partial_credit_score": partial_credit,
+                    "field_scores": field_scores,
+                    "correct_fields": [f for f, score in field_scores.items() if score > 0],
+                    "incorrect_fields": [f for f, score in field_scores.items() if score == 0]
+                })
+                
+        elif parsed_pred is not None and not isinstance(parsed_pred, dict):
+            # Handle case where JSON parsing succeeded but didn't return a dict
+            self.failed_cases["invalid_json"].append({
+                **example_data,
+                "error": f"Parsed JSON is not a dictionary, got {type(parsed_pred).__name__}: {parsed_pred}",
+                "cleaned_text": cleaned_pred_text
+            })
+    
+    def _evaluate_fields_with_partial_credit(self, ref_json: Dict[str, Any], pred_json: Dict[str, Any], example_data: Dict[str, Any]) -> Dict[str, float]:
+        """
+        Evaluate individual fields and return partial credit scores (0.0 to 1.0 per field).
+        """
+        field_scores = {}
+        wrong_fields_for_example = []
+        
+        for field, enum_values in self.schema.items():
+            pred_val = pred_json.get(field)
+            ref_val = ref_json.get(field)
+            
+            if field not in pred_json:
+                field_scores[field] = 0.0
+                self.field_error_patterns[field]["missing_count"] += 1
+                self.failed_cases["missing_fields"].append({
+                    **example_data,
+                    "missing_field": field,
+                    "expected_value": ref_val
+                })
+                continue
+
+            # Handle list vs single value cases
+            pred_vals = pred_val if isinstance(pred_val, list) else [pred_val]
+            ref_vals = ref_val if isinstance(ref_val, list) else [ref_val]
+            
+            # Check for invalid values (not in schema)
+            invalid_vals = []
+            for v in pred_vals:
+                if v is None:
+                    continue
+                try:
+                    # Handle nested schema (dict) vs regular enum (list)
+                    if isinstance(enum_values, dict):
+                        # For nested schemas like topic, skip validation for now
+                        continue
+                    elif v not in enum_values:
+                        invalid_vals.append(v)
+                except TypeError:
+                    invalid_vals.append(v)
+
+            if invalid_vals:
+                field_scores[field] = 0.0
+                key_val = str(pred_val)
+                self.field_error_patterns[field]["invalid_values"][key_val] += 1
+                self.failed_cases["schema_violations"].append({
+                    **example_data,
+                    "field": field,
+                    "invalid_value": pred_val,
+                    "error_details": f"The following values are not in schema: {invalid_vals}",
+                    "expected_value": ref_val,
+                    "valid_options": enum_values
+                })
+                continue
+
+            # Calculate partial credit for this field
+            if isinstance(enum_values, dict):
+                # For nested schemas, use simple exact match
+                field_score = 1.0 if pred_vals == ref_vals else 0.0
+            else:
+                field_score = self._calculate_field_partial_credit(pred_vals, ref_vals, enum_values)
+            field_scores[field] = field_score
+            
+            # Track wrong classifications only if completely wrong
+            if field_score == 0.0:
+                self.field_error_patterns[field]["confusion_pairs"][f"{sorted([str(v) for v in ref_vals])} -> {sorted([str(v) for v in pred_vals])}"] += 1
+                wrong_fields_for_example.append({
+                    "field": field,
+                    "predicted_value": pred_vals,
+                    "expected_value": ref_vals
+                })
+
+            # Update confusion matrix (only for regular enum fields)
+            if not isinstance(enum_values, dict):
+                self._update_enum_confusion(field, ref_vals, pred_vals, enum_values)
+        
+        # Only track as wrong classification if all fields are completely wrong
+        if wrong_fields_for_example and all(field_scores[field] == 0.0 for field in field_scores):
+            grouped_wrong_classification = {
+                **example_data,
+                "wrong_fields": wrong_fields_for_example
+            }
+            self.failed_cases["wrong_classifications"].append(grouped_wrong_classification)
+        
+        return field_scores
+    
+    def _calculate_field_partial_credit(self, pred_vals: List, ref_vals: List, enum_values: List[str]) -> float:
+        """
+        Calculate partial credit for a single field based on prediction vs reference.
+        Returns a score between 0.0 and 1.0.
+        """
+        # Convert to hashable types for comparison
+        def make_hashable(val):
+            if isinstance(val, (dict, list)):
+                return str(val)
+            return val
+        
+        pred_vals_hashable = set([make_hashable(v) for v in pred_vals if v is not None])
+        ref_vals_hashable = set([make_hashable(v) for v in ref_vals if v is not None])
+        
+        # Exact match gets full credit
+        if pred_vals_hashable == ref_vals_hashable:
+            return 1.0
+        
+        # For multi-class fields, calculate overlap-based partial credit
+        if len(ref_vals_hashable) > 1 or len(pred_vals_hashable) > 1:
+            # Calculate Jaccard similarity (intersection over union)
+            intersection = pred_vals_hashable.intersection(ref_vals_hashable)
+            union = pred_vals_hashable.union(ref_vals_hashable)
+            
+            if len(union) == 0:
+                return 0.0
+            
+            jaccard_score = len(intersection) / len(union)
+            return jaccard_score
+        
+        # For single-class fields, it's either correct or incorrect
+        return 0.0
+    
+    def _compute_enhanced_final_metrics(self) -> Dict[str, Any]:
+        """Compute enhanced final metrics with partial credit scoring."""
+        
+        results = {}
+        
+        # Enhanced validation metrics
+        results["validation_metrics"] = {
+            "valid_json_accuracy": self._safe_divide(
+                self.tallies["valid_json_structure"]["correct"],
+                self.tallies["valid_json_structure"]["total"]
+            ),
+            "exact_match_accuracy": self._safe_divide(
+                self.tallies["exact_json_match"]["correct"],
+                self.tallies["exact_json_match"]["total"]
+            ),
+            "field_weighted_accuracy": self._safe_divide(
+                self.tallies["field_weighted_accuracy"]["correct"],
+                self.tallies["field_weighted_accuracy"]["total"]
+            ),
+            "partial_credit_score": self._safe_divide(
+                self.tallies["partial_credit_score"]["score"],
+                self.tallies["partial_credit_score"]["total"]
+            ),
+            "schema_compliance_accuracy": self._safe_divide(
+                self.tallies["schema_compliance"]["correct"],
+                self.tallies["schema_compliance"]["total"]
+            ),
+            "all_fields_present_accuracy": self._safe_divide(
+                self.tallies["all_fields_present"]["correct"],
+                self.tallies["all_fields_present"]["total"]
+            )
+        }
+        
+        # Field-level statistics
+        results["field_level_metrics"] = self.field_statistics
+        
+        # Enum field metrics (existing)
+        results["enum_field_metrics"] = {}
+        for field, confusion_matrix in self.enum_confusion.items():
+            results["enum_field_metrics"][field] = self._compute_enum_metrics(field, confusion_matrix)
+        
+        # Enhanced failed cases summary
+        results["failed_cases_summary"] = {
+            "invalid_json_count": len(self.failed_cases["invalid_json"]),
+            "schema_violations_count": len(self.failed_cases["schema_violations"]),
+            "missing_fields_count": len(self.failed_cases["missing_fields"]),
+            "wrong_classifications_count": len(self.failed_cases["wrong_classifications"]),
+            "partial_failures_count": len(self.failed_cases["partial_failures"])
+        }
+        
+        # Schema complexity information
+        results["schema_analysis"] = self.schema_complexity
+        results["evaluation_mode"] = self.evaluation_mode
+        
+        # Field-specific insights
+        results["field_insights"] = self._compute_field_insights()
+        
+        # Optimization opportunities
+        results["optimization_opportunities"] = self._identify_optimization_opportunities()
+        
+        # Enhanced summary with adaptive metrics
+        results["summary"] = self._compute_enhanced_summary_metrics(results)
+        
+        # Store detailed failed cases
+        results["detailed_failed_cases"] = self.failed_cases
+        
+        return results
+    
+    def _compute_enhanced_summary_metrics(self, results: Dict[str, Any]) -> Dict[str, float]:
+        """Compute enhanced summary metrics that adapt to schema complexity."""
+        
+        # Original enum field metrics
+        enum_f1_scores = []
+        enum_precision_scores = []
+        enum_recall_scores = []
+        
+        for field_metrics in results["enum_field_metrics"].values():
+            enum_f1_scores.append(field_metrics["macro_f1"])
+            enum_precision_scores.append(field_metrics["macro_precision"])
+            enum_recall_scores.append(field_metrics["macro_recall"])
+        
+        # Enhanced metrics based on evaluation mode
+        summary = {
+            "average_enum_macro_f1": sum(enum_f1_scores) / len(enum_f1_scores) if enum_f1_scores else 0.0,
+            "average_enum_macro_precision": sum(enum_precision_scores) / len(enum_precision_scores) if enum_precision_scores else 0.0,
+            "average_enum_macro_recall": sum(enum_recall_scores) / len(enum_recall_scores) if enum_recall_scores else 0.0,
+            "total_examples": self.tallies["valid_json_structure"]["total"]
+        }
+        
+        # Add adaptive primary metric based on schema complexity
+        if self.schema_complexity["is_multivariate"] and self.evaluation_mode == "partial":
+            # For multivariate schemas, use field-weighted accuracy as primary metric
+            summary["primary_accuracy"] = results["validation_metrics"]["field_weighted_accuracy"]
+            summary["primary_metric"] = "field_weighted_accuracy"
+            summary["partial_credit_score"] = results["validation_metrics"]["partial_credit_score"]
+        else:
+            # For simple schemas, use exact match accuracy
+            summary["primary_accuracy"] = results["validation_metrics"]["exact_match_accuracy"]
+            summary["primary_metric"] = "exact_match_accuracy"
+        
+        # Field-level accuracy summary
+        field_accuracies = [stats["accuracy"] for stats in results["field_level_metrics"].values()]
+        summary["average_field_accuracy"] = sum(field_accuracies) / len(field_accuracies) if field_accuracies else 0.0
+        summary["min_field_accuracy"] = min(field_accuracies) if field_accuracies else 0.0
+        summary["max_field_accuracy"] = max(field_accuracies) if field_accuracies else 0.0
+        
+        return summary
+    
+    # Include all the original methods from JSONGenerationEvaluator with minimal changes
+    def _clean_prediction_text(self, pred_text: str) -> str:
+        """Clean and extract JSON from prediction text."""
+        if pred_text.startswith("```json") or pred_text.startswith("```"):
+            try:
+                start_idx = pred_text.find("\n", pred_text.find("```")) + 1
+                end_idx = pred_text.rfind("```")
+                if start_idx > 0 and end_idx > start_idx:
+                    return pred_text[start_idx:end_idx].strip()
+            except:
+                pass
+        return pred_text.strip()
+    
+    def _is_schema_compliant(self, pred_json: Dict[str, Any]) -> bool:
+        """Check if prediction follows schema constraints."""
+        if not isinstance(pred_json, dict):
+            return False
+        for field, enum_values in self.schema.items():
+            if field in pred_json:
+                pred_val = pred_json[field]
+                
+                # Handle nested schema like {"topic": {"MATH": [...], "PHYSICS": [...]}}
+                if isinstance(enum_values, dict):
+                    # For nested schemas, just validate the structure exists
+                    continue
+                
+                # Handle regular enum validation
+                if isinstance(pred_val, list):
+                    for val in pred_val:
+                        if val is not None and val not in enum_values:
+                            return False
+                else:
+                    if pred_val is not None and pred_val not in enum_values:
+                        return False
+        return True
+    
+    def _all_fields_present(self, pred_json: Dict[str, Any]) -> bool:
+        """Check if all required fields are present."""
+        return all(field in pred_json for field in self.schema.keys())
+    
+    def _update_enum_confusion(self, field: str, ref_vals: list, pred_vals: list, enum_values: List[str]):
+        """Update confusion matrix for a single field based on reference and prediction lists."""
+        # Filter out unhashable types and None values for set operations
+        def filter_hashable(vals):
+            hashable_vals = []
+            for v in vals:
+                if v is None:
+                    continue
+                try:
+                    # Test if value is hashable by trying to add to set
+                    {v}
+                    hashable_vals.append(v)
+                except TypeError:
+                    # Skip unhashable types
+                    continue
+            return hashable_vals
+        
+        ref_set = set(filter_hashable(ref_vals))
+        pred_set = set(filter_hashable(pred_vals))
+        
+        # Skip nested dict schemas  
+        if isinstance(enum_values, dict):
+            return
+            
+        for label in enum_values:
+            is_in_ref = label in ref_set
+            is_in_pred = label in pred_set
+            
+            if is_in_ref and is_in_pred:
+                self.enum_confusion[field][label]["TP"] += 1
+            elif is_in_pred and not is_in_ref:
+                self.enum_confusion[field][label]["FP"] += 1
+            elif is_in_ref and not is_in_pred:
+                self.enum_confusion[field][label]["FN"] += 1
+    
+    def _compute_enum_metrics(self, field: str, confusion_matrix: Dict[str, Dict[str, int]]) -> Dict[str, Any]:
+        """Compute precision, recall, F1 for an enum field with per-class breakdowns."""
+        
+        if not confusion_matrix:
+            return {
+                "macro_precision": 0.0, 
+                "macro_recall": 0.0, 
+                "macro_f1": 0.0,
+                "micro_precision": 0.0, 
+                "micro_recall": 0.0, 
+                "micro_f1": 0.0, 
+                "accuracy": 0.0,
+                "per_class": {}
+            }
+        
+        # Per-class metrics
+        per_class_metrics = {}
+        precisions, recalls, f1s = [], [], []
+        total_tp = total_fp = total_fn = 0
+        
+        for class_name, counts in confusion_matrix.items():
+            tp, fp, fn = counts["TP"], counts["FP"], counts["FN"]
+            total_tp += tp
+            total_fp += fp  
+            total_fn += fn
+            
+            # Per-class precision, recall, F1
+            prec = self._safe_divide(tp, tp + fp)
+            rec = self._safe_divide(tp, tp + fn)
+            f1 = self._safe_divide(2 * prec * rec, prec + rec)
+            
+            # Store class-specific metrics
+            per_class_metrics[class_name] = {
+                "precision": prec,
+                "recall": rec,
+                "f1": f1,
+                "support": tp + fn,  # Total examples of this class
+                "correct": tp,       # Correctly predicted examples
+                "tp": tp,
+                "fp": fp,
+                "fn": fn
+            }
+            
+            precisions.append(prec)
+            recalls.append(rec)
+            f1s.append(f1)
+        
+        # Macro averages (average across classes)
+        macro_precision = sum(precisions) / len(precisions) if precisions else 0.0
+        macro_recall = sum(recalls) / len(recalls) if recalls else 0.0
+        macro_f1 = sum(f1s) / len(f1s) if f1s else 0.0
+        
+        # Micro averages (aggregate then compute)
+        micro_precision = self._safe_divide(total_tp, total_tp + total_fp)
+        micro_recall = self._safe_divide(total_tp, total_tp + total_fn)
+        micro_f1 = self._safe_divide(2 * micro_precision * micro_recall, micro_precision + micro_recall)
+        
+        # Accuracy
+        accuracy = self._safe_divide(total_tp, total_tp + total_fn)
+        
+        return {
+            "macro_precision": macro_precision,
+            "macro_recall": macro_recall,
+            "macro_f1": macro_f1,
+            "micro_precision": micro_precision,
+            "micro_recall": micro_recall,
+            "micro_f1": micro_f1,
+            "accuracy": accuracy,
+            "per_class": per_class_metrics
+        }
+    
+    def _compute_field_insights(self) -> Dict[str, Dict[str, Any]]:
+        """Compute field-specific insights for optimization."""
+        insights = {}
+        
+        for field, patterns in self.field_error_patterns.items():
+            total_examples = self.tallies["valid_json_structure"]["total"]
+            
+            insights[field] = {
+                "missing_rate": self._safe_divide(patterns["missing_count"], total_examples),
+                "most_common_invalid_values": dict(sorted(
+                    patterns["invalid_values"].items(), 
+                    key=lambda x: x[1], 
+                    reverse=True
+                )[:5]),  # Top 5 most common invalid values
+                "most_common_confusions": dict(sorted(
+                    patterns["confusion_pairs"].items(), 
+                    key=lambda x: x[1], 
+                    reverse=True
+                )[:5]),  # Top 5 most common confusion pairs
+                "error_severity": self._calculate_field_error_severity(field),
+                "field_accuracy": self.field_statistics.get(field, {}).get("accuracy", 0.0)
+            }
+        
+        return insights
+    
+    def _calculate_field_error_severity(self, field: str) -> str:
+        """Calculate error severity for a field."""
+        field_accuracy = self.field_statistics.get(field, {}).get("accuracy", 0.0)
+        
+        if field_accuracy >= 0.9:
+            return "LOW"
+        elif field_accuracy >= 0.7:
+            return "MEDIUM"
+        else:
+            return "HIGH"
+    
+    def _identify_optimization_opportunities(self) -> Dict[str, List[str]]:
+        """Identify specific optimization opportunities based on failure patterns."""
+        opportunities = {
+            "prompt_engineering": [],
+            "schema_clarification": [],
+            "example_enhancement": [],
+            "instruction_refinement": []
+        }
+        
+        # Check for JSON structure issues
+        if self.tallies["valid_json_structure"]["correct"] < self.tallies["valid_json_structure"]["total"]:
+            opportunities["prompt_engineering"].append(
+                "Add explicit JSON formatting instructions and examples"
+            )
+        
+        # Check for partial failure patterns (specific to enhanced evaluator)
+        partial_failures = len(self.failed_cases["partial_failures"])
+        if partial_failures > 0:
+            total_examples = self.tallies["valid_json_structure"]["total"]
+            partial_failure_rate = partial_failures / total_examples if total_examples > 0 else 0
+            
+            if partial_failure_rate > 0.3:  # >30% partial failures
+                opportunities["instruction_refinement"].append(
+                    f"Address partial failures: {partial_failures} cases have some correct fields but not all"
+                )
+        
+        # Field-specific recommendations
+        for field, stats in self.field_statistics.items():
+            if stats["accuracy"] < 0.7 and stats["total"] > 0:
+                opportunities["schema_clarification"].append(
+                    f"Improve clarity for field '{field}' (accuracy: {stats['accuracy']:.1%})"
+                )
+        
+        return opportunities
+    
+    @staticmethod
+    def _safe_divide(numerator: float, denominator: float) -> float:
+        """Safe division that returns 0.0 for division by zero."""
+        return numerator / denominator if denominator > 0 else 0.0
+    
+    def print_enhanced_report(self, results: Dict[str, Any]):
+        """Print enhanced evaluation report with partial credit information."""
+        
+        print("=" * 80)
+        print("📊 ENHANCED JSON GENERATION EVALUATION REPORT")
+        print("=" * 80)
+        
+        # Schema analysis
+        schema_info = results["schema_analysis"]
+        print(f"\n🎯 SCHEMA ANALYSIS:")
+        print(f"  Total Fields: {schema_info['total_fields']}")
+        print(f"  Multivariate: {'Yes' if schema_info['is_multivariate'] else 'No'}")
+        print(f"  Multi-class: {'Yes' if schema_info['is_multiclass'] else 'No'}")
+        print(f"  Evaluation Mode: {results['evaluation_mode']}")
+        print(f"  Complexity Score: {schema_info['complexity_score']:.1f}")
+        
+        # Enhanced validation metrics
+        print(f"\n📋 VALIDATION METRICS:")
+        vm = results["validation_metrics"]
+        print(f"  Valid JSON Structure:     {vm['valid_json_accuracy']*100:.2f}%")
+        print(f"  Exact Match:              {vm['exact_match_accuracy']*100:.2f}%")
+        print(f"  Field-Weighted Accuracy:  {vm['field_weighted_accuracy']*100:.2f}%")
+        print(f"  Partial Credit Score:     {vm['partial_credit_score']*100:.2f}%")
+        print(f"  Schema Compliance:        {vm['schema_compliance_accuracy']*100:.2f}%")
+        
+        # Field-level accuracy breakdown
+        print(f"\n📍 FIELD-LEVEL ACCURACY:")
+        for field, stats in results["field_level_metrics"].items():
+            print(f"  {field}: {stats['accuracy']*100:.1f}% ({stats['correct']:.1f}/{stats['total']})")
+        
+        # Enhanced summary
+        print(f"\n📈 ENHANCED SUMMARY:")
+        summary = results["summary"]
+        print(f"  Primary Metric ({summary['primary_metric']}): {summary['primary_accuracy']*100:.2f}%")
+        print(f"  Average Field Accuracy:   {summary['average_field_accuracy']*100:.2f}%")
+        print(f"  Field Accuracy Range:     {summary['min_field_accuracy']*100:.1f}% - {summary['max_field_accuracy']*100:.1f}%")
+        print(f"  Average Macro F1:         {summary['average_enum_macro_f1']*100:.2f}%")
+        
+        # Failure analysis
+        print(f"\n🚨 FAILURE ANALYSIS:")
+        fc_summary = results["failed_cases_summary"]
+        print(f"  Invalid JSON:             {fc_summary['invalid_json_count']}")
+        print(f"  Schema Violations:        {fc_summary['schema_violations_count']}")
+        print(f"  Missing Fields:           {fc_summary['missing_fields_count']}")
+        print(f"  Complete Failures:        {fc_summary['wrong_classifications_count']}")
+        print(f"  Partial Failures:         {fc_summary['partial_failures_count']}")
+        
+        print("=" * 80)
+
+# Keep original class for backward compatibility
+JSONGenerationEvaluator = JSONGenerationEvaluator

@@ -88,29 +88,57 @@ class GroqService:
         component: str = "unknown",
         operation: str = "batch_completions",
         temperature: float = 1.0,
-        max_completion_tokens: int = 1024
+        max_completion_tokens: int = 1024,
+        max_concurrent: int = 10  # Optimized for concurrent API calls
     ) -> List[str]:
-        """Batch completion calls"""
+        """Batch completion calls with parallel processing for speed"""
         if not model_name:
             raise ValueError("model_name is required for Groq service")
+        
+        if not prompts:
+            return []
             
-        responses = []
+        print(f"🚀 Processing {len(prompts)} prompts in parallel batches (max {max_concurrent} concurrent)")
         
-        for prompt in prompts:
-            try:
-                response = await self.completions(
-                    user_prompt=prompt,
-                    system_prompt=base_prompt,
-                    model_name=model_name,
-                    temperature=temperature,
-                    max_tokens=max_completion_tokens
-                )
-                responses.append(response)
-            except Exception as e:
-                print(f"Error in batch completion: {e}")
-                responses.append("")  # Add empty string on error
+        # Create semaphore for concurrency control
+        semaphore = asyncio.Semaphore(max_concurrent)
         
-        return responses
+        async def process_single_prompt(prompt_idx: int, prompt: str) -> str:
+            async with semaphore:
+                try:
+                    response = await self.completions(
+                        user_prompt=prompt,
+                        system_prompt=base_prompt,
+                        model_name=model_name,
+                        temperature=temperature,
+                        max_tokens=max_completion_tokens
+                    )
+                    return response
+                except Exception as e:
+                    print(f"Error in batch completion for prompt {prompt_idx}: {e}")
+                    return ""  # Return empty string on error
+        
+        # Create tasks for all prompts
+        tasks = [process_single_prompt(i, prompt) for i, prompt in enumerate(prompts)]
+        
+        # Execute all tasks in parallel
+        start_time = time.time()
+        responses = await asyncio.gather(*tasks, return_exceptions=True)
+        processing_time = time.time() - start_time
+        
+        # Handle exceptions and convert to strings
+        final_responses = []
+        for i, response in enumerate(responses):
+            if isinstance(response, Exception):
+                print(f"Exception in prompt {i}: {response}")
+                final_responses.append("")
+            else:
+                final_responses.append(response)
+        
+        successful_count = len([r for r in final_responses if r])
+        print(f"✅ Batch completed in {processing_time:.1f}s: {successful_count}/{len(prompts)} successful")
+        
+        return final_responses
 
     async def inference_with_system_user_prompts(
         self,

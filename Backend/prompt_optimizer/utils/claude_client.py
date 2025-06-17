@@ -46,7 +46,7 @@ class ClaudeClient:
         # HTTP client for async requests
         self.client = httpx.AsyncClient(
             timeout=httpx.Timeout(timeout),
-            limits=httpx.Limits(max_connections=10, max_keepalive_connections=5)
+            limits=httpx.Limits(max_connections=30, max_keepalive_connections=20)  # High concurrency pool
         )
         
         # MongoDB setup (following your pattern)
