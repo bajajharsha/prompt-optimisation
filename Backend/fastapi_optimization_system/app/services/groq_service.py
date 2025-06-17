@@ -49,11 +49,17 @@ class GroqService:
             "model": model_name,
             "temperature": temperature,
             "max_completion_tokens": max_tokens,
-            "stream": False
+            "top_p": 1,
+            "stream": False,
+            "stop": None
         }
         
         try:
-            async with httpx.AsyncClient(timeout=60.0) as client:
+            # Configure SSL context to handle certificate issues
+            async with httpx.AsyncClient(
+                timeout=60.0,
+                verify=False  # Disable SSL verification to handle certificate issues
+            ) as client:
                 response = await client.post(self.base_url, json=payload, headers=headers)
                 response.raise_for_status()
                 response_data = response.json()
@@ -61,8 +67,16 @@ class GroqService:
                 # Log usage
                 await self._log_usage(response_data, model_name, "completions")
                 
-                return response_data["choices"][0]["message"]["content"]
+                if "choices" in response_data and len(response_data["choices"]) > 0:
+                    return response_data["choices"][0]["message"]["content"]
+                else:
+                    raise Exception(f"Invalid response format: {response_data}")
                 
+        except httpx.HTTPStatusError as e:
+            error_detail = e.response.text if hasattr(e.response, 'text') else str(e)
+            raise Exception(f"Groq API HTTP error {e.response.status_code}: {error_detail}")
+        except httpx.RequestError as e:
+            raise Exception(f"Groq API request error: {str(e)}")
         except Exception as e:
             raise Exception(f"Groq API error: {str(e)}")
 

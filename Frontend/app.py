@@ -180,130 +180,219 @@ def show_upload_step():
 def show_config_step():
     st.header("Step 2: Configuration")
     
-    col1, col2 = st.columns([2, 1])
+    # Main content area
+    main_content = st.container()
     
-    with col1:
+    with main_content:
         # Dataset selection
         st.subheader("Dataset Selection")
         
-        # Option to use uploaded dataset or select from available datasets
-        dataset_option = st.radio(
-            "Choose dataset source:",
-            ["Use uploaded dataset", "Select from available datasets"],
-            index=0 if st.session_state.dataset_uploaded else 1
-        )
-        
-        selected_dataset = None
-        
-        if dataset_option == "Use uploaded dataset":
-            if st.session_state.dataset_uploaded:
-                selected_dataset = st.session_state.selected_dataset
-                st.success(f"Using uploaded dataset: {selected_dataset}")
+        # Fetch available datasets
+        with st.spinner("Loading available datasets..."):
+            datasets_data, error = make_api_call("/datasets")
+            
+            if error:
+                st.error(f"Failed to load datasets: {error}")
+                st.info("Please upload a dataset in Step 1 first.")
+                selected_dataset = None
             else:
-                st.warning("No dataset uploaded. Please upload a dataset first or select from available datasets.")
-        else:
-            # Fetch available datasets
-            with st.spinner("Loading available datasets..."):
-                datasets_data, error = make_api_call("/datasets")
-                
-                if error:
-                    st.error(f"Failed to load datasets: {error}")
-                    st.info("You can upload a dataset in Step 1 instead.")
+                datasets = datasets_data.get('datasets', [])
+                if datasets:
+                    dataset_names = [d.get('name', 'Unknown') for d in datasets]
+                    
+                    # Set default selection to uploaded dataset if available
+                    default_index = 0
+                    if st.session_state.dataset_uploaded and st.session_state.selected_dataset in dataset_names:
+                        default_index = dataset_names.index(st.session_state.selected_dataset)
+                    
+                    selected_dataset = st.selectbox(
+                        "Select a dataset:",
+                        options=dataset_names,
+                        index=default_index,
+                        help="Choose from available datasets"
+                    )
+                    
+                    # Show dataset info
+                    if selected_dataset:
+                        selected_dataset_info = next((d for d in datasets if d.get('name') == selected_dataset), None)
+                        if selected_dataset_info:
+                            with st.expander("📊 Dataset Information", expanded=False):
+                                st.write(f"**Name:** {selected_dataset_info.get('name', 'N/A')}")
+                                if selected_dataset_info.get('description'):
+                                    st.write(f"**Description:** {selected_dataset_info.get('description')}")
+                                st.write(f"**Created:** {selected_dataset_info.get('createdAt', 'N/A')[:10]}")
                 else:
-                    datasets = datasets_data.get('datasets', [])
-                    if datasets:
-                        dataset_names = [d.get('name', 'Unknown') for d in datasets]
-                        selected_dataset = st.selectbox(
-                            "Select a dataset:",
-                            options=dataset_names,
-                            help="Choose from previously uploaded datasets"
-                        )
-                        
-                        # Show dataset info
-                        if selected_dataset:
-                            selected_dataset_info = next((d for d in datasets if d.get('name') == selected_dataset), None)
-                            if selected_dataset_info:
-                                with st.expander("Dataset Information"):
-                                    st.write(f"**Name:** {selected_dataset_info.get('name', 'N/A')}")
-                                    if selected_dataset_info.get('description'):
-                                        st.write(f"**Description:** {selected_dataset_info.get('description')}")
-                                    st.write(f"**Created:** {selected_dataset_info.get('createdAt', 'N/A')[:10]}")
-                    else:
-                        st.warning("No datasets available. Please upload a dataset first.")
+                    st.warning("No datasets available. Please upload a dataset in Step 1 first.")
+                    selected_dataset = None
+        
+        st.divider()
         
         # Only proceed if we have a selected dataset
         if selected_dataset:
-            # Schema configuration - simple
-            st.subheader("Schema Definition")
+            # Schema configuration section
+            st.subheader("🔧 Schema Definition")
+            st.caption("Define the JSON structure for classification output")
             
-            # Quick examples
-            col_ex1, col_ex2 = st.columns(2)
-            with col_ex1:
-                if st.button("Load Code Generation Schema", type="secondary"):
-                    st.session_state.schema_fields = {
-                        "action": "CODE_GENERATION, NOT_FOUND",
-                        "subAction": "CODING, VISUAL_EDITS, ERROR, GENERAL",
-                        "platform": "DYNAMIC_WEB_APPLICATION, STATIC_WEB_APPLICATION, DYNAMIC_MOBILE_APP, STATIC_MOBILE_APP, NOT_FOUND",
-                        "framework": "REACT, FLUTTER, NOT_FOUND",
-                        "languageType": "REACT_JAVASCRIPT, NOT_FOUND"
-                    }
-                    st.rerun()
-            with col_ex2:
-                if st.button("Load Education Schema", type="secondary"):
-                    st.session_state.schema_fields = {
-                        "intent": "CONCEPT_EXPLANATION, PROBLEM_SOLVING, MCQ_PRACTICE, THEORY_REVIEW, REAL_WORLD_APPLICATION, EXAM_PREPARATION, NOT_FOUND",
-                        "subject": "MATH, PHYSICS, CHEMISTRY, BIOLOGY, HISTORY, GEOGRAPHY, ENGLISH, COMPUTER_SCIENCE, NOT_FOUND",
-                        "difficulty": "EASY, MEDIUM, HARD, NOT_FOUND",
-                        "gradeLevel": "GRADE_6, GRADE_7, GRADE_8, GRADE_9, GRADE_10, GRADE_11, GRADE_12, NOT_FOUND"
-                    }
-                    st.rerun()
+            # Tab selection for schema building
+            tab1, tab2 = st.tabs(["Build Custom", "Use Example"])
             
-            # Schema input
-            schema = {}
-            if st.session_state.schema_fields:
-                for field_name, field_values in st.session_state.schema_fields.items():
-                    col_field, col_values = st.columns([1, 3])
-                    with col_field:
-                        st.write(f"**{field_name}**")
-                    with col_values:
-                        values = st.text_input(
-                            f"Values:",
-                            value=field_values,
-                            key=f"field_{field_name}",
-                            label_visibility="collapsed"
-                        )
-                        st.session_state.schema_fields[field_name] = values
-                        if values.strip():
-                            schema[field_name] = [v.strip() for v in values.split(',') if v.strip()]
+            with tab1:
+                st.markdown("**Build Your Own Schema:**")
                 
-                if st.button("Clear Schema", type="secondary"):
+                # Initialize schema fields directly in session state if not present
+                if 'schema_fields' not in st.session_state:
                     st.session_state.schema_fields = {}
-                    st.rerun()
-            else:
-                st.info("👆 Choose an example schema above to get started")
+                
+                # Add new field interface - more compact
+                with st.form("add_field_form", clear_on_submit=True):
+                    col_name, col_values, col_add = st.columns([2, 3, 1])
+                    
+                    with col_name:
+                        new_field_name = st.text_input(
+                            "Field Name", 
+                            placeholder="e.g., intent, user.category",
+                            help="Supports nested fields with dots"
+                        )
+                    
+                    with col_values:
+                        new_field_values = st.text_input(
+                            "Values (comma-separated)",
+                            placeholder="e.g., positive, negative, neutral",
+                            help="Enter all possible values separated by commas"
+                        )
+                    
+                    with col_add:
+                        st.write("")  # Space for alignment
+                        submitted = st.form_submit_button("➕ Add", type="primary", use_container_width=True)
+                    
+                    if submitted:
+                        if new_field_name and new_field_values:
+                            # Validate field name format
+                            parts = new_field_name.split('.')
+                            if len(parts) > 2:
+                                st.error("Maximum 2 levels supported (parent.field)")
+                            else:
+                                # Add directly to schema_fields
+                                st.session_state.schema_fields[new_field_name] = new_field_values
+                                st.success(f"Added field: {new_field_name}")
+                                st.rerun()
+                        else:
+                            st.error("Please fill in both field name and values")
+                
+                # Display current schema fields with inline editing
+                if st.session_state.schema_fields:
+                    st.markdown("**Current Schema Fields:**")
+                    
+                    fields_to_delete = []
+                    
+                    for field_name, field_values in st.session_state.schema_fields.items():
+                        col_field, col_values, col_actions = st.columns([1.5, 3, 1])
+                        
+                        with col_field:
+                            st.write(f"**{field_name}**")
+                        
+                        with col_values:
+                            # Inline editing - values are directly editable
+                            updated_values = st.text_input(
+                                "Values:",
+                                value=field_values,
+                                key=f"edit_{field_name}",
+                                label_visibility="collapsed"
+                            )
+                            # Auto-update when changed
+                            if updated_values != field_values:
+                                st.session_state.schema_fields[field_name] = updated_values
+                        
+                        with col_actions:
+                            if st.button("🗑️", key=f"delete_{field_name}", help="Remove field"):
+                                fields_to_delete.append(field_name)
+                    
+                    # Delete fields marked for deletion
+                    for field_name in fields_to_delete:
+                        del st.session_state.schema_fields[field_name]
+                        st.rerun()
+                    
+                    # Quick actions
+                    col_clear, col_space = st.columns([1, 3])
+                    with col_clear:
+                        if st.button("Clear All Fields", type="secondary"):
+                            st.session_state.schema_fields = {}
+                            st.rerun()
             
-            # Prompts
-            st.subheader("Prompts")
-            system_prompt = st.text_area(
-                "System Prompt",
-                value="You are a text classifier. Classify the input according to the schema and return valid JSON.",
-                height=100
-            )
+            with tab2:
+                st.markdown("**Quick Start with Examples:**")
+                col_ex1, col_ex2 = st.columns(2)
+                
+                with col_ex1:
+                    if st.button("Code Generation", type="secondary"):
+                        st.session_state.schema_fields = {
+                            "action": "code_generation, not_found",
+                            "subAction": "coding, visual_edits, error, general",
+                            "platform": "dynamic_web_application, static_web_application, dynamic_mobile_app, static_mobile_app, not_found",
+                            "framework": "react, flutter, not_found",
+                            "languageType": "react_javascript, not_found"
+                        }
+                        st.rerun()
+                
+                with col_ex2:
+                    if st.button("Education", type="secondary"):
+                        st.session_state.schema_fields = {
+                            "intent": "concept_explanation, problem_solving, mcq_practice, theory_review, real_world_application, exam_preparation",
+                            "subject": "math, physics, chemistry, biology, history, geography, english, computer_science",
+                            "difficulty": "easy, medium, hard",
+                            "gradeLevel": "grade_6, grade_7, grade_8, grade_9, grade_10, grade_11, grade_12"
+                                                }
+                        st.rerun()
             
-            user_prompt = st.text_input(
-                "User Prompt Template",
-                value="Classify this text:"
-            )
+            # Generate schema for optimization
+            schema = {}
+            if st.session_state.get('schema_fields'):
+                for field_name, field_values in st.session_state.schema_fields.items():
+                    if field_values.strip():
+                        # Handle nested schemas
+                        if '.' in field_name:
+                            parts = field_name.split('.')
+                            parent, child = parts[0], parts[1]
+                            if parent not in schema:
+                                schema[parent] = {}
+                            schema[parent][child] = [v.strip() for v in field_values.split(',') if v.strip()]
+                        else:
+                            schema[field_name] = [v.strip() for v in field_values.split(',') if v.strip()]
             
-            # Model selection
-            st.subheader("Model Configuration")
+            st.divider()
+            
+            # Prompts section
+            st.subheader("💬 Prompts")
+            st.caption("Configure the system and user prompts for the model")
+            
+            col_sys, col_user = st.columns(2)
+            with col_sys:
+                system_prompt = st.text_area(
+                    "System Prompt",
+                    value="You are a text classifier. Classify the input according to the schema and return valid JSON.",
+                    height=120,
+                    help="Instructions for the AI model"
+                )
+            
+            with col_user:
+                user_prompt = st.text_input(
+                    "User Prompt Template",
+                    value="Classify this text:",
+                    help="Template for user messages"
+                )
+                st.write("")  # Spacing to align with text area
+                
+            st.divider()
+            
+            # Model selection section
+            st.subheader("🤖 Model Configuration")
+            st.caption("Choose the AI model provider and specific model")
             col_m1, col_m2 = st.columns(2)
             
             with col_m1:
                 provider = st.selectbox("Provider", ["groq", "anthropic", "openai", "google"])
             
             with col_m2:
-                # Dynamic model options based on provider
                 model_options = {
                     "groq": ["llama-3.3-70b-versatile"],
                     "anthropic": ["claude-sonnet-4-20250514"], 
@@ -312,55 +401,61 @@ def show_config_step():
                 }
                 model_name = st.selectbox("Model", options=model_options[provider])
             
-            # Start optimization button
-            if st.button("Start Optimization", type="primary"):
-                if schema and system_prompt:
+            st.divider()
+            
+            # Optimization controls section  
+            st.subheader("🚀 Start Optimization")
+            st.caption("Review your configuration and start the optimization process")
+            
+            # Summary of configuration
+            with st.expander("📋 Configuration Summary", expanded=False):
+                col_sum1, col_sum2 = st.columns(2)
+                with col_sum1:
+                    st.write(f"**Dataset:** {selected_dataset}")
+                    st.write(f"**Schema Fields:** {len(schema)} fields")
+                    st.write(f"**Model:** {provider} / {model_name}")
+                with col_sum2:
                     if schema:
-                        optimization_config = {
-                            "system_prompt": system_prompt,
-                            "user_prompt": user_prompt,
-                            "schema": schema,
-                            "model_configuration": {
-                                "provider": provider,
-                                "model_name": model_name,
-                                "temperature": 0.2
-                            },
-                            "dataset": selected_dataset,
-                            "max_iterations": 3,
-                            "improvement_threshold": 0.05,
-                            "enable_human_feedback": True
-                        }
+                        st.write("**Schema Preview:**")
+                        st.json(schema)
+            
+            # Start optimization button
+            if st.button("🚀 Start Optimization", type="primary", use_container_width=True):
+                if schema and system_prompt:
+                    optimization_config = {
+                        "system_prompt": system_prompt,
+                        "user_prompt": user_prompt,
+                        "schema": schema,
+                        "model_configuration": {
+                            "provider": provider,
+                            "model_name": model_name,
+                            "temperature": 0.2
+                        },
+                        "dataset": selected_dataset,
+                        "max_iterations": 3,
+                        "improvement_threshold": 0.05,
+                        "enable_human_feedback": True
+                    }
+                    
+                    # Start optimization
+                    with st.spinner("Starting optimization..."):
+                        result, error = make_api_call("/optimize", "POST", optimization_config)
                         
-                        # Start optimization
-                        with st.spinner("Starting optimization..."):
-                            result, error = make_api_call("/optimize", "POST", optimization_config)
-                            
-                            if error:
-                                st.error(f"Failed to start optimization: {error}")
-                            else:
-                                st.session_state.request_id = result.get('request_id')
-                                st.session_state.optimization_running = True
-                                st.session_state.current_step = 'optimize'
-                                st.success("Optimization started!")
-                                st.rerun()
-                    else:
-                        st.error("Invalid schema format")
+                        if error:
+                            st.error(f"Failed to start optimization: {error}")
+                        else:
+                            st.session_state.request_id = result.get('request_id')
+                            st.session_state.optimization_running = True
+                            st.session_state.current_step = 'optimize'
+                            st.success("Optimization started!")
+                            st.rerun()
                 elif not schema:
                     st.error("Please add at least one schema field with values")
                 else:
                     st.error("Please fill in all required fields")
-    
-    with col2:
-        st.subheader("Schema Preview")
-        
-        if 'schema' in locals() and schema:
-            st.json(schema)
         else:
-            st.info("Schema will appear here")
-            st.markdown("**How to use:**")
-            st.markdown("1. Click an example button")
-            st.markdown("2. Edit the values if needed")
-            st.markdown("3. Values should be comma-separated")
+            # Show helpful message when no dataset is selected
+            st.info("👆 Please select a dataset above to continue with configuration")
 
 # Step 3: Optimization Progress
 def check_optimization_status():
@@ -411,7 +506,12 @@ def show_optimization_step():
     # Get current status
     status_data, error = make_api_call(f"/optimize/{st.session_state.request_id}/status")
     
-    if not error:
+    if not error and status_data:
+        # Ensure status_data is a dictionary
+        if not isinstance(status_data, dict):
+            st.error(f"Invalid status data format: {type(status_data)}")
+            return
+            
         progress = status_data.get('progress_percentage', 0)
         
         st.markdown('<div class="progress-container">', unsafe_allow_html=True)
@@ -448,6 +548,11 @@ def show_optimization_step():
         
         # Auto-refresh every 3 seconds
         time.sleep(3)
+        st.rerun()
+    else:
+        st.error(f"Failed to get status: {error}")
+        st.info("Retrying in 5 seconds...")
+        time.sleep(5)
         st.rerun()
 
 # Results Page
