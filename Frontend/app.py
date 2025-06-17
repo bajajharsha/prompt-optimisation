@@ -1200,10 +1200,6 @@ def show_results():
         st.markdown("**Available Data Keys:**")
         st.json(list(data.keys()))
         
-        # write the data to a file
-        with open('data.json', 'w') as f:
-            json.dump(data, f)
-        
         st.markdown("**Sample of Raw Backend Response:**")
         # Show a subset of the raw data for debugging
         sample_data = {
