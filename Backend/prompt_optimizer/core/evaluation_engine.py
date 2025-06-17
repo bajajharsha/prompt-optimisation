@@ -1,5 +1,5 @@
 """
-Evaluation Engine - Enhanced evaluation with overall accuracy
+Evaluation Engine - Enhanced evaluation with configurable model support
 """
 
 import sys
@@ -11,16 +11,63 @@ import json
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.insert(0, project_root)
 
-from prompt_optimizer.core.metric import JSONGenerationEvaluator, run_groq_inference
+from prompt_optimizer.core.metric import JSONGenerationEvaluator
+
+# Import model configuration types
+try:
+    import sys
+    import os
+    # Add fastapi_optimization_system to path if not already there
+    fastapi_path = os.path.join(os.path.dirname(__file__), '..', '..', 'fastapi_optimization_system')
+    if os.path.exists(fastapi_path) and fastapi_path not in sys.path:
+        sys.path.insert(0, fastapi_path)
+    
+    from app.models.optimization_models import ModelConfiguration
+    from app.services.model_service_factory import get_model_service_factory
+    MODEL_SERVICE_AVAILABLE = True
+    print("✅ Model service factory loaded successfully in evaluation_engine.py")
+except ImportError as e:
+    print(f"Warning: Model service factory not available in evaluation_engine, falling back to groq-only: {e}")
+    MODEL_SERVICE_AVAILABLE = False
+    
+    # Fallback: try to import just groq service for backward compatibility
+    try:
+        from app.services.groq_service import get_groq_service
+        GROQ_SERVICE_AVAILABLE = True
+        print("✅ Groq service loaded successfully in evaluation_engine.py")
+    except ImportError as e:
+        print(f"Warning: Groq service not available in evaluation_engine, falling back to direct API calls: {e}")
+        GROQ_SERVICE_AVAILABLE = False
 
 
 class EvaluationEngine:
     """
     Enhanced evaluation engine that adds overall accuracy and handles different evaluation types
+    Now supports configurable model providers
     """
     
-    def __init__(self):
-        self.groq_model = "llama-3.3-70b-versatile"
+    def __init__(self, model_config: ModelConfiguration = None):
+        """
+        Initialize evaluation engine with optional model configuration
+        
+        Args:
+            model_config: Model configuration to use for evaluation. If None, defaults to groq
+        """
+        if model_config:
+            self.model_config = model_config
+        else:
+            # No model configuration provided - this should not happen in production
+            # Raise an error to force proper configuration
+            raise ValueError(
+                "Model configuration is required for EvaluationEngine. "
+                "Please provide a ModelConfiguration with provider and model_name."
+            )
+        
+        # Initialize model service factory if available
+        if MODEL_SERVICE_AVAILABLE:
+            self.model_service_factory = get_model_service_factory()
+        else:
+            self.model_service_factory = None
     
     async def evaluate_prompt(
         self,
@@ -28,7 +75,8 @@ class EvaluationEngine:
         data: List[Dict[str, Any]],
         schema: Dict[str, List[str]],
         evaluation_type: str = "general",
-        user_prompt_template: str = None
+        user_prompt_template: str = None,
+        model_config: ModelConfiguration = None
     ) -> Dict[str, Any]:
         """
         Evaluate a prompt on given data
@@ -39,11 +87,21 @@ class EvaluationEngine:
             schema: JSON schema for validation
             evaluation_type: Type of evaluation for logging
             user_prompt_template: Optional user prompt template (if provided, prompt is treated as system prompt)
+            model_config: Optional model configuration to override the default
             
         Returns:
             Enhanced metrics with overall accuracy
         """
+        # Use provided model config or fall back to instance config
+        active_model_config = model_config or self.model_config
+        
         print(f"🔬 Running {evaluation_type} evaluation on {len(data)} samples...")
+        try:
+            provider = active_model_config.provider.value if hasattr(active_model_config.provider, 'value') else str(active_model_config.provider)
+            model_name = active_model_config.model_name
+            print(f"🤖 Using model: {provider}/{model_name}")
+        except:
+            print(f"🤖 Using model: groq/llama-3.3-70b-versatile (fallback)")
         
         # Extract inputs and ground truth
         input_prompts = [sample['input'] for sample in data]
@@ -60,18 +118,18 @@ class EvaluationEngine:
                 formatted_prompts.append(user_message)
             
             print("🤖 Running model inference with separate system/user prompts...")
-            predicted_texts = self._run_inference_with_system_user_prompts(
+            predicted_texts = await self._run_inference_with_system_user_prompts(
                 system_prompt=system_prompt,
                 user_prompts=formatted_prompts,
-                model=self.groq_model
+                model_config=active_model_config
             )
         else:
             # Backward compatibility: combined prompt
             print("🤖 Running model inference with combined prompt...")
-            predicted_texts = run_groq_inference(
+            predicted_texts = await self._run_batch_inference(
                 prompts=input_prompts,
                 base_prompt=prompt,
-                model=self.groq_model
+                model_config=active_model_config
             )
         print(f"Length of predicted texts: {len(predicted_texts)}")
         
@@ -89,9 +147,16 @@ class EvaluationEngine:
         results['overall_accuracy'] = overall_accuracy
         
         # Add evaluation metadata
+        try:
+            provider = active_model_config.provider.value if hasattr(active_model_config.provider, 'value') else str(active_model_config.provider)
+            model_name = active_model_config.model_name
+            model_used = f"{provider}/{model_name}"
+        except:
+            model_used = "groq/llama-3.3-70b-versatile"
+        
         results['evaluation_metadata'] = {
             "evaluation_type": evaluation_type,
-            "model_used": self.groq_model,
+            "model_used": model_used,
             "num_samples": len(data),
         }
         
@@ -152,19 +217,13 @@ class EvaluationEngine:
             if field in new_metrics['enum_field_metrics']:
                 baseline_f1 = baseline_metrics['enum_field_metrics'][field]['macro_f1']
                 new_f1 = new_metrics['enum_field_metrics'][field]['macro_f1']
-                field_improvements[field] = new_f1 - baseline_f1
-        
-        comparison['field_improvements'] = field_improvements
-        
-        # Overall assessment
-        if comparison['overall_accuracy_improvement'] > 0.05:  # 5% improvement
-            comparison['assessment'] = "SIGNIFICANT_IMPROVEMENT"
-        elif comparison['overall_accuracy_improvement'] > 0.01:  # 1% improvement
-            comparison['assessment'] = "MINOR_IMPROVEMENT"
-        elif comparison['overall_accuracy_improvement'] > -0.01:  # Within 1%
-            comparison['assessment'] = "NO_CHANGE"
-        else:
-            comparison['assessment'] = "REGRESSION"
+                improvement = new_f1 - baseline_f1
+                
+                comparison["field_improvements"][field] = {
+                    "f1_improvement": improvement,
+                    "baseline_f1": baseline_f1,
+                    "new_f1": new_f1
+                }
         
         return comparison
     
@@ -221,11 +280,52 @@ class EvaluationEngine:
         
         print(f"💾 Evaluation results saved to: {filepath}")
     
-    def _run_inference_with_system_user_prompts(
+    async def _run_batch_inference(
+        self,
+        prompts: List[str],
+        base_prompt: str,
+        model_config: ModelConfiguration
+    ) -> List[str]:
+        """
+        Run batch inference using the configured model service
+        
+        Args:
+            prompts: List of input prompts
+            base_prompt: Base instruction prompt to use as system prompt
+            model_config: Model configuration
+            
+        Returns:
+            List of model responses
+        """
+        if MODEL_SERVICE_AVAILABLE and self.model_service_factory:
+            try:
+                return await self.model_service_factory.batch_inference(
+                    model_config=model_config,
+                    prompts=prompts,
+                    system_prompt=base_prompt,
+                    temperature=getattr(model_config, 'temperature', 0.2),
+                    max_tokens=1024
+                )
+            except Exception as e:
+                print(f"Error using model service factory, falling back: {e}")
+        
+        # Fallback to existing groq implementation for backward compatibility
+        provider = model_config.provider.value.lower() if hasattr(model_config.provider, 'value') else str(model_config.provider).lower()
+        if provider == "groq":
+            from prompt_optimizer.core.metric import run_groq_inference
+            return run_groq_inference(
+                prompts=prompts,
+                base_prompt=base_prompt,
+                model=model_config.model_name
+            )
+        else:
+            raise Exception(f"Model provider {provider} not supported in fallback mode")
+    
+    async def _run_inference_with_system_user_prompts(
         self,
         system_prompt: str,
         user_prompts: List[str],
-        model: str
+        model_config: ModelConfiguration
     ) -> List[str]:
         """
         Run inference with separate system and user prompts
@@ -233,10 +333,66 @@ class EvaluationEngine:
         Args:
             system_prompt: The system prompt (classification instructions)
             user_prompts: List of user prompts (queries to classify)
-            model: Model name to use
+            model_config: Model configuration
             
         Returns:
             List of model responses
+        """
+        if MODEL_SERVICE_AVAILABLE and self.model_service_factory:
+            try:
+                return await self.model_service_factory.system_user_inference(
+                    model_config=model_config,
+                    system_prompt=system_prompt,
+                    user_prompts=user_prompts,
+                    temperature=getattr(model_config, 'temperature', 0.2),
+                    max_tokens=1024
+                )
+            except Exception as e:
+                print(f"Error using model service factory, falling back: {e}")
+        
+        # Fallback for groq only
+        provider = model_config.provider.value.lower() if hasattr(model_config.provider, 'value') else str(model_config.provider).lower()
+        if provider == "groq":
+            # Use existing groq fallback from evaluation_engine.py
+            if GROQ_SERVICE_AVAILABLE:
+                try:
+                    import asyncio
+                    
+                    async def _async_call():
+                        try:
+                            from app.services.groq_service import get_groq_service
+                            groq_service = get_groq_service()
+                            return await groq_service.inference_with_system_user_prompts(
+                                system_prompt=system_prompt,
+                                user_prompts=user_prompts,
+                                model_name=model_config.model_name,
+                                component="evaluation_engine",
+                                operation="system_user_inference",
+                                temperature=0.2,
+                                max_completion_tokens=1024
+                            )
+                        except Exception as e:
+                            print(f"Error in groq service call: {e}")
+                            raise e
+                    
+                    return await _async_call()
+                        
+                except Exception as e:
+                    print(f"Error using Groq service, falling back to direct API: {e}")
+            
+            # Direct API fallback for groq
+            return self._fallback_groq_direct_api(system_prompt, user_prompts, model_config.model_name)
+        else:
+            raise Exception(f"Model provider {provider} not supported in fallback mode")
+    
+    def _fallback_groq_direct_api(
+        self,
+        system_prompt: str,
+        user_prompts: List[str],
+        model_name: str
+    ) -> List[str]:
+        """
+        Fallback to direct Groq API calls
         """
         import httpx
         import os
@@ -266,7 +422,7 @@ class EvaluationEngine:
                             "content": user_prompt
                         }
                     ],
-                    "model": model,
+                    "model": model_name,
                     "temperature": 0.2,
                     "max_completion_tokens": 1024,
                     "stream": False,
@@ -287,13 +443,13 @@ class EvaluationEngine:
                     log_entry = {
                         "timestamp": datetime.now(pytz.timezone('Asia/Kolkata')).strftime('%Y-%m-%d %H:%M:%S'),
                         "provider": "groq",
-                        "model": model,
+                        "model": model_name,
                         "input_tokens": usage.get("prompt_tokens", 0),
                         "output_tokens": usage.get("completion_tokens", 0),
                         "total_tokens": usage.get("total_tokens", 0),
                         "file_name": "/Users/harshabajaj/Desktop/PERSONAL_PROJECT/prompt_optimizer/core/evaluation_engine.py",
-                        "component": "evaluation_engine",
-                        "operation": "system_user_inference"
+                        "component": "evaluation_engine_fallback",
+                        "operation": "system_user_inference_direct"
                     }
                     collection.insert_one(log_entry)
                 except Exception as e:
@@ -307,4 +463,4 @@ class EvaluationEngine:
                 print(f"Error in Groq API call: {e}")
                 responses.append("")  # Add empty string on error
         
-        return responses 
+        return responses

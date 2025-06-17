@@ -699,91 +699,91 @@ def show_configuration():
     with col_schema2:
         if st.button("📋 Load Example", use_container_width=True):
             # Load the educational example schema
-            # st.session_state.schema_fields = [
-            #     {
-            #         "key": "action",
-            #         "values":  ["CODE_GENERATION", "NOT_FOUND"],
-            #         "type": "simple",
-            #         "nested_values": {},
-            #         "parent_field": ""
-            #     },
-            #     {
-            #         "key": "subAction",
-            #         "values": ["CODING", "VISUAL_EDITS", "ERROR", "GENERAL"],
-            #         "type": "simple",
-            #         "nested_values": {},
-            #         "parent_field": ""
-            #     },
-            #     {
-            #         "key": "platform",
-            #         "values": ["DYNAMIC_WEB_APPLICATION", "STATIC_WEB_APPLICATION",
-            #             "DYNAMIC_MOBILE_APP", "STATIC_MOBILE_APP", "NOT_FOUND"],
-            #         "type": "simple",
-            #         "nested_values": {},
-            #         "parent_field": ""
-            #     },
-            #     {
-            #         "key": "framework",
-            #         "values": ["REACT", "FLUTTER", "NOT_FOUND"],
-            #         "type": "simple",
-            #         "nested_values": {},
-            #         "parent_field": ""
-            #     },
-            #     {
-            #         "key": "languageType",
-            #         "values": ["REACT_JAVASCRIPT", "NOT_FOUND"],
-            #         "type": "simple",
-            #         "nested_values": {},
-            #         "parent_field": ""
-            #     }
-        
-            # ]
             st.session_state.schema_fields = [
-    {
-        "key": "intent",
-        "values": ["CONCEPT_EXPLANATION", "PROBLEM_SOLVING", "MCQ_PRACTICE", "THEORY_REVIEW", "REAL_WORLD_APPLICATION", "EXAM_PREPARATION", "NOT_FOUND"],
-        "type": "simple",
-        "nested_values": {},
-        "parent_field": ""
-    },
-    {
-        "key": "subject",
-        "values": ["MATH", "PHYSICS", "CHEMISTRY", "BIOLOGY", "HISTORY", "GEOGRAPHY", "ENGLISH", "COMPUTER_SCIENCE", "NOT_FOUND"],
-        "type": "simple",
-        "nested_values": {},
-        "parent_field": ""
-    },
-    {
-        "key": "topic",
-        "values": [],
-        "type": "nested",
-        "nested_values": {
-            "MATH": ["ALGEBRA", "GEOMETRY", "TRIGONOMETRY", "CALCULUS", "STATISTICS", "NUMBER_SYSTEMS", "NOT_FOUND"],
-            "PHYSICS": ["LAWS_OF_MOTION", "GRAVITATION", "WORK_AND_ENERGY", "OPTICS", "THERMODYNAMICS", "ELECTRICITY", "NOT_FOUND"],
-            "CHEMISTRY": ["ATOMIC_STRUCTURE", "CHEMICAL_REACTIONS", "PERIODIC_TABLE", "ACIDS_BASES_SALTS", "METALS_NONMETALS", "NOT_FOUND"],
-            "BIOLOGY": ["CELL_STRUCTURE", "HUMAN_BODY", "PLANT_PHYSIOLOGY", "HEREDITY_AND_EVOLUTION", "MICROORGANISMS", "NOT_FOUND"],
-            "HISTORY": ["ANCIENT_CIVILIZATIONS", "WORLD_WARS", "FREEDOM_MOVEMENTS", "MEDIEVAL_HISTORY", "MODERN_HISTORY", "NOT_FOUND"],
-            "GEOGRAPHY": ["WEATHER_AND_CLIMATE", "PHYSICAL_FEATURES", "RESOURCES", "ENVIRONMENTAL_STUDIES", "NOT_FOUND"],
-            "ENGLISH": ["GRAMMAR", "COMPREHENSION", "LITERATURE", "WRITING_SKILLS", "VOCABULARY", "NOT_FOUND"],
-            "COMPUTER_SCIENCE": ["PROGRAMMING_BASICS", "ALGORITHMS", "DATA_STRUCTURES", "CYBER_SECURITY", "NOT_FOUND"]
-        },
-        "parent_field": "subject"
-    },
-    {
-        "key": "difficulty",
-        "values": ["EASY", "MEDIUM", "HARD", "NOT_FOUND"],
-        "type": "simple",
-        "nested_values": {},
-        "parent_field": ""
-    },
-    {
-        "key": "gradeLevel",
-        "values": ["GRADE_6", "GRADE_7", "GRADE_8", "GRADE_9", "GRADE_10", "GRADE_11", "GRADE_12", "NOT_FOUND"],
-        "type": "simple",
-        "nested_values": {},
-        "parent_field": ""
-    }
-]
+                {
+                    "key": "action",
+                    "values":  ["CODE_GENERATION", "NOT_FOUND"],
+                    "type": "simple",
+                    "nested_values": {},
+                    "parent_field": ""
+                },
+                {
+                    "key": "subAction",
+                    "values": ["CODING", "VISUAL_EDITS", "ERROR", "GENERAL"],
+                    "type": "simple",
+                    "nested_values": {},
+                    "parent_field": ""
+                },
+                {
+                    "key": "platform",
+                    "values": ["DYNAMIC_WEB_APPLICATION", "STATIC_WEB_APPLICATION",
+                        "DYNAMIC_MOBILE_APP", "STATIC_MOBILE_APP", "NOT_FOUND"],
+                    "type": "simple",
+                    "nested_values": {},
+                    "parent_field": ""
+                },
+                {
+                    "key": "framework",
+                    "values": ["REACT", "FLUTTER", "NOT_FOUND"],
+                    "type": "simple",
+                    "nested_values": {},
+                    "parent_field": ""
+                },
+                {
+                    "key": "languageType",
+                    "values": ["REACT_JAVASCRIPT", "NOT_FOUND"],
+                    "type": "simple",
+                    "nested_values": {},
+                    "parent_field": ""
+                }
+        
+            ]
+#             st.session_state.schema_fields = [
+#     {
+#         "key": "intent",
+#         "values": ["CONCEPT_EXPLANATION", "PROBLEM_SOLVING", "MCQ_PRACTICE", "THEORY_REVIEW", "REAL_WORLD_APPLICATION", "EXAM_PREPARATION", "NOT_FOUND"],
+#         "type": "simple",
+#         "nested_values": {},
+#         "parent_field": ""
+#     },
+#     {
+#         "key": "subject",
+#         "values": ["MATH", "PHYSICS", "CHEMISTRY", "BIOLOGY", "HISTORY", "GEOGRAPHY", "ENGLISH", "COMPUTER_SCIENCE", "NOT_FOUND"],
+#         "type": "simple",
+#         "nested_values": {},
+#         "parent_field": ""
+#     },
+#     {
+#         "key": "topic",
+#         "values": [],
+#         "type": "nested",
+#         "nested_values": {
+#             "MATH": ["ALGEBRA", "GEOMETRY", "TRIGONOMETRY", "CALCULUS", "STATISTICS", "NUMBER_SYSTEMS", "NOT_FOUND"],
+#             "PHYSICS": ["LAWS_OF_MOTION", "GRAVITATION", "WORK_AND_ENERGY", "OPTICS", "THERMODYNAMICS", "ELECTRICITY", "NOT_FOUND"],
+#             "CHEMISTRY": ["ATOMIC_STRUCTURE", "CHEMICAL_REACTIONS", "PERIODIC_TABLE", "ACIDS_BASES_SALTS", "METALS_NONMETALS", "NOT_FOUND"],
+#             "BIOLOGY": ["CELL_STRUCTURE", "HUMAN_BODY", "PLANT_PHYSIOLOGY", "HEREDITY_AND_EVOLUTION", "MICROORGANISMS", "NOT_FOUND"],
+#             "HISTORY": ["ANCIENT_CIVILIZATIONS", "WORLD_WARS", "FREEDOM_MOVEMENTS", "MEDIEVAL_HISTORY", "MODERN_HISTORY", "NOT_FOUND"],
+#             "GEOGRAPHY": ["WEATHER_AND_CLIMATE", "PHYSICAL_FEATURES", "RESOURCES", "ENVIRONMENTAL_STUDIES", "NOT_FOUND"],
+#             "ENGLISH": ["GRAMMAR", "COMPREHENSION", "LITERATURE", "WRITING_SKILLS", "VOCABULARY", "NOT_FOUND"],
+#             "COMPUTER_SCIENCE": ["PROGRAMMING_BASICS", "ALGORITHMS", "DATA_STRUCTURES", "CYBER_SECURITY", "NOT_FOUND"]
+#         },
+#         "parent_field": "subject"
+#     },
+#     {
+#         "key": "difficulty",
+#         "values": ["EASY", "MEDIUM", "HARD", "NOT_FOUND"],
+#         "type": "simple",
+#         "nested_values": {},
+#         "parent_field": ""
+#     },
+#     {
+#         "key": "gradeLevel",
+#         "values": ["GRADE_6", "GRADE_7", "GRADE_8", "GRADE_9", "GRADE_10", "GRADE_11", "GRADE_12", "NOT_FOUND"],
+#         "type": "simple",
+#         "nested_values": {},
+#         "parent_field": ""
+#     }
+# ]
 
             st.rerun()
     
@@ -925,7 +925,7 @@ def show_configuration():
         model_options = {
             "groq": ["llama-3.3-70b-versatile"],
             "anthropic": ["claude-sonnet-4-20250514"],
-            "openai": ["o4-mini-2025-04-16"],
+            "openai": ["gpt-4.1-mini-2025-04-14"],
             "google": ["gemini-2.5-pro-preview-06-05"]
         }
         available_models = model_options.get(provider, ["llama-3.3-70b-versatile"])

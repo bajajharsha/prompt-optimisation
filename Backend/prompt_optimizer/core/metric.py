@@ -14,6 +14,21 @@ import dotenv
 
 dotenv.load_dotenv()
 
+try:
+    import sys
+    import os
+    # Add fastapi_optimization_system to path if not already there
+    fastapi_path = os.path.join(os.path.dirname(__file__), '..', '..', 'fastapi_optimization_system')
+    if os.path.exists(fastapi_path) and fastapi_path not in sys.path:
+        sys.path.insert(0, fastapi_path)
+    
+    from app.services.groq_service import get_groq_service
+    GROQ_SERVICE_AVAILABLE = True
+    print("✅ Groq service loaded successfully in metric.py")
+except ImportError as e:
+    print(f"Warning: Groq service not available in metric.py, falling back to direct API calls: {e}")
+    GROQ_SERVICE_AVAILABLE = False
+
 class JSONGenerationEvaluator:
     """
     Enhanced evaluator for JSON generation tasks with multi-layered validation.
@@ -935,25 +950,119 @@ def fetch_data_from_langfuse(dataset_name: str, limit: int = 2) -> List[Dict[str
         return []
 
 
-def run_groq_inference(prompts: List[str], base_prompt: str, model: str = "llama-3.3-70b-versatile") -> List[str]:
+def run_inference(prompts: List[str], base_prompt: str, model_config = None) -> List[str]:
     """
-    Run inference using Groq LLaMA model with direct API calls.
+    Run inference using the configured model service or fallback to groq.
     
     Args:
         prompts: List of input prompts
-        base_prompt: Base instruction prompt to prepend to each input
+        base_prompt: Base instruction prompt to use as system prompt
+        model_config: Model configuration object with provider and model_name. If None, defaults to groq
+        
+    Returns:
+        List of model responses
+    """
+    # For backward compatibility, default to groq if no model_config provided
+    if model_config is None:
+        return run_groq_inference(prompts, base_prompt, "llama-3.3-70b-versatile")
+    
+    # Try to use the model service factory if available
+    try:
+        import asyncio
+        from app.services.model_service_factory import get_model_service_factory
+        
+        async def _async_inference():
+            factory = get_model_service_factory()
+            return await factory.batch_inference(
+                model_config=model_config,
+                prompts=prompts,
+                system_prompt=base_prompt,
+                temperature=getattr(model_config, 'temperature', 1.0),
+                max_tokens=1024
+            )
+        
+        # Try to run in existing event loop or create new one
+        try:
+            loop = asyncio.get_running_loop()
+            # If we're in an async context, we need to handle this differently
+            print("Warning: run_inference called from async context, using fallback")
+            # Fall through to provider-specific fallback
+        except RuntimeError:
+            # No running event loop, create one
+            return asyncio.run(_async_inference())
+    
+    except ImportError:
+        print("Model service factory not available, using provider-specific fallback")
+    except Exception as e:
+        print(f"Error using model service factory: {e}, using provider-specific fallback")
+    
+    # Provider-specific fallback
+    provider = model_config.provider.value.lower() if hasattr(model_config, 'provider') else str(model_config).lower()
+    model_name = model_config.model_name if hasattr(model_config, 'model_name') else "llama-3.3-70b-versatile"
+    
+    if provider == "groq":
+        return run_groq_inference(prompts, base_prompt, model_name)
+    else:
+        # For non-groq providers, we need async context, so fallback to groq for now
+        print(f"Provider {provider} not supported in sync context, falling back to groq")
+        return run_groq_inference(prompts, base_prompt, "llama-3.3-70b-versatile")
+
+
+def run_groq_inference(prompts: List[str], base_prompt: str, model: str = "llama-3.3-70b-versatile") -> List[str]:
+    """
+    Run inference using Groq LLaMA model with service or fallback to direct API calls.
+    
+    Args:
+        prompts: List of input prompts
+        base_prompt: Base instruction prompt to use as system prompt
         model: Model name to use
         
     Returns:
         List of model responses
     """
+    if GROQ_SERVICE_AVAILABLE:
+        # Use the GroqService for API calls
+        try:
+            import asyncio
+            
+            # Always run in new event loop for sync function
+            async def _async_call():
+                try:
+                    groq_service = get_groq_service()
+                    return await groq_service.batch_completions(
+                        prompts=prompts,
+                        base_prompt=base_prompt,
+                        model_name=model,
+                        component="metric_evaluator",
+                        operation="batch_inference",
+                        temperature=1.0,
+                        max_completion_tokens=1024
+                    )
+                except Exception as e:
+                    print(f"Error in groq service call: {e}")
+                    raise e
+            
+            # Try to run in new event loop
+            try:
+                return asyncio.run(_async_call())
+            except RuntimeError as e:
+                if "cannot be called from a running event loop" in str(e):
+                    print("Already in event loop, falling back to direct API calls")
+                else:
+                    raise e
+                
+        except Exception as e:
+            print(f"Error using Groq service, falling back to direct API: {e}")
+            # Fall back to direct API calls
+    
+    # Fallback to direct API calls
+    print("Using direct Groq API calls (service not available)")
+    
     # Groq API Key
     groq_api_key = os.getenv("groq_api_key")
     
     responses = []
     for prompt in prompts:
-        # Combine base prompt with input prompt
-        
         try:
             # Setup the API request payload
             url = "https://api.groq.com/openai/v1/chat/completions"
@@ -998,14 +1107,15 @@ def run_groq_inference(prompts: List[str], base_prompt: str, model: str = "llama
                     "input_tokens": usage.get("prompt_tokens", 0),
                     "output_tokens": usage.get("completion_tokens", 0),
                     "total_tokens": usage.get("total_tokens", 0),
-                    "file_name": "/Users/harshabajaj/Desktop/PERSONAL_PROJECT/prompt_optimizer/core/metric.py"
+                    "file_name": "/Users/harshabajaj/Desktop/PERSONAL_PROJECT/prompt_optimizer/core/metric.py",
+                    "component": "metric_evaluator_fallback",
+                    "operation": "direct_api_call"
                 }
                 collection.insert_one(log_entry)
             except Exception as e:
                 print(f"Token logging failed: {e}")
             
             # Extract response content
-            # print(response_data)
             response_text = response_data["choices"][0]["message"]["content"]
             responses.append(response_text)
         except Exception as e:
@@ -1040,136 +1150,3 @@ def extract_input_prompts(dataset_items, limit: int = 2) -> List[str]:
             prompts.append("")  # Add empty string on error
     
     return prompts
-
-
-# Example usage and test
-# Example usage and test
-# if __name__ == "__main__":
-#     # Static schema definition for evaluation
-#     static_schema = {
-#   "action": [
-#     "CODE_GENERATION",
-#     "NOT_FOUND"
-#   ],
-#   "subAction": [
-#     "CODING",
-#     "VISUAL_EDITS", 
-#     "ERROR",
-#     "GENERAL"
-#   ],
-#   "platform": [
-#     "DYNAMIC_WEB_APPLICATION",
-#     "STATIC_WEB_APPLICATION",
-#     "DYNAMIC_MOBILE_APP",
-#     "STATIC_MOBILE_APP",
-#     "NOT_FOUND"
-#   ],
-#   "framework": [
-#     "REACT",
-#     "FLUTTER",
-#     "NOT_FOUND"
-#   ],
-#   "languageType": [
-#     "REACT_JAVASCRIPT",
-#     "NOT_FOUND"
-#   ]
-# }
-    
-#     # Base prompt for the model
-#     base_prompt = """
-#     You are a classification model. Classify the input into the correct category. Return the result in JSON format.
-    
-#     The schema is as follows:
-#         {
-#         "action": [
-#             "CODE_GENERATION",
-#             "NOT_FOUND"
-#         ],
-#         "subAction": [
-#             "CODING",
-#             "VISUAL_EDITS", 
-#             "ERROR",
-#             "GENERAL"
-#         ],
-#         "platform": [
-#             "DYNAMIC_WEB_APPLICATION",
-#             "STATIC_WEB_APPLICATION",
-#             "DYNAMIC_MOBILE_APP",
-#             "STATIC_MOBILE_APP",
-#             "NOT_FOUND"
-#         ],
-#         "framework": [
-#             "REACT",
-#             "FLUTTER",
-#             "NOT_FOUND"
-#         ],
-#         "languageType": [
-#             "REACT_JAVASCRIPT",
-#             "NOT_FOUND"
-#         ]
-#         }
-#     """
-    
-#     # Initialize LangFuse client
-#     langfuse_client = Langfuse(
-#         secret_key="sk-lf-d87cc28d-5a97-4fd9-bccd-13cfbf5e6ad3",
-#         public_key="pk-lf-4e626ffa-7bcd-495b-9f4d-f2f2c5b15087",
-#         host="https://cloud.langfuse.com"
-#     )
-    
-#     # Fetch dataset
-#     langfuse_dataset_name = "code_gen"
-#     # langfuse_dataset_name = "movie_reviews"
-#     print(f"Getting dataset for experiment: {langfuse_dataset_name}")
-#     try:
-#         dataset = langfuse_client.get_dataset(langfuse_dataset_name)
-#         print(dataset)
-        
-#         # Extract input prompts
-#         input_prompts = []
-#         ground_truth_jsons = []
-        
-#         # Process only 2 items
-#         for i, item in enumerate(dataset.items):
-#             if i >= 1:  
-#                 break
-                
-#             # Extract input for the model
-#             input_text = item.input
-#             input_prompts.append(input_text)
-            
-#             # Extract expected output
-#             if isinstance(item.expected_output, dict):
-#                 expected_output = item.expected_output
-#             elif isinstance(item.expected_output, str):
-#                 expected_output = json.loads(item.expected_output)
-#             else:
-#                 print(f"Unexpected expected_output type: {type(item.expected_output)}")
-#                 continue
-                
-#             ground_truth_jsons.append(expected_output)
-        
-#         # Run inference using Groq model
-#         predicted_texts = run_groq_inference(input_prompts, base_prompt)
-        
-#         # Run evaluation
-#         evaluator = JSONGenerationEvaluator(static_schema)
-#         results = evaluator.evaluate_batch(ground_truth_jsons, predicted_texts)
-        
-#         # Print evaluation report
-#         evaluator.print_detailed_report(results)
-        
-#         # Create metrics directory if it doesn't exist
-#         metrics_dir = os.path.join(os.path.dirname(__file__), "metrics")
-#         os.makedirs(metrics_dir, exist_ok=True)
-        
-#         # Save results to metrics folder
-#         results_file = os.path.join(metrics_dir, "baseline_evaluation_results.json")
-#         with open(results_file, "w") as f:
-#             json.dump(results, f, indent=2)
-        
-#         print(f"Evaluation complete. Results saved to {results_file}")
-        
-#     except Exception as e:
-#         print(f"Error in experiment: {e}")
-#         traceback.print_exc()

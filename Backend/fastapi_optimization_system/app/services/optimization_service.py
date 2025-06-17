@@ -118,12 +118,7 @@ class OptimizationService:
             "system_prompt": request.system_prompt,
             "user_prompt": request.user_prompt,
             "schema": request.json_schema,
-            "model_config": {
-                "provider": request.model_configuration.provider.value,
-                "model_name": request.model_configuration.model_name,
-                "temperature": request.model_configuration.temperature,
-                "max_tokens": request.model_configuration.max_tokens
-            },
+            "model_configuration": request.model_configuration,
             "dataset": request.dataset,
             "max_iterations": request.max_iterations,
             "improvement_threshold": request.improvement_threshold,
@@ -173,8 +168,8 @@ class OptimizationService:
             # Update progress
             await self._update_progress(request_id, "baseline_evaluation", 30.0, "Evaluating baseline performance...")
             
-            # Use existing evaluation engine
-            evaluation_engine = EvaluationEngine()
+            # Use existing evaluation engine with model configuration
+            evaluation_engine = EvaluationEngine(model_config=config['model_configuration'])
             
             # Evaluate baseline on train data (system + user prompt separately)
             train_baseline_metrics = await evaluation_engine.evaluate_prompt(
@@ -182,7 +177,8 @@ class OptimizationService:
                 data_splits['train'],
                 config['schema'],
                 "train_baseline",
-                user_prompt_template=user_prompt_template
+                user_prompt_template=user_prompt_template,
+                model_config=config['model_configuration']
             )
             
             # Save train baseline metrics
@@ -197,7 +193,8 @@ class OptimizationService:
                 data_splits['dev_a'],
                 config['schema'],
                 "dev_a_baseline",
-                user_prompt_template=user_prompt_template
+                user_prompt_template=user_prompt_template,
+                model_config=config['model_configuration']
             )
             
             # Save dev_a baseline metrics
@@ -247,7 +244,8 @@ class OptimizationService:
                 data_splits['test'],
                 config['schema'],
                 "test_final",
-                user_prompt_template=user_prompt_template
+                user_prompt_template=user_prompt_template,
+                model_config=config['model_configuration']
             )
             
             # Save test metrics
@@ -287,7 +285,7 @@ class OptimizationService:
         """Run the optimization iteration loop (same as complete system)"""
         
         optimization_controller = OptimizationController()
-        evaluation_engine = EvaluationEngine()
+        evaluation_engine = EvaluationEngine(model_config=config['model_configuration'])
         enhanced_human_feedback = create_simple_human_feedback_manager()
         
         current_system_prompt = baseline_system_prompt
@@ -560,7 +558,8 @@ class OptimizationService:
                 dev_a_data,
                 config['schema'],
                 f"dev_a_iteration_{iteration}",
-                user_prompt_template=user_prompt_template
+                user_prompt_template=user_prompt_template,
+                model_config=config['model_configuration']
             )
             
             # Calculate comprehensive score (same as complete system)

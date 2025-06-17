@@ -200,7 +200,9 @@ class OptimizationController:
         
         current_metrics = {k: v for k, v in current_metrics.items() if k != 'detailed_failed_cases' and k != 'failed_cases_summary'}
         
-        # Create target model configuration
+        # Create target model configuration - now dynamic
+        # Note: This should ideally come from the optimization request,
+        # but for backward compatibility, we'll default to groq
         target_model = ModelConfiguration(
             provider="groq",
             model_name="llama-3.3-70b-versatile"

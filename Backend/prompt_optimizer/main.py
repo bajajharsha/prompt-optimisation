@@ -29,7 +29,8 @@ class CompleteOptimizationSystem:
     
     def __init__(self):
         self.data_manager = DataManager()
-        self.evaluation_engine = EvaluationEngine()
+        # Don't initialize evaluation_engine here - will create when needed with model config
+        self.evaluation_engine = None  
         self.optimization_controller = OptimizationController()
         self.enhanced_human_feedback = create_simple_human_feedback_manager()
         self.baseline_prompt = """You are a classification model. Classify the input into the correct category. Return the result in JSON format."""
@@ -47,6 +48,9 @@ class CompleteOptimizationSystem:
             }
         }
         
+        # Create model configuration object for EvaluationEngine
+        self._model_config = self._create_model_config()
+        
         # Schema definition
         self.schema = {
             "action": ["CODE_GENERATION", "NOT_FOUND"],
@@ -56,6 +60,41 @@ class CompleteOptimizationSystem:
             "framework": ["REACT", "FLUTTER", "NOT_FOUND"],
             "languageType": ["REACT_JAVASCRIPT", "NOT_FOUND"]
         }
+    
+    def _create_model_config(self):
+        """Create model configuration object"""
+        try:
+            # Import model configuration from fastapi system
+            import sys
+            import os
+            fastapi_path = os.path.join(os.path.dirname(__file__), '..', 'fastapi_optimization_system')
+            if os.path.exists(fastapi_path) and fastapi_path not in sys.path:
+                sys.path.insert(0, fastapi_path)
+            
+            from app.models.optimization_models import ModelConfiguration, ModelProvider
+            
+            return ModelConfiguration(
+                provider=ModelProvider.GROQ,
+                model_name=self.config["target_model"]["model_name"],
+                temperature=0.2,
+                max_tokens=1024
+            )
+        except ImportError:
+            # Fallback: return a simple object that has the required attributes
+            class SimpleModelConfig:
+                def __init__(self, model_name):
+                    self.provider = type('Provider', (), {'value': 'groq'})()
+                    self.model_name = model_name
+                    self.temperature = 0.2
+                    self.max_tokens = 1024
+            
+            return SimpleModelConfig(self.config["target_model"]["model_name"])
+    
+    def _get_evaluation_engine(self):
+        """Get evaluation engine with proper model configuration"""
+        if self.evaluation_engine is None:
+            self.evaluation_engine = EvaluationEngine(model_config=self._model_config)
+        return self.evaluation_engine
     
     async def run_complete_optimization(self) -> Dict[str, Any]:
         """
@@ -95,7 +134,7 @@ class CompleteOptimizationSystem:
             baseline_prompt = self._get_baseline_prompt()
             
             # Get baseline performance on TRAIN data for intent analysis
-            train_baseline_metrics = await self.evaluation_engine.evaluate_prompt(
+            train_baseline_metrics = await self._get_evaluation_engine().evaluate_prompt(
                 prompt=baseline_prompt,
                 data=data_splits['train'],
                 schema=self.schema,
@@ -128,7 +167,7 @@ class CompleteOptimizationSystem:
             
             # Step 4: Dev A Baseline (Hidden Target)
             print("\n📊 Step 4: Dev A Baseline (Optimization Target)")
-            dev_a_baseline_metrics = await self.evaluation_engine.evaluate_prompt(
+            dev_a_baseline_metrics = await self._get_evaluation_engine().evaluate_prompt(
                 prompt=baseline_prompt,
                 data=data_splits['dev_a'],
                 schema=self.schema,
@@ -362,7 +401,7 @@ class CompleteOptimizationSystem:
             
             # Evaluate on Dev B for human feedback
             print("🔬 Evaluating on Dev B...")
-            dev_b_results = await self.evaluation_engine.evaluate_prompt(
+            dev_b_results = await self._get_evaluation_engine().evaluate_prompt(
                 prompt=best_candidate['optimized_prompt'],
                 data=data_splits['dev_b'],
                 schema=self.schema,
@@ -455,7 +494,7 @@ class CompleteOptimizationSystem:
             print(f"   Evaluating: {candidate['strategy']}")
             
             # Evaluate candidate
-            candidate_metrics = await self.evaluation_engine.evaluate_prompt(
+            candidate_metrics = await self._get_evaluation_engine().evaluate_prompt(
                 prompt=candidate['optimized_prompt'],
                 data=dev_a_data,
                 schema=self.schema,
@@ -511,7 +550,7 @@ class CompleteOptimizationSystem:
         
         # Evaluate final prompt on test data
         print("📊 Evaluating final prompt on test data...")
-        test_metrics = await self.evaluation_engine.evaluate_prompt(
+        test_metrics = await self._get_evaluation_engine().evaluate_prompt(
             prompt=final_prompt,
             data=test_data,
             schema=self.schema,
@@ -520,7 +559,7 @@ class CompleteOptimizationSystem:
         
         # Evaluate baseline on test data for comparison
         print("📊 Evaluating baseline prompt on test data...")
-        baseline_test_metrics = await self.evaluation_engine.evaluate_prompt(
+        baseline_test_metrics = await self._get_evaluation_engine().evaluate_prompt(
             prompt=self._get_baseline_prompt(),
             data=test_data,
             schema=self.schema,
