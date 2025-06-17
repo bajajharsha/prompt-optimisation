@@ -31,7 +31,7 @@ class OptimizationRequest(BaseModel):
     
     system_prompt: str = Field(..., description="System prompt to optimize")
     user_prompt: str = Field(..., description="User prompt context")
-    json_schema: Dict[str, Union[List[str], Dict[str, List[str]]]] = Field(..., description="JSON schema with enum values (supports nested structures)", alias="schema")
+    json_schema: Dict[str, Union[List[str], Dict[str, Union[List[str], Dict[str, List[str]]]]]] = Field(..., description="JSON schema with enum values (supports nested structures up to 3 levels)", alias="schema")
     model_configuration: ModelConfiguration = Field(..., description="Model configuration")
     dataset: str = Field(..., description="Dataset name or path")
     

@@ -112,7 +112,7 @@ class OptimizationController:
     
     async def get_optimization_status(self, request_id: str) -> OptimizationProgress:
         """
-        Get optimization progress status
+        Get optimization progress status from saved files
         
         Args:
             request_id: The optimization request ID
@@ -154,6 +154,54 @@ class OptimizationController:
                 detail={
                     "error": "internal_error",
                     "message": "Failed to get optimization status",
+                    "request_id": request_id
+                }
+            )
+    
+    async def get_optimization_results(self, request_id: str) -> Dict[str, Any]:
+        """
+        Get complete optimization results from saved files
+        
+        Args:
+            request_id: The optimization request ID
+            
+        Returns:
+            Dict containing complete optimization results
+            
+        Raises:
+            HTTPException: If request not found or error occurs
+        """
+        try:
+            results = await self.optimization_usecase.get_optimization_results(request_id)
+            return results
+            
+        except OptimizationError as e:
+            if e.status_code == 404:
+                raise HTTPException(
+                    status_code=404,
+                    detail={
+                        "error": "not_found",
+                        "message": f"Optimization results for request {request_id} not found",
+                        "request_id": request_id
+                    }
+                )
+            else:
+                raise HTTPException(
+                    status_code=e.status_code,
+                    detail={
+                        "error": e.error_type,
+                        "message": e.detail,
+                        "request_id": request_id
+                    }
+                )
+        
+        except Exception as e:
+            print(f"[{request_id}] Error getting results: {str(e)}")
+            raise HTTPException(
+                status_code=500,
+                detail={
+                    "error": "internal_error",
+                    "message": "Failed to get optimization results",
                     "request_id": request_id
                 }
             )

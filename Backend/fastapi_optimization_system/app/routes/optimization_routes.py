@@ -95,19 +95,21 @@ async def optimize_prompt(
     "/optimize/{request_id}/status",
     response_model=OptimizationProgress,
     summary="Get Optimization Status",
-    description="Get the current status and progress of an optimization request"
+    description="Get the current status and progress of an optimization request from saved files"
 )
 async def get_optimization_status(
     request_id: str
 ) -> OptimizationProgress:
     """
-    Get optimization progress status
+    Get optimization progress status from saved intermediate results
     
     Returns real-time progress information including:
     - Current processing step
     - Progress percentage
     - Current iteration (if in optimization loop)
     - Estimated time remaining
+    
+    This endpoint reads directly from saved files, making it persistent across server restarts.
     """
     try:
         return await optimization_controller.get_optimization_status(request_id)
@@ -119,6 +121,166 @@ async def get_optimization_status(
             detail={
                 "error": "internal_error",
                 "message": f"Failed to get status: {str(e)}",
+                "request_id": request_id
+            }
+        )
+
+@router.get(
+    "/optimizations",
+    summary="List All Optimization Results",
+    description="Get a list of all available optimization results from saved files"
+)
+async def list_optimization_results() -> Dict[str, Any]:
+    """
+    Get list of all available optimization results
+    
+    Returns a list of optimization results with basic metadata for each,
+    useful for selecting specific optimizations to view in detail.
+    """
+    try:
+        import os
+        from datetime import datetime
+        
+        results_base_dir = "intermediate_results"
+        
+        if not os.path.exists(results_base_dir):
+            return {
+                "optimizations": [],
+                "total_count": 0,
+                "message": "No optimization results found"
+            }
+        
+        optimizations = []
+        
+        for item in os.listdir(results_base_dir):
+            item_path = os.path.join(results_base_dir, item)
+            if os.path.isdir(item_path):
+                # Check if this directory has results
+                final_dir = os.path.join(item_path, "final")
+                optimization_results_file = os.path.join(item_path, "optimization_results.json")
+                
+                optimization_info = {
+                    "request_id": item,
+                    "status": "unknown",
+                    "created": "Unknown",
+                    "last_modified": "Unknown",
+                    "has_final_results": False,
+                    "has_optimization_results": False,
+                    "iterations": 0,
+                    "improvement": 0.0,
+                    "deployment_recommendation": "unknown"
+                }
+                
+                # Get creation time
+                try:
+                    creation_time = os.path.getctime(item_path)
+                    optimization_info["created"] = datetime.fromtimestamp(creation_time).isoformat()
+                except:
+                    pass
+                
+                # Get last modified time
+                try:
+                    modified_time = os.path.getmtime(item_path)
+                    optimization_info["last_modified"] = datetime.fromtimestamp(modified_time).isoformat()
+                except:
+                    pass
+                
+                # Check for final results
+                if os.path.exists(final_dir):
+                    optimization_info["has_final_results"] = True
+                    optimization_info["status"] = "completed"
+                    
+                    # Try to read final results for more details
+                    try:
+                        final_results_file = os.path.join(final_dir, "final_prompt.json")
+                        if os.path.exists(final_results_file):
+                            import json
+                            with open(final_results_file, "r") as f:
+                                final_data = json.load(f)
+                                optimization_info["deployment_recommendation"] = final_data.get("deployment_decision", "unknown")
+                                optimization_info["improvement"] = final_data.get("test_improvement", 0.0)
+                    except:
+                        pass
+                
+                # Check for optimization results
+                if os.path.exists(optimization_results_file):
+                    optimization_info["has_optimization_results"] = True
+                    if optimization_info["status"] == "unknown":
+                        optimization_info["status"] = "optimization_completed"
+                    
+                    # Try to read optimization results for iteration count
+                    try:
+                        import json
+                        with open(optimization_results_file, "r") as f:
+                            opt_data = json.load(f)
+                            optimization_info["iterations"] = opt_data.get("total_iterations", 0)
+                            if "best_candidate" in opt_data:
+                                best_candidate = opt_data["best_candidate"]
+                                optimization_info["improvement"] = best_candidate.get("improvement_over_baseline", 0.0)
+                    except:
+                        pass
+                
+                # Count iteration directories for status
+                if optimization_info["status"] == "unknown":
+                    iteration_dirs = [d for d in os.listdir(item_path) if d.startswith("iteration_") and d.endswith("_selected")]
+                    if iteration_dirs:
+                        optimization_info["status"] = "in_progress"
+                        optimization_info["iterations"] = len(iteration_dirs)
+                    elif os.path.exists(os.path.join(item_path, "data_splits.json")):
+                        optimization_info["status"] = "initialized"
+                
+                optimizations.append(optimization_info)
+        
+        # Sort by last modified time (newest first)
+        optimizations.sort(key=lambda x: x["last_modified"], reverse=True)
+        
+        return {
+            "optimizations": optimizations,
+            "total_count": len(optimizations),
+            "message": f"Found {len(optimizations)} optimization results"
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "error": "internal_error",
+                "message": f"Failed to list optimization results: {str(e)}"
+            }
+        )
+
+@router.get(
+    "/optimize/{request_id}/results",
+    summary="Get Complete Optimization Results",
+    description="Get complete optimization results from saved files (persistent across server restarts)"
+)
+async def get_optimization_results(
+    request_id: str
+) -> Dict[str, Any]:
+    """
+    Get complete optimization results from saved intermediate files
+    
+    Returns comprehensive results including:
+    - Data splits information
+    - Baseline metrics
+    - All iteration results
+    - Selected prompts per iteration
+    - Final recommendations
+    - Human feedback summaries
+    
+    This endpoint reads directly from saved files, providing access to results
+    even after server restarts.
+    """
+    try:
+        return await optimization_controller.get_optimization_results(request_id)
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail={
+                "error": "internal_error",
+                "message": f"Failed to get results: {str(e)}",
                 "request_id": request_id
             }
         )
@@ -235,26 +397,26 @@ async def list_supported_models() -> Dict[str, Any]:
     return {
         "providers": {
             "openai": {
-                "models": ["gpt-4", "gpt-4-turbo", "gpt-3.5-turbo"],
+                "models": ["gpt-4.1-mini-2025-04-14"],
                 "description": "OpenAI GPT models"
             },
             "anthropic": {
-                "models": ["claude-3-sonnet", "claude-3-haiku", "claude-3-opus"],
+                "models": ["claude-sonnet-4-20250514"],
                 "description": "Anthropic Claude models"
             },
             "groq": {
-                "models": ["llama-3.3-70b-versatile", "llama-3.1-70b-versatile"],
+                "models": ["llama-3.3-70b-versatile"],
                 "description": "Groq LLaMA models"
             },
             "google": {
-                "models": ["gemini-pro", "gemini-pro-vision"],
+                "models": ["gemini-2.5-pro-preview-06-05"],
                 "description": "Google Gemini models"
             }
         },
         "recommendations": {
             "development": "groq/llama-3.3-70b-versatile",
-            "production": "anthropic/claude-3-sonnet",
-            "cost_effective": "openai/gpt-3.5-turbo"
+            "production": "anthropic/claude-sonnet-4-20250514",
+            "cost_effective": "openai/gpt-4.1-mini-2025-04-14"
         }
     }
 
@@ -303,12 +465,42 @@ async def get_request_examples() -> Dict[str, Any]:
                     },
                     "model_configuration": {
                         "provider": "openai",
-                        "model_name": "gpt-4",
+                        "model_name": "gpt-4.1-mini-2025-04-14",
                         "temperature": 0.1
                     },
                     "dataset": "ecommerce_products",
                     "max_iterations": 3,
                     "improvement_threshold": 0.03,
+                    "enable_human_feedback": True
+                }
+            },
+            "nested_classification": {
+                "description": "Complex nested classification with multiple levels",
+                "request": {
+                    "system_prompt": "You are an advanced classifier that analyzes user requests with multiple dimensions.",
+                    "user_prompt": "Analyze this user input across all dimensions.",
+                    "schema": {
+                        "user": {
+                            "profile": {
+                                "age_group": ["young", "adult", "senior"],
+                                "experience_level": ["beginner", "intermediate", "expert"]
+                            },
+                            "intent": ["question", "complaint", "request", "feedback"]
+                        },
+                        "content": {
+                            "category": ["technical", "business", "personal"],
+                            "urgency": ["low", "medium", "high", "critical"],
+                            "complexity": ["simple", "moderate", "complex"]
+                        }
+                    },
+                    "model_configuration": {
+                        "provider": "anthropic",
+                        "model_name": "claude-sonnet-4-20250514",
+                        "temperature": 0.1
+                    },
+                    "dataset": "complex_classification_dataset",
+                    "max_iterations": 4,
+                    "improvement_threshold": 0.04,
                     "enable_human_feedback": True
                 }
             }

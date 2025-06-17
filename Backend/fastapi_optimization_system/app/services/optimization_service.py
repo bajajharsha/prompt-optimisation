@@ -92,24 +92,120 @@ class OptimizationService:
             raise optimization_error
     
     async def get_optimization_progress(self, request_id: str) -> OptimizationProgress:
-        """Get current optimization progress"""
-        if request_id not in self._active_optimizations:
+        """Get current optimization progress from files or memory"""
+        # First try to get from memory (for active optimizations)
+        if request_id in self._active_optimizations:
+            opt_data = self._active_optimizations[request_id]
+            return OptimizationProgress(
+                request_id=request_id,
+                current_step=opt_data.get("current_step", "unknown"),
+                progress_percentage=opt_data.get("progress_percentage", 0.0),
+                estimated_time_remaining=opt_data.get("estimated_time_remaining"),
+                current_iteration=opt_data.get("current_iteration"),
+                total_iterations=opt_data.get("total_iterations"),
+                message=opt_data.get("message", "Processing...")
+            )
+        
+        # If not in memory, try to read from files
+        try:
+            return await self._get_progress_from_files(request_id)
+        except Exception:
             raise OptimizationError(
                 f"Optimization request {request_id} not found",
                 status_code=404,
                 request_id=request_id
             )
+    
+    async def _get_progress_from_files(self, request_id: str) -> OptimizationProgress:
+        """Get optimization progress from saved files"""
+        import os
+        import json
         
-        opt_data = self._active_optimizations[request_id]
+        results_dir = f"intermediate_results/{request_id}"
+        
+        # Check if request directory exists
+        if not os.path.exists(results_dir):
+            raise OptimizationError(
+                f"No optimization found for request {request_id}",
+                status_code=404,
+                request_id=request_id
+            )
+        
+        # Determine current status based on files present
+        current_step = "unknown"
+        progress_percentage = 0.0
+        current_iteration = None
+        total_iterations = None
+        message = "Processing..."
+        
+        # Check for final results
+        if os.path.exists(f"{results_dir}/final/final_prompt.json"):
+            current_step = "completed"
+            progress_percentage = 100.0
+            message = "Optimization completed successfully!"
+        # Check for test metrics
+        elif os.path.exists(f"{results_dir}/test_metrics.json"):
+            current_step = "final_evaluation"
+            progress_percentage = 95.0
+            message = "Running final evaluation on test data..."
+        # Check for optimization results
+        elif os.path.exists(f"{results_dir}/optimization_results.json"):
+            current_step = "optimization_completed"
+            progress_percentage = 85.0
+            message = "Optimization iterations completed, preparing final results..."
+            
+            # Try to get iteration info from optimization results
+            try:
+                with open(f"{results_dir}/optimization_results.json", "r") as f:
+                    opt_results = json.load(f)
+                    total_iterations = opt_results.get("total_iterations", 0)
+                    current_iteration = total_iterations
+            except:
+                pass
+        # Check for iteration files
+        else:
+            # Find the highest iteration number
+            iteration_dirs = [d for d in os.listdir(results_dir) if d.startswith("iteration_") and d.endswith("_selected")]
+            if iteration_dirs:
+                # Extract iteration numbers and find max
+                iterations = []
+                for dir_name in iteration_dirs:
+                    try:
+                        iter_num = int(dir_name.split("_")[1])
+                        iterations.append(iter_num)
+                    except (IndexError, ValueError):
+                        continue
+                
+                if iterations:
+                    current_iteration = max(iterations)
+                    total_iterations = 5  # Default max
+                    progress_percentage = 50.0 + (current_iteration / total_iterations) * 35.0
+                    current_step = f"optimization_iteration_{current_iteration}"
+                    message = f"Running optimization iteration {current_iteration}..."
+            # Check for baseline evaluation
+            elif os.path.exists(f"{results_dir}/train_baseline_metrics.json"):
+                current_step = "baseline_evaluation"
+                progress_percentage = 30.0
+                message = "Baseline evaluation completed, starting optimization..."
+            # Check for data splits
+            elif os.path.exists(f"{results_dir}/data_splits.json"):
+                current_step = "data_preparation"
+                progress_percentage = 20.0
+                message = "Data preparation completed, evaluating baseline..."
+            # Check for baseline prompt
+            elif os.path.exists(f"{results_dir}/baseline/baseline_prompt.json"):
+                current_step = "initialization"
+                progress_percentage = 10.0
+                message = "Initialization completed, preparing data..."
         
         return OptimizationProgress(
             request_id=request_id,
-            current_step=opt_data.get("current_step", "unknown"),
-            progress_percentage=opt_data.get("progress_percentage", 0.0),
-            estimated_time_remaining=opt_data.get("estimated_time_remaining"),
-            current_iteration=opt_data.get("current_iteration"),
-            total_iterations=opt_data.get("total_iterations"),
-            message=opt_data.get("message", "Processing...")
+            current_step=current_step,
+            progress_percentage=progress_percentage,
+            estimated_time_remaining=None,
+            current_iteration=current_iteration,
+            total_iterations=total_iterations,
+            message=message
         )
     
     def _convert_request_to_config(self, request: OptimizationRequest) -> Dict[str, Any]:
@@ -887,6 +983,135 @@ class OptimizationService:
         instructions = "\n\nIMPORTANT: Respond with a valid JSON object only. The value should be from enum values only. Do not include any explanations or text outside the JSON. Do not add any comments inside the JSON."
         
         return enhanced_prompt + schema_section + instructions
+    
+    async def get_optimization_results_from_files(self, request_id: str) -> Dict[str, Any]:
+        """Get complete optimization results from saved files"""
+        import os
+        import json
+        from datetime import datetime
+        
+        results_dir = f"intermediate_results/{request_id}"
+        
+        # Check if request directory exists
+        if not os.path.exists(results_dir):
+            raise OptimizationError(
+                f"No optimization results found for request {request_id}",
+                status_code=404,
+                request_id=request_id
+            )
+        
+        results = {
+            "request_id": request_id,
+            "timestamp": datetime.now().isoformat(),
+            "status": "unknown",
+            "files_found": [],
+            "data": {}
+        }
+        
+        # Helper function to safely load JSON files
+        def load_json_file(filepath: str, key: str):
+            try:
+                if os.path.exists(filepath):
+                    with open(filepath, "r") as f:
+                        data = json.load(f)
+                        results["data"][key] = data
+                        results["files_found"].append(os.path.basename(filepath))
+                        return data
+            except Exception as e:
+                print(f"Warning: Failed to load {filepath}: {e}")
+            return None
+        
+        # Load baseline information
+        load_json_file(f"{results_dir}/baseline/baseline_prompt.json", "baseline_prompt")
+        
+        # Load data splits
+        load_json_file(f"{results_dir}/data_splits.json", "data_splits")
+        
+        # Load baseline metrics
+        load_json_file(f"{results_dir}/train_baseline_metrics.json", "train_baseline_metrics")
+        load_json_file(f"{results_dir}/dev_a_baseline_metrics.json", "dev_a_baseline_metrics")
+        
+        # Load intent analysis
+        load_json_file(f"{results_dir}/intent_analysis.json", "intent_analysis")
+        
+        # Load iteration results
+        iterations = []
+        iteration_dirs = []
+        if os.path.exists(results_dir):
+            iteration_dirs = [d for d in os.listdir(results_dir) if d.startswith("iteration_")]
+        
+        for dir_name in sorted(iteration_dirs):
+            iter_path = f"{results_dir}/{dir_name}"
+            if os.path.isdir(iter_path):
+                iteration_data = {}
+                
+                # Try to extract iteration number from directory name
+                try:
+                    if "_selected" in dir_name:
+                        iter_num = int(dir_name.split("_")[1])
+                        iteration_data["iteration"] = iter_num
+                        iteration_data["type"] = "selected"
+                        
+                        # Load selected prompt data
+                        selected_file = f"{iter_path}/selected_prompt.json"
+                        if os.path.exists(selected_file):
+                            with open(selected_file, "r") as f:
+                                iteration_data["selected_prompt"] = json.load(f)
+                    
+                    elif "_candidates" in dir_name:
+                        iter_num = int(dir_name.split("_")[1])
+                        iteration_data["iteration"] = iter_num
+                        iteration_data["type"] = "candidates"
+                        
+                        # Load candidate prompts data
+                        candidates_file = f"{iter_path}/all_candidates.json"
+                        if os.path.exists(candidates_file):
+                            with open(candidates_file, "r") as f:
+                                iteration_data["candidates"] = json.load(f)
+                
+                except (IndexError, ValueError):
+                    continue
+                
+                if iteration_data:
+                    iterations.append(iteration_data)
+        
+        results["data"]["iterations"] = iterations
+        
+        # Load optimization results
+        load_json_file(f"{results_dir}/optimization_results.json", "optimization_results")
+        
+        # Load test metrics
+        load_json_file(f"{results_dir}/test_metrics.json", "test_metrics")
+        
+        # Load final results
+        final_results = load_json_file(f"{results_dir}/final/final_prompt.json", "final_results")
+        
+        # Determine status based on files present
+        if final_results:
+            results["status"] = "completed"
+        elif results["data"].get("test_metrics"):
+            results["status"] = "test_evaluation_completed"
+        elif results["data"].get("optimization_results"):
+            results["status"] = "optimization_completed"
+        elif iterations:
+            results["status"] = f"optimization_in_progress"
+        elif results["data"].get("train_baseline_metrics"):
+            results["status"] = "baseline_evaluation_completed"
+        elif results["data"].get("data_splits"):
+            results["status"] = "data_preparation_completed"
+        else:
+            results["status"] = "initialization"
+        
+        # Add summary information
+        results["summary"] = {
+            "total_files": len(results["files_found"]),
+            "iterations_found": len([i for i in iterations if i.get("type") == "selected"]),
+            "has_final_results": "final_results" in results["data"],
+            "has_test_metrics": "test_metrics" in results["data"],
+            "optimization_complete": results["status"] == "completed"
+        }
+        
+        return results
     
     async def cleanup_optimization(self, request_id: str):
         """Clean up optimization resources"""

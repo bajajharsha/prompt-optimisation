@@ -197,28 +197,39 @@ class OptimizationUseCase:
         
         # Validate provider-specific requirements
         if model_config.provider.value == "openai":
-            if not model_config.model_name.startswith(("gpt-", "text-")):
+            valid_openai_models = ["gpt-4.1-mini-2025-04-14"] 
+            if model_config.model_name not in valid_openai_models:
                 raise ModelConfigurationError(
-                    f"Invalid OpenAI model name: {model_config.model_name}",
+                    f"Invalid OpenAI model name: {model_config.model_name}. Valid options: {valid_openai_models}",
                     request_id=request_id,
                     provider="openai"
                 )
         
         elif model_config.provider.value == "anthropic":
-            if not model_config.model_name.startswith("claude"):
+            valid_anthropic_models = ["claude-sonnet-4-20250514"]
+            if model_config.model_name not in valid_anthropic_models:
                 raise ModelConfigurationError(
-                    f"Invalid Anthropic model name: {model_config.model_name}",
+                    f"Invalid Anthropic model name: {model_config.model_name}. Valid options: {valid_anthropic_models}",
                     request_id=request_id,
                     provider="anthropic"
                 )
         
         elif model_config.provider.value == "groq":
-            valid_groq_models = ["llama-3.3-70b-versatile", "llama-3.1-70b-versatile"]
+            valid_groq_models = ["llama-3.3-70b-versatile"]
             if model_config.model_name not in valid_groq_models:
                 raise ModelConfigurationError(
                     f"Invalid Groq model name: {model_config.model_name}. Valid options: {valid_groq_models}",
                     request_id=request_id,
                     provider="groq"
+                )
+        
+        elif model_config.provider.value == "google":
+            valid_google_models = ["gemini-2.5-pro-preview-06-05"]
+            if model_config.model_name not in valid_google_models:
+                raise ModelConfigurationError(
+                    f"Invalid Google model name: {model_config.model_name}. Valid options: {valid_google_models}",
+                    request_id=request_id,
+                    provider="google"
                 )
         
         # Validate temperature range
@@ -271,6 +282,27 @@ class OptimizationUseCase:
                     request_id=request_id,
                     field="improvement_threshold"
                 )
+    
+    async def get_optimization_results(self, request_id: str) -> Dict[str, Any]:
+        """
+        Get complete optimization results from saved files
+        
+        Args:
+            request_id: The optimization request ID
+            
+        Returns:
+            Dict containing complete optimization results
+            
+        Raises:
+            OptimizationError: If results not found
+        """
+        try:
+            return await self.optimization_service.get_optimization_results_from_files(request_id)
+        except Exception as e:
+            optimization_error = handle_optimization_exception(
+                e, request_id, "results retrieval"
+            )
+            raise optimization_error
     
     async def cleanup_optimization(self, request_id: str):
         """Clean up optimization resources"""
