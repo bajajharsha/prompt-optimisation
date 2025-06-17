@@ -231,9 +231,10 @@ class OptimizationService:
         This method integrates with your existing complete_optimization_system
         """
         try:
-            # Initialize request ID in the existing system
+            # Set the request ID in the existing system to match our FastAPI request ID
             from prompt_optimizer.core.request_id import initialize_request_id
-            initialize_request_id()
+            # Pass our request_id to ensure both systems use the same ID
+            initialize_request_id(request_id)
             
             # Create intermediate results directory and copy baseline files
             await self._create_intermediate_results_dir(request_id)

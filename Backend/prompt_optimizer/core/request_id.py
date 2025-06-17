@@ -7,10 +7,13 @@ import uuid
 # Global request ID
 _request_id = None
 
-def initialize_request_id():
-    """Initialize a new request ID"""
+def initialize_request_id(request_id=None):
+    """Initialize a new request ID or set a specific one"""
     global _request_id
-    _request_id = str(uuid.uuid4())
+    if request_id:
+        _request_id = request_id
+    else:
+        _request_id = str(uuid.uuid4())
     return _request_id
 
 def get_request_id():

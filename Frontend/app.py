@@ -52,6 +52,18 @@ st.markdown("""
         border: 1px solid #e9ecef;
         margin: 1rem 0;
     }
+    .timer-display {
+        background: linear-gradient(135deg, #667eea, #764ba2);
+        color: white;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+        margin: 1rem 0;
+        font-family: 'Courier New', monospace;
+        font-size: 1.2rem;
+        font-weight: bold;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -76,6 +88,8 @@ def init_session_state():
         st.session_state.selected_dataset = None
     if 'schema_fields' not in st.session_state:
         st.session_state.schema_fields = {}
+    if 'optimization_start_time' not in st.session_state:
+        st.session_state.optimization_start_time = None
 
 def make_api_call(endpoint, method="GET", data=None, files=None):
     """Make API calls with error handling"""
@@ -96,6 +110,23 @@ def make_api_call(endpoint, method="GET", data=None, files=None):
     except Exception as e:
         return None, f"Connection Error: {str(e)}"
 
+def format_elapsed_time(start_time):
+    """Format elapsed time since start_time"""
+    if not start_time:
+        return "N/A"
+    
+    elapsed = datetime.now() - start_time
+    total_seconds = int(elapsed.total_seconds())
+    
+    hours = total_seconds // 3600
+    minutes = (total_seconds % 3600) // 60
+    seconds = total_seconds % 60
+    
+    if hours > 0:
+        return f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+    else:
+        return f"{minutes:02d}:{seconds:02d}"
+
 def show_header():
     st.markdown("""
     <div class="main-header">
@@ -106,7 +137,7 @@ def show_header():
 
 def show_navigation():
     """Simple horizontal navigation"""
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3 = st.columns(3)
     
     with col1:
         if st.button("1. Upload Dataset", key="nav_upload"):
@@ -119,11 +150,6 @@ def show_navigation():
             st.rerun()
     
     with col3:
-        if st.button("3. Optimization", key="nav_optimize"):
-            st.session_state.current_step = 'optimize'
-            st.rerun()
-    
-    with col4:
         if st.button("Past Reports", key="nav_reports"):
             st.session_state.current_step = 'reports'
             st.rerun()
@@ -180,7 +206,67 @@ def show_upload_step():
 def show_config_step():
     st.header("Step 2: Configuration")
     
-    # Main content area
+
+    
+    # Check if optimization is running and show progress
+    if st.session_state.optimization_running:
+        st.subheader("🚀 Optimization in Progress")
+        st.info("Your optimization is running. Please wait for completion...")
+        
+        # Check status
+        completed = check_optimization_status()
+        
+        if completed:
+            st.balloons()
+            st.success("Optimization completed! Redirecting to reports...")
+            time.sleep(2)
+            st.rerun()
+            return
+        
+        # Get current status
+        status_data, error = make_api_call(f"/optimize/{st.session_state.request_id}/status")
+        
+        if not error and status_data:
+            # Ensure status_data is a dictionary
+            if not isinstance(status_data, dict):
+                st.error(f"Invalid status data format: {type(status_data)}")
+                return
+                
+            progress = status_data.get('progress_percentage', 0)
+            
+            # Progress bar
+            st.progress(progress / 100)
+            
+            # Status info
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                st.metric("Progress", f"{progress:.0f}%")
+            
+            with col2:
+                current_iter = status_data.get('current_iteration')
+                total_iter = status_data.get('total_iterations')
+                if current_iter and total_iter:
+                    st.metric("Iteration", f"{current_iter}/{total_iter}")
+                else:
+                    st.metric("Status", "Processing")
+            
+            # Current step
+            current_step = status_data.get('current_step', 'Processing...')
+            st.info(f"Current Step: {current_step}")
+            
+            # Auto-refresh every 3 seconds
+            time.sleep(3)
+            st.rerun()
+        else:
+            st.error(f"Failed to get status: {error}")
+            st.info("Retrying in 5 seconds...")
+            time.sleep(5)
+            st.rerun()
+        
+        return  # Don't show configuration options while optimization is running
+    
+    # Main content area (only shown when not optimizing)
     main_content = st.container()
     
     with main_content:
@@ -326,22 +412,20 @@ def show_config_step():
                 with col_ex1:
                     if st.button("Code Generation", type="secondary"):
                         st.session_state.schema_fields = {
-                            "action": "code_generation, not_found",
-                            "subAction": "coding, visual_edits, error, general",
-                            "platform": "dynamic_web_application, static_web_application, dynamic_mobile_app, static_mobile_app, not_found",
-                            "framework": "react, flutter, not_found",
-                            "languageType": "react_javascript, not_found"
+                            "action": "CODE_GENERATION, NOT_FOUND",
+                            "subAction": "CODING, VISUAL_EDITS, ERROR, GENERAL",
+                            "platform": "DYNAMIC_WEB_APPLICATION, STATIC_WEB_APPLICATION, DYNAMIC_MOBILE_APP, STATIC_MOBILE_APP, NOT_FOUND",
+                            "framework": "REACT, FLUTTER, NOT_FOUND",
+                            "languageType": "REACT_JAVASCRIPT, NOT_FOUND"
                         }
                         st.rerun()
                 
                 with col_ex2:
                     if st.button("Education", type="secondary"):
-                        st.session_state.schema_fields = {
-                            "intent": "concept_explanation, problem_solving, mcq_practice, theory_review, real_world_application, exam_preparation",
-                            "subject": "math, physics, chemistry, biology, history, geography, english, computer_science",
-                            "difficulty": "easy, medium, hard",
-                            "gradeLevel": "grade_6, grade_7, grade_8, grade_9, grade_10, grade_11, grade_12"
-                                                }
+                        st.session_state.schema_fields ={
+                            "intent": "CONCEPT_EXPLANATION, PROBLEM_SOLVING, MCQ_PRACTICE, THEORY_REVIEW, REAL_WORLD_APPLICATION, EXAM_PREPARATION",
+                            "subject": "MATH, PHYSICS, CHEMISTRY, BIOLOGY, HISTORY, GEOGRAPHY, ENGLISH, COMPUTER_SCIENCE",
+                        }
                         st.rerun()
             
             # Generate schema for optimization
@@ -422,6 +506,13 @@ def show_config_step():
             # Start optimization button
             if st.button("🚀 Start Optimization", type="primary", use_container_width=True):
                 if schema and system_prompt:
+                    # Set timer and state IMMEDIATELY when button is clicked
+                    st.session_state.optimization_running = True
+                    st.session_state.optimization_start_time = datetime.now()
+                    st.session_state.request_id = "temp-" + str(int(time.time()))  # Temporary ID
+                    
+                    st.success("✅ Timer started! Optimization beginning...")
+                    
                     optimization_config = {
                         "system_prompt": system_prompt,
                         "user_prompt": user_prompt,
@@ -443,12 +534,17 @@ def show_config_step():
                         
                         if error:
                             st.error(f"Failed to start optimization: {error}")
+                            # Reset state on error
+                            st.session_state.optimization_running = False
+                            st.session_state.optimization_start_time = None
+                            st.session_state.request_id = None
                         else:
+                            # Update with real request ID
                             st.session_state.request_id = result.get('request_id')
-                            st.session_state.optimization_running = True
-                            st.session_state.current_step = 'optimize'
-                            st.success("Optimization started!")
-                            st.rerun()
+                            st.success(f"Optimization started! Request ID: {st.session_state.request_id}")
+                    
+                    # Force page rerun to show timer
+                    st.rerun()
                 elif not schema:
                     st.error("Please add at least one schema field with values")
                 else:
@@ -467,9 +563,16 @@ def check_optimization_status():
             # Try loading from file
             results_data, results_error = make_api_call(f"/optimize/{st.session_state.request_id}/results")
             if not results_error:
+                # Calculate total time taken
+                if st.session_state.optimization_start_time:
+                    st.session_state.optimization_duration = format_elapsed_time(st.session_state.optimization_start_time)
+                else:
+                    st.session_state.optimization_duration = "Unknown"
+                
                 st.session_state.optimization_running = False
                 st.session_state.optimization_results = results_data
-                st.session_state.current_step = 'results'
+                st.session_state.optimization_start_time = None  # Reset timer
+                st.session_state.current_step = 'reports'
                 return True
             return False
         
@@ -479,81 +582,22 @@ def check_optimization_status():
             # Load final results
             results_data, results_error = make_api_call(f"/optimize/{st.session_state.request_id}/results")
             if not results_error:
+                # Calculate total time taken
+                if st.session_state.optimization_start_time:
+                    st.session_state.optimization_duration = format_elapsed_time(st.session_state.optimization_start_time)
+                else:
+                    st.session_state.optimization_duration = "Unknown"
+                
                 st.session_state.optimization_running = False
                 st.session_state.optimization_results = results_data
-                st.session_state.current_step = 'results'
+                st.session_state.optimization_start_time = None  # Reset timer
+                st.session_state.current_step = 'reports'
                 return True
         
         return False
     return None
 
-def show_optimization_step():
-    st.header("Step 3: Optimization in Progress")
-    
-    if not st.session_state.optimization_running:
-        st.warning("No optimization running. Please start from configuration step.")
-        return
-    
-    # Check status
-    completed = check_optimization_status()
-    
-    if completed:
-        st.balloons()
-        st.success("Optimization completed!")
-        st.rerun()
-        return
-    
-    # Get current status
-    status_data, error = make_api_call(f"/optimize/{st.session_state.request_id}/status")
-    
-    if not error and status_data:
-        # Ensure status_data is a dictionary
-        if not isinstance(status_data, dict):
-            st.error(f"Invalid status data format: {type(status_data)}")
-            return
-            
-        progress = status_data.get('progress_percentage', 0)
-        
-        st.markdown('<div class="progress-container">', unsafe_allow_html=True)
-        
-        # Progress bar
-        st.progress(progress / 100)
-        
-        # Status info
-        col1, col2, col3 = st.columns(3)
-        
-        with col1:
-            st.metric("Progress", f"{progress:.0f}%")
-        
-        with col2:
-            current_iter = status_data.get('current_iteration')
-            total_iter = status_data.get('total_iterations')
-            if current_iter and total_iter:
-                st.metric("Iteration", f"{current_iter}/{total_iter}")
-            else:
-                st.metric("Status", "Processing")
-        
-        with col3:
-            eta = status_data.get('estimated_time_remaining')
-            if eta:
-                st.metric("ETA", f"{eta}s")
-            else:
-                st.metric("ETA", "Calculating...")
-        
-        # Current step
-        current_step = status_data.get('current_step', 'Processing...')
-        st.info(f"Current Step: {current_step}")
-        
-        st.markdown('</div>', unsafe_allow_html=True)
-        
-        # Auto-refresh every 3 seconds
-        time.sleep(3)
-        st.rerun()
-    else:
-        st.error(f"Failed to get status: {error}")
-        st.info("Retrying in 5 seconds...")
-        time.sleep(5)
-        st.rerun()
+
 
 # Results Page
 def show_results():
@@ -573,7 +617,7 @@ def show_results():
     baseline_metrics = data.get('train_baseline_metrics', {})
     test_metrics = data.get('test_metrics', {})
     
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3, col4, col5 = st.columns(5)
     
     with col1:
         improvement = final_results.get('test_improvement', 0) * 100
@@ -592,6 +636,10 @@ def show_results():
         st.metric("Iterations", iterations)
     
     with col4:
+        duration = st.session_state.get('optimization_duration', 'N/A')
+        st.metric("⏱️ Duration", duration)
+    
+    with col5:
         decision = final_results.get('deployment_decision', 'unknown')
         color = "🟢" if decision == "deploy" else "🟡"
         st.metric("Recommendation", f"{color} {decision.title()}")
@@ -642,6 +690,13 @@ def show_results():
 # Past Reports
 def show_past_reports():
     st.header("Past Optimization Reports")
+    
+    # If we just completed an optimization, show its results first
+    if st.session_state.optimization_results:
+        st.subheader("🎉 Latest Optimization Results")
+        show_results()
+        st.divider()
+        st.subheader("📝 All Reports")
     
     # Fetch all optimizations
     with st.spinner("Loading past reports..."):
@@ -735,8 +790,6 @@ def main():
         show_upload_step()
     elif st.session_state.current_step == 'config':
         show_config_step()
-    elif st.session_state.current_step == 'optimize':
-        show_optimization_step()
     elif st.session_state.current_step == 'results':
         show_results()
     elif st.session_state.current_step == 'reports':

@@ -228,11 +228,11 @@ Your goal is to deeply understand the classification intent so that optimization
                 json_str = claude_response[json_start:json_end]
             
             claude_analysis = json.loads(json_str)
-            # Save to request-specific intermediate results folder
+            # Save to request-specific intermediate results folder (directly, not in subfolder)
             request_id = get_request_id() or "default"
-            claude_analysis_dir = f"fastapi_optimization_system/intermediate_results/{request_id}/claude_analysis"
-            os.makedirs(claude_analysis_dir, exist_ok=True)
-            with open(f"{claude_analysis_dir}/claude_analysis.json", "w") as f:
+            intermediate_results_dir = f"intermediate_results/{request_id}"
+            os.makedirs(intermediate_results_dir, exist_ok=True)
+            with open(f"{intermediate_results_dir}/claude_analysis.json", "w") as f:
                 json.dump(claude_analysis, f, indent=2)
             # Create IntentAnalysis object
             analysis = IntentAnalysis(
@@ -399,7 +399,7 @@ async def main():
     # Load data files
     # Load from request-specific intermediate results folder
     request_id = get_request_id() or "default"
-    all_metrics = load_baseline_metrics(f"fastapi_optimization_system/intermediate_results/{request_id}/enhanced_baseline_results.json")
+    all_metrics = load_baseline_metrics(f"intermediate_results/{request_id}/enhanced_baseline_results.json")
     
     failed_cases_summary = all_metrics.get("failed_cases_summary", {})
     failed_cases = all_metrics["detailed_failed_cases"]["wrong_classifications"]
@@ -444,7 +444,7 @@ async def main():
     # Save results
     # Save to request-specific intermediate results folder
     request_id = get_request_id() or "default"
-    filepath = identifier.save_analysis(analysis, f"fastapi_optimization_system/intermediate_results/{request_id}/claude_intent_analysis_results.json")
+    filepath = identifier.save_analysis(analysis, f"intermediate_results/{request_id}/claude_intent_analysis_results.json")
     
     # Print summary
     print("\n" + "="*60)
