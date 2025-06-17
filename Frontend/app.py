@@ -391,16 +391,22 @@ def show_config_step():
                             st.write(f"**{field_name}**")
                         
                         with col_values:
-                            # Inline editing - values are directly editable
-                            updated_values = st.text_input(
-                                "Values:",
-                                value=field_values,
-                                key=f"edit_{field_name}",
-                                label_visibility="collapsed"
-                            )
-                            # Auto-update when changed
-                            if updated_values != field_values:
-                                st.session_state.schema_fields[field_name] = updated_values
+                            # Inline editing - handle different data types properly
+                            if isinstance(field_values, (list, dict)):
+                                # For complex data types, show as JSON and don't allow direct editing
+                                st.json(field_values)
+                                st.caption("🔒 Complex field (use Education button to modify)")
+                            else:
+                                # For string values, allow direct editing
+                                updated_values = st.text_input(
+                                    "Values:",
+                                    value=str(field_values),
+                                    key=f"edit_{field_name}",
+                                    label_visibility="collapsed"
+                                )
+                                # Auto-update when changed
+                                if updated_values != str(field_values):
+                                    st.session_state.schema_fields[field_name] = updated_values
                         
                         with col_actions:
                             if st.button("🗑️", key=f"delete_{field_name}", help="Remove field"):
@@ -432,20 +438,50 @@ def show_config_step():
                             "languageType": "REACT_JAVASCRIPT, NOT_FOUND"
                         }
                         st.rerun()
-                
                 with col_ex2:
                     if st.button("Education", type="secondary"):
-                        st.session_state.schema_fields ={
-                            "intent": "CONCEPT_EXPLANATION, PROBLEM_SOLVING, MCQ_PRACTICE, THEORY_REVIEW, REAL_WORLD_APPLICATION, EXAM_PREPARATION",
-                            "subject": "MATH, PHYSICS, CHEMISTRY, BIOLOGY, HISTORY, GEOGRAPHY, ENGLISH, COMPUTER_SCIENCE",
+                        st.session_state.schema_fields = {
+                            "intent": [
+                                "CONCEPT_EXPLANATION", "PROBLEM_SOLVING", "MCQ_PRACTICE", 
+                                "THEORY_REVIEW", "REAL_WORLD_APPLICATION", "EXAM_PREPARATION", "NOT_FOUND"
+                            ],
+                            "subject": [
+                                "MATH", "PHYSICS", "CHEMISTRY", "BIOLOGY", "HISTORY", 
+                                "GEOGRAPHY", "ENGLISH", "COMPUTER_SCIENCE", "NOT_FOUND"
+                            ],
+                            "topic": {
+                                "MATH": ["ALGEBRA", "GEOMETRY", "TRIGONOMETRY", "CALCULUS", "STATISTICS", "NUMBER_SYSTEMS", "NOT_FOUND"],
+                                "PHYSICS": ["LAWS_OF_MOTION", "GRAVITATION", "WORK_AND_ENERGY", "OPTICS", "THERMODYNAMICS", "ELECTRICITY", "NOT_FOUND"],
+                                "CHEMISTRY": ["ATOMIC_STRUCTURE", "CHEMICAL_REACTIONS", "PERIODIC_TABLE", "ACIDS_BASES_SALTS", "METALS_NONMETALS", "NOT_FOUND"],
+                                "BIOLOGY": ["CELL_STRUCTURE", "HUMAN_BODY", "PLANT_PHYSIOLOGY", "HEREDITY_AND_EVOLUTION", "MICROORGANISMS", "NOT_FOUND"],
+                                "HISTORY": ["ANCIENT_CIVILIZATIONS", "WORLD_WARS", "FREEDOM_MOVEMENTS", "MEDIEVAL_HISTORY", "MODERN_HISTORY", "NOT_FOUND"],
+                                "GEOGRAPHY": ["WEATHER_AND_CLIMATE", "PHYSICAL_FEATURES", "RESOURCES", "ENVIRONMENTAL_STUDIES", "NOT_FOUND"],
+                                "ENGLISH": ["GRAMMAR", "COMPREHENSION", "LITERATURE", "WRITING_SKILLS", "VOCABULARY", "NOT_FOUND"],
+                                "COMPUTER_SCIENCE": ["PROGRAMMING_BASICS", "ALGORITHMS", "DATA_STRUCTURES", "CYBER_SECURITY", "NOT_FOUND"],
+                                "NOT_FOUND": ["NOT_FOUND"]
+                            },
+                            "difficulty": ["EASY", "MEDIUM", "HARD", "NOT_FOUND"],
+                            "gradeLevel": [
+                                "GRADE_6", "GRADE_7", "GRADE_8", "GRADE_9", 
+                                "GRADE_10", "GRADE_11", "GRADE_12", "NOT_FOUND"
+                            ]
                         }
                         st.rerun()
+
             
             # Generate schema for optimization
             schema = {}
             if st.session_state.get('schema_fields'):
                 for field_name, field_values in st.session_state.schema_fields.items():
-                    if field_values.strip():
+                    # Handle different types of field values
+                    if isinstance(field_values, dict):
+                        # Already a dictionary (e.g., nested topic structure)
+                        schema[field_name] = field_values
+                    elif isinstance(field_values, list):
+                        # Already a list (e.g., intent, subject arrays)
+                        schema[field_name] = field_values
+                    elif isinstance(field_values, str) and field_values.strip():
+                        # String that needs to be processed
                         # Handle nested schemas
                         if '.' in field_name:
                             parts = field_name.split('.')
@@ -466,7 +502,7 @@ def show_config_step():
             with col_sys:
                 system_prompt = st.text_area(
                     "System Prompt",
-                    value="You are a text classifier. Classify the input according to the schema and return valid JSON.",
+                    value="You are a json classifier. Classify the input according to the schema and return valid JSON.",
                     height=120,
                     help="Instructions for the AI model"
                 )
