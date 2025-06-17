@@ -14,7 +14,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS for clean design
 st.markdown("""
 <style>
     .main-header {
@@ -67,12 +66,8 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# API Base URL
 API_BASE_URL = "http://localhost:8000/api/v1"
 
-
-
-# Initialize session state
 def init_session_state():
     if 'current_step' not in st.session_state:
         st.session_state.current_step = 'upload'
@@ -96,10 +91,9 @@ def make_api_call(endpoint, method="GET", data=None, files=None):
     try:
         url = f"{API_BASE_URL}{endpoint}"
         
-        # Use longer timeout for results endpoint
         timeout = 30
         if '/results' in endpoint:
-            timeout = 120  # 2 minutes for large result files
+            timeout = 120 
         elif method == "POST":
             if files:
                 timeout = 60
@@ -124,7 +118,6 @@ def make_api_call(endpoint, method="GET", data=None, files=None):
         return None, f"Connection Error: {str(e)}"
 
 def format_elapsed_time(start_time):
-    """Format elapsed time since start_time"""
     if not start_time:
         return "N/A"
     
@@ -149,7 +142,6 @@ def show_header():
     """, unsafe_allow_html=True)
 
 def show_navigation():
-    """Simple horizontal navigation"""
     col1, col2, col3 = st.columns(3)
     
     with col1:
@@ -167,7 +159,6 @@ def show_navigation():
             st.session_state.current_step = 'reports'
             st.rerun()
 
-# Step 1: Dataset Upload
 def show_upload_step():
     st.header("Step 1: Upload Dataset")
     
@@ -215,18 +206,15 @@ def show_upload_step():
         if st.session_state.dataset_uploaded:
             st.success(f"Dataset ready: {st.session_state.selected_dataset}")
 
-# Step 2: Configuration
 def show_config_step():
     st.header("Step 2: Configuration")
     
 
     
-    # Check if optimization is running and show progress
     if st.session_state.optimization_running:
         st.subheader("🚀 Optimization in Progress")
         st.info("Your optimization is running. Please wait for completion...")
         
-        # Check status
         completed = check_optimization_status()
         
         if completed:
@@ -236,21 +224,17 @@ def show_config_step():
             st.rerun()
             return
         
-        # Get current status
         status_data, error = make_api_call(f"/optimize/{st.session_state.request_id}/status")
         
         if not error and status_data:
-            # Ensure status_data is a dictionary
             if not isinstance(status_data, dict):
                 st.error(f"Invalid status data format: {type(status_data)}")
                 return
                 
             progress = status_data.get('progress_percentage', 0)
             
-            # Progress bar
             st.progress(progress / 100)
             
-            # Status info
             col1, col2 = st.columns(2)
             
             with col1:
@@ -264,11 +248,9 @@ def show_config_step():
                 else:
                     st.metric("Status", "Processing")
             
-            # Current step
             current_step = status_data.get('current_step', 'Processing...')
             st.info(f"Current Step: {current_step}")
             
-            # Auto-refresh every 3 seconds
             time.sleep(3)
             st.rerun()
         else:
@@ -277,16 +259,13 @@ def show_config_step():
             time.sleep(5)
             st.rerun()
         
-        return  # Don't show configuration options while optimization is running
+        return  
     
-    # Main content area (only shown when not optimizing)
     main_content = st.container()
     
     with main_content:
-        # Dataset selection
         st.subheader("Dataset Selection")
         
-        # Fetch available datasets
         with st.spinner("Loading available datasets..."):
             datasets_data, error = make_api_call("/datasets")
             
@@ -299,7 +278,6 @@ def show_config_step():
                 if datasets:
                     dataset_names = [d.get('name', 'Unknown') for d in datasets]
                     
-                    # Set default selection to uploaded dataset if available
                     default_index = 0
                     if st.session_state.dataset_uploaded and st.session_state.selected_dataset in dataset_names:
                         default_index = dataset_names.index(st.session_state.selected_dataset)
@@ -311,7 +289,6 @@ def show_config_step():
                         help="Choose from available datasets"
                     )
                     
-                    # Show dataset info
                     if selected_dataset:
                         selected_dataset_info = next((d for d in datasets if d.get('name') == selected_dataset), None)
                         if selected_dataset_info:
@@ -326,23 +303,18 @@ def show_config_step():
         
         st.divider()
         
-        # Only proceed if we have a selected dataset
         if selected_dataset:
-            # Schema configuration section
             st.subheader("🔧 Schema Definition")
             st.caption("Define the JSON structure for classification output")
             
-            # Tab selection for schema building
             tab1, tab2 = st.tabs(["Build Custom", "Use Example"])
             
             with tab1:
                 st.markdown("**Build Your Own Schema:**")
                 
-                # Initialize schema fields directly in session state if not present
                 if 'schema_fields' not in st.session_state:
                     st.session_state.schema_fields = {}
                 
-                # Add new field interface - more compact
                 with st.form("add_field_form", clear_on_submit=True):
                     col_name, col_values, col_add = st.columns([2, 3, 1])
                     
@@ -366,12 +338,10 @@ def show_config_step():
                     
                     if submitted:
                         if new_field_name and new_field_values:
-                            # Validate field name format
                             parts = new_field_name.split('.')
                             if len(parts) > 2:
                                 st.error("Maximum 2 levels supported (parent.field)")
                             else:
-                                # Add directly to schema_fields
                                 st.session_state.schema_fields[new_field_name] = new_field_values
                                 st.success(f"Added field: {new_field_name}")
                                 st.rerun()
@@ -391,20 +361,16 @@ def show_config_step():
                             st.write(f"**{field_name}**")
                         
                         with col_values:
-                            # Inline editing - handle different data types properly
                             if isinstance(field_values, (list, dict)):
-                                # For complex data types, show as JSON and don't allow direct editing
                                 st.json(field_values)
                                 st.caption("🔒 Complex field (use Education button to modify)")
                             else:
-                                # For string values, allow direct editing
                                 updated_values = st.text_input(
                                     "Values:",
                                     value=str(field_values),
                                     key=f"edit_{field_name}",
                                     label_visibility="collapsed"
                                 )
-                                # Auto-update when changed
                                 if updated_values != str(field_values):
                                     st.session_state.schema_fields[field_name] = updated_values
                         
@@ -412,12 +378,10 @@ def show_config_step():
                             if st.button("🗑️", key=f"delete_{field_name}", help="Remove field"):
                                 fields_to_delete.append(field_name)
                     
-                    # Delete fields marked for deletion
                     for field_name in fields_to_delete:
                         del st.session_state.schema_fields[field_name]
                         st.rerun()
                     
-                    # Quick actions
                     col_clear, col_space = st.columns([1, 3])
                     with col_clear:
                         if st.button("Clear All Fields", type="secondary"):
@@ -469,20 +433,14 @@ def show_config_step():
                         st.rerun()
 
             
-            # Generate schema for optimization
             schema = {}
             if st.session_state.get('schema_fields'):
                 for field_name, field_values in st.session_state.schema_fields.items():
-                    # Handle different types of field values
                     if isinstance(field_values, dict):
-                        # Already a dictionary (e.g., nested topic structure)
                         schema[field_name] = field_values
                     elif isinstance(field_values, list):
-                        # Already a list (e.g., intent, subject arrays)
                         schema[field_name] = field_values
                     elif isinstance(field_values, str) and field_values.strip():
-                        # String that needs to be processed
-                        # Handle nested schemas
                         if '.' in field_name:
                             parts = field_name.split('.')
                             parent, child = parts[0], parts[1]
@@ -494,7 +452,6 @@ def show_config_step():
             
             st.divider()
             
-            # Prompts section
             st.subheader("💬 Prompts")
             st.caption("Configure the system and user prompts for the model")
             
@@ -517,7 +474,6 @@ def show_config_step():
                 
             st.divider()
             
-            # Model selection section
             st.subheader("🤖 Model Configuration")
             st.caption("Choose the AI model provider and specific model")
             col_m1, col_m2 = st.columns(2)
@@ -535,12 +491,9 @@ def show_config_step():
                 model_name = st.selectbox("Model", options=model_options[provider])
             
             st.divider()
-            
-            # Optimization controls section  
             st.subheader("🚀 Start Optimization")
             st.caption("Review your configuration and start the optimization process")
             
-            # Summary of configuration
             with st.expander("📋 Configuration Summary", expanded=False):
                 col_sum1, col_sum2 = st.columns(2)
                 with col_sum1:
@@ -552,13 +505,11 @@ def show_config_step():
                         st.write("**Schema Preview:**")
                         st.json(schema)
             
-            # Start optimization button
             if st.button("🚀 Start Optimization", type="primary", use_container_width=True):
                 if schema and system_prompt:
-                    # Set timer and state IMMEDIATELY when button is clicked
                     st.session_state.optimization_running = True
                     st.session_state.optimization_start_time = datetime.now()
-                    st.session_state.request_id = "temp-" + str(int(time.time()))  # Temporary ID
+                    st.session_state.request_id = "temp-" + str(int(time.time())) 
                     
                     st.success("✅ Timer started! Optimization beginning...")
                     
@@ -577,42 +528,33 @@ def show_config_step():
                         "enable_human_feedback": True
                     }
                     
-                    # Start optimization
                     with st.spinner("Starting optimization..."):
                         result, error = make_api_call("/optimize", "POST", optimization_config)
                         
                         if error:
                             st.error(f"Failed to start optimization: {error}")
-                            # Reset state on error
                             st.session_state.optimization_running = False
                             st.session_state.optimization_start_time = None
                             st.session_state.request_id = None
                         else:
-                            # Update with real request ID
                             st.session_state.request_id = result.get('request_id')
                             st.success(f"Optimization started! Request ID: {st.session_state.request_id}")
                     
-                    # Force page rerun to show timer
                             st.rerun()
                 elif not schema:
                     st.error("Please add at least one schema field with values")
                 else:
                     st.error("Please fill in all required fields")
         else:
-            # Show helpful message when no dataset is selected
             st.info("👆 Please select a dataset above to continue with configuration")
 
-# Step 3: Optimization Progress
 def check_optimization_status():
-    """Check optimization status"""
     if st.session_state.optimization_running and st.session_state.request_id:
         status_data, error = make_api_call(f"/optimize/{st.session_state.request_id}/status")
         
         if error:
-            # Try loading from file
             results_data, results_error = make_api_call(f"/optimize/{st.session_state.request_id}/results")
             if not results_error:
-                # Calculate total time taken
                 if st.session_state.optimization_start_time:
                     st.session_state.optimization_duration = format_elapsed_time(st.session_state.optimization_start_time)
                 else:
@@ -628,10 +570,8 @@ def check_optimization_status():
         progress = status_data.get('progress_percentage', 0)
         
         if progress >= 100 or status_data.get('status') == 'completed':
-            # Load final results
             results_data, results_error = make_api_call(f"/optimize/{st.session_state.request_id}/results")
             if not results_error:
-                # Calculate total time taken
                 if st.session_state.optimization_start_time:
                     st.session_state.optimization_duration = format_elapsed_time(st.session_state.optimization_start_time)
                 else:
@@ -656,29 +596,24 @@ def show_results():
         st.warning("No optimization results available.")
         return
     
-    # Load from complete results structure - check both nested and direct access
     if 'data' in st.session_state.optimization_results:
         data = st.session_state.optimization_results.get('data', {})
     else:
         data = st.session_state.optimization_results
     
-    # Extract all available metrics
     final_results = data.get('final_results', {})
     train_baseline_metrics = data.get('train_baseline_metrics', {})
     dev_a_baseline_metrics = data.get('dev_a_baseline_metrics', {})
     optimization_results = data.get('optimization_results', {})
-    # The final_metrics in optimization_results IS the Dev A optimized metrics
     dev_a_optimized_metrics = optimization_results.get('final_metrics', {})
     test_metrics = data.get('test_metrics', {})
     iterations_data = data.get('iterations', [])
     
-    # === TOP LEVEL SUMMARY ===
     st.subheader("Executive Summary")
     
     col1, col2, col3, col4, col5 = st.columns(5)
     
     with col1:
-        # Overall improvement (convert to percentage) - now using Dev A metrics
         if dev_a_baseline_metrics and dev_a_optimized_metrics:
             baseline_acc = dev_a_baseline_metrics.get('overall_accuracy', 0)
             optimized_acc = dev_a_optimized_metrics.get('overall_accuracy', 0)
@@ -689,7 +624,6 @@ def show_results():
                  delta=f"{improvement:+.1f}%" if improvement != 0 else None)
     
     with col2:
-        # Final accuracy (convert to percentage) - now using Dev A metrics
         if dev_a_optimized_metrics and dev_a_baseline_metrics:
             final_accuracy = dev_a_optimized_metrics.get('overall_accuracy', 0) * 100
             baseline_accuracy = dev_a_baseline_metrics.get('overall_accuracy', 0) * 100
@@ -700,35 +634,27 @@ def show_results():
             st.metric("Dev A Optimized Accuracy", "N/A")
     
     with col3:
-        # Iterations completed
         iterations = optimization_results.get('total_iterations', 0)
         st.metric("Iterations", iterations)
     
     with col4:
-        # Duration - calculate from timestamps if available
         duration = st.session_state.get('optimization_duration', 'N/A')
         
-        # If no duration from session, try to calculate from timestamps in data
         if duration == 'N/A' and data:
             try:
-                # Get baseline timestamp
                 baseline_timestamp = data.get('baseline_prompt', {}).get('timestamp')
                 
-                # Get final timestamp from optimization results
                 optimization_results = data.get('optimization_results', {})
                 final_metrics = optimization_results.get('final_metrics', {})
                 
-                # Look for the latest timestamp in the final metrics
                 latest_timestamp = None
                 if 'detailed_failed_cases' in final_metrics:
                     failed_cases = final_metrics['detailed_failed_cases'].get('wrong_classifications', [])
                     if failed_cases:
-                        # Get the latest timestamp from failed cases
                         timestamps = [case.get('timestamp') for case in failed_cases if case.get('timestamp')]
                         if timestamps:
                             latest_timestamp = max(timestamps)
                 
-                # Calculate duration if both timestamps available
                 if baseline_timestamp and latest_timestamp:
                     from datetime import datetime
                     start_time = datetime.fromisoformat(baseline_timestamp.replace('Z', '+00:00') if baseline_timestamp.endswith('Z') else baseline_timestamp)
@@ -746,26 +672,22 @@ def show_results():
                     else:
                         duration = f"{minutes:02d}:{seconds:02d}"
             except Exception as e:
-                pass  # Keep duration as 'N/A' if calculation fails
+                pass
         
         st.metric("Duration", duration)
     
     st.divider()
     
-    # === DETAILED METRICS COMPARISON ===
     st.subheader("Dev A Optimization Analysis (Primary Target)")
     
     if dev_a_baseline_metrics and dev_a_optimized_metrics:
-        # Core metrics comparison using Dev A data
         tab1, tab2, tab3, tab4 = st.tabs(["📊 Dev A Metrics", "🎯 F1 Scores", "📊 Test Data Validation", "🔄 Iteration History"])
         
         with tab1:
             st.markdown("**Dev A Performance Metrics**")
             
-            # Prepare comprehensive metrics data using Dev A
             metrics_data = []
             
-            # Overall accuracy
             baseline_acc = dev_a_baseline_metrics.get('overall_accuracy', 0)
             optimized_acc = dev_a_optimized_metrics.get('overall_accuracy', 0)
             metrics_data.append({
@@ -777,7 +699,6 @@ def show_results():
                 'Raw_Optimized': optimized_acc
             })
             
-            # Valid JSON Rate
             baseline_json = dev_a_baseline_metrics.get('validation_metrics', {}).get('valid_json_accuracy', 0)
             optimized_json = dev_a_optimized_metrics.get('validation_metrics', {}).get('valid_json_accuracy', 0)
             metrics_data.append({
@@ -789,7 +710,6 @@ def show_results():
                 'Raw_Optimized': optimized_json
             })
             
-            # Average F1 Score
             baseline_f1 = dev_a_baseline_metrics.get('summary', {}).get('average_enum_macro_f1', 0)
             optimized_f1 = dev_a_optimized_metrics.get('summary', {}).get('average_enum_macro_f1', 0)
             metrics_data.append({
@@ -801,7 +721,6 @@ def show_results():
                 'Raw_Optimized': optimized_f1
             })
             
-            # Failed cases
             baseline_failed = len(dev_a_baseline_metrics.get('detailed_failed_cases', {}).get('wrong_classifications', []))
             optimized_failed = len(dev_a_optimized_metrics.get('detailed_failed_cases', {}).get('wrong_classifications', []))
             metrics_data.append({
@@ -813,28 +732,23 @@ def show_results():
                 'Raw_Optimized': optimized_failed
             })
             
-            # Create DataFrame for display
             df_metrics = pd.DataFrame(metrics_data)
             
-            # Display metrics table
             st.dataframe(
                 df_metrics[['Metric', 'Baseline', 'Optimized', 'Improvement']],
                 use_container_width=True,
                 hide_index=True
             )
             
-            # Visualization - Single comprehensive chart
             chart_data = []
             
-            # Add percentage metrics (convert to percentage)
             for metric in metrics_data[:3]:  # First 3 are percentage metrics
                 chart_data.extend([
                     {'Metric': metric['Metric'], 'Type': 'Baseline', 'Value': metric['Raw_Baseline'] * 100},
                     {'Metric': metric['Metric'], 'Type': 'Optimized', 'Value': metric['Raw_Optimized'] * 100}
                 ])
             
-            # Add failed cases metric (keep as count)
-            failed_cases_metric = metrics_data[3]  # Failed cases is the 4th metric
+            failed_cases_metric = metrics_data[3]  
             chart_data.extend([
                 {'Metric': 'Failed Cases', 'Type': 'Baseline', 'Value': failed_cases_metric['Raw_Baseline']},
                 {'Metric': 'Failed Cases', 'Type': 'Optimized', 'Value': failed_cases_metric['Raw_Optimized']}
@@ -851,14 +765,12 @@ def show_results():
                 color_discrete_sequence=['#ff7f7f', '#7fbf7f']
             )
             
-            # Update layout to show different scales clearly
             fig1.update_layout(
                 yaxis_title='Value (% for accuracy metrics, count for failed cases)',
                 xaxis_title='Metrics',
                 legend_title='Type'
             )
             
-            # Add text annotations to show exact values
             fig1.update_traces(texttemplate='%{y}', textposition='outside')
             
             st.plotly_chart(fig1, use_container_width=True)
@@ -866,12 +778,10 @@ def show_results():
         with tab2:
             st.markdown("**Dev A F1 Score Analysis by Field**")
             
-            # Field-specific F1 scores from Dev A data
             baseline_enum_metrics = dev_a_baseline_metrics.get('enum_field_metrics', {})
             optimized_enum_metrics = dev_a_optimized_metrics.get('enum_field_metrics', {})
             
             if baseline_enum_metrics or optimized_enum_metrics:
-                # Combine all fields
                 all_fields = set(baseline_enum_metrics.keys()) | set(optimized_enum_metrics.keys())
                 
                 f1_data = []
@@ -893,7 +803,6 @@ def show_results():
                 st.dataframe(df_f1[['Field', 'Baseline F1', 'Optimized F1', 'Improvement']], 
                            use_container_width=True, hide_index=True)
                 
-                # F1 Score visualization
                 chart_data = []
                 for _, row in df_f1.iterrows():
                     chart_data.extend([
@@ -920,15 +829,13 @@ def show_results():
             st.markdown("**Test Data Validation (Hidden Data)**")
             
             if test_metrics:
-                # Show test data performance for validation
                 st.info("📊 Test data results are used for hidden validation only - optimization targets Dev A metrics.")
                 
                 col_test1, col_test2 = st.columns(2)
                 
                 with col_test1:
-                    # Test accuracy comparison
                     if train_baseline_metrics:
-                        test_baseline_acc = train_baseline_metrics.get('overall_accuracy', 0)  # Use train as baseline reference
+                        test_baseline_acc = train_baseline_metrics.get('overall_accuracy', 0)
                         test_optimized_acc = test_metrics.get('overall_accuracy', 0)
                         test_improvement = test_optimized_acc - test_baseline_acc
                         
@@ -939,7 +846,6 @@ def show_results():
                         )
                 
                 with col_test2:
-                    # Test F1 score
                     if train_baseline_metrics:
                         test_baseline_f1 = train_baseline_metrics.get('summary', {}).get('average_enum_macro_f1', 0)
                         test_optimized_f1 = test_metrics.get('summary', {}).get('average_enum_macro_f1', 0)
@@ -953,7 +859,6 @@ def show_results():
                 
                 st.markdown("**Test vs Dev A Comparison**")
                 
-                # Create comparison table
                 comparison_data = []
                 if dev_a_optimized_metrics:
                     dev_a_acc = dev_a_optimized_metrics.get('overall_accuracy', 0)
@@ -981,7 +886,6 @@ def show_results():
                 
                 validation_data = []
                 
-                # JSON validity using Dev A data
                 baseline_val = dev_a_baseline_metrics.get('validation_metrics', {})
                 optimized_val = dev_a_optimized_metrics.get('validation_metrics', {})
                 
@@ -1027,20 +931,18 @@ def show_results():
                 df_failures = pd.DataFrame(failure_data)
                 st.dataframe(df_failures, use_container_width=True, hide_index=True)
                 
-                # Failure reduction metric
                 if baseline_failed > 0:
                     reduction = ((baseline_failed - optimized_failed) / baseline_failed) * 100
                     st.metric("Failure Reduction", f"{reduction:.1f}%",
                             delta=f"{optimized_failed - baseline_failed:+d} cases")
     
-    elif iterations_data:  # Show iteration history even if detailed metrics are missing
+    elif iterations_data:
         st.subheader("🔄 Iteration History")
         tab1, = st.tabs(["Iteration Progress"])
         
         with tab1:
             st.markdown("**Dev A Iteration-by-Iteration Progress**")
             
-            # Process iteration data
             iteration_progress = []
             
             selected_iterations = [iter_data for iter_data in iterations_data if iter_data.get('type') == 'selected']
@@ -1061,7 +963,6 @@ def show_results():
                 df_iter = pd.DataFrame(iteration_progress)
                 st.dataframe(df_iter, use_container_width=True, hide_index=True)
                 
-                # Iteration progress chart
                 chart_data = []
                 for i, iter_data in enumerate(selected_iterations):
                     if 'selected_prompt' in iter_data:
@@ -1199,10 +1100,6 @@ def show_results():
     with st.expander("🔧 Raw Data Inspection", expanded=False):
         st.markdown("**Available Data Keys:**")
         st.json(list(data.keys()))
-        
-        # write the data to a file
-        with open('data.json', 'w') as f:
-            json.dump(data, f)
         
         st.markdown("**Sample of Raw Backend Response:**")
         # Show a subset of the raw data for debugging
