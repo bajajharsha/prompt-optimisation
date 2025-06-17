@@ -399,6 +399,7 @@ class OptimizationService:
         convergence_patience = 3  # Stop if stable for 3 iterations
         retry_attempts = 0
         max_retry_attempts = 2  # Maximum retries when no improvement found
+        early_stop_reason = None  # Track early stopping reason
         
         for iteration in range(1, max_iterations + 1):
             try:
@@ -485,14 +486,16 @@ class OptimizationService:
                 composite_score = best_iteration_candidate.get('composite_score', best_iteration_candidate['improvement_over_baseline'])
                 improvement_history.append(composite_score)
                 
-                # Adaptive stopping criteria (same as complete system)
-                should_continue = self._check_stopping_criteria(
+                # Adaptive stopping criteria with detailed reasoning
+                should_continue, early_stop_reason = self._check_stopping_criteria(
                     best_iteration_candidate, iteration, improvement_history, 
                     improvement_threshold, convergence_threshold, convergence_patience
                 )
                 
                 if not should_continue and iteration >= 2:
-                    print("⏹️  Stopping optimization based on stopping criteria")
+                    print(f"⏹️  Stopping optimization based on adaptive criteria: {early_stop_reason}")
+                    # Store the early stopping reason for final results
+                    stopping_reason = early_stop_reason if early_stop_reason else "adaptive_stopping"
                     break
                 
                 # Run candidate on dev_b for human feedback
@@ -584,18 +587,27 @@ class OptimizationService:
                 print(f"Error in iteration {iteration}: {e}")
                 break
         
-        # Add stopping reason to results (same as complete system)
-        stopping_reason = "max_iterations_reached"
-        if len(improvement_history) >= convergence_patience:
+        # Add stopping reason to results with correct adaptive stopping detection
+        stopping_reason = "adaptive_stopping"  # Default to adaptive stopping
+        
+        # Check specific stopping conditions in order of priority
+        if retry_attempts >= max_retry_attempts:
+            stopping_reason = "max_retries_reached"
+        elif len(improvement_history) >= convergence_patience:
             recent_improvements = improvement_history[-convergence_patience:]
             min_improvement = min(recent_improvements)
             max_improvement = max(recent_improvements)
-            if max_improvement - min_improvement <= convergence_threshold:
+            recent_avg = sum(recent_improvements) / len(recent_improvements)
+            
+            if max_improvement - min_improvement <= convergence_threshold and recent_avg > 0.01:
                 stopping_reason = "converged"
+            elif recent_avg <= 0.01:
+                stopping_reason = "poor_performance_convergence"
         elif improvement_history and improvement_history[-1] < improvement_threshold:
             stopping_reason = "below_threshold"
-        elif retry_attempts >= max_retry_attempts:
-            stopping_reason = "max_retries_reached"
+        elif iteration >= max_iterations:
+            stopping_reason = "max_iterations_reached"
+        # else: adaptive_stopping (early termination due to adaptive criteria)
         
         # Get the final recommended prompt
         final_recommended_prompt = baseline_system_prompt
@@ -703,7 +715,7 @@ class OptimizationService:
         improvement_threshold: float,
         convergence_threshold: float,
         convergence_patience: int
-    ) -> bool:
+    ) -> tuple[bool, str]:
         """
         Check stopping criteria (same logic as complete system)
         """
@@ -725,7 +737,7 @@ class OptimizationService:
                 print(f"   Range: {improvement_range:.4f} ≤ {convergence_threshold:.4f}")
                 print(f"   Average performance: {recent_avg:.4f}")
                 print("✅ Using current best prompt as final optimization result")
-                return False
+                return False, "converged"
         
         # Adaptive stopping criteria: consider multiple factors (same as complete system)
         accuracy_improvement = best_iteration_candidate['improvement_over_baseline']
@@ -766,7 +778,7 @@ class OptimizationService:
             print(f"✅ Continuing optimization - meaningful improvement detected:")
             for reason in improvement_reasons:
                 print(f"   • {reason}")
-            return True
+            return True, None
         else:
             # Only stop if we've tried multiple iterations and see no improvement
             if iteration >= 2:  # Give at least 2 iterations before considering stopping
@@ -775,11 +787,11 @@ class OptimizationService:
                 print(f"     Composite score: {composite_score:.3f} (threshold: {adaptive_composite_threshold:.3f})")
                 print(f"     F1 improvement: {f1_improvement:.3f} (threshold: 0.02)")
                 print(f"     Failed cases reduction: {failed_cases_reduction} (threshold: 2)")
-                return False
+                return False, "adaptive_stopping"
             else:
                 print(f"⚠️  Limited improvement in iteration {iteration}, but continuing to explore...")
                 print(f"     Will reassess after iteration {iteration + 1}")
-                return True
+                return True, None
     
     def _convert_results_to_response(
         self,

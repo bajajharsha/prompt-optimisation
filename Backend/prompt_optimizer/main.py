@@ -450,18 +450,27 @@ class CompleteOptimizationSystem:
             print(f"✅ Iteration {iteration} completed")
             iteration += 1
         
-        # Add stopping reason to results
-        stopping_reason = "max_iterations_reached"
-        if len(improvement_history) >= convergence_patience:
+        # Add stopping reason to results with correct adaptive stopping detection
+        stopping_reason = "adaptive_stopping"  # Default to adaptive stopping
+        
+        # Check specific stopping conditions in order of priority
+        if retry_attempts >= max_retry_attempts:
+            stopping_reason = "max_retries_reached"
+        elif len(improvement_history) >= convergence_patience:
             recent_improvements = improvement_history[-convergence_patience:]
             min_improvement = min(recent_improvements)
             max_improvement = max(recent_improvements)
-            if max_improvement - min_improvement <= convergence_threshold:
+            recent_avg = sum(recent_improvements) / len(recent_improvements)
+            
+            if max_improvement - min_improvement <= convergence_threshold and recent_avg > 0.01:
                 stopping_reason = "converged"
+            elif recent_avg <= 0.01:
+                stopping_reason = "poor_performance_convergence"
         elif improvement_history and improvement_history[-1] < self.config["improvement_threshold"]:
             stopping_reason = "below_threshold"
-        elif retry_attempts >= max_retry_attempts:
-            stopping_reason = "max_retries_reached"
+        elif iteration >= self.config["max_iterations"]:
+            stopping_reason = "max_iterations_reached"
+        # else: adaptive_stopping (early termination due to adaptive criteria)
         
         return {
             "final_prompt": current_prompt,
@@ -879,7 +888,11 @@ async def main():
         # Explain stopping reason
         stopping_reason = results['optimization_results']['stopping_reason']
         if stopping_reason == "converged":
-            print("   ✅ Optimization converged - improvements stabilized")
+            print("   ✅ Optimization converged - improvements stabilized with good performance")
+        elif stopping_reason == "adaptive_stopping":
+            print("   🎯 Optimization stopped - adaptive criteria detected optimal stopping point")
+        elif stopping_reason == "poor_performance_convergence":
+            print("   ⚠️  Optimization converged but with poor performance - may need different approach")
         elif stopping_reason == "max_retries_reached":
             print("   ⚠️  Optimization stopped - maximum retry attempts reached")
         elif stopping_reason == "below_threshold":

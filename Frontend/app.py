@@ -1108,9 +1108,22 @@ def show_results():
     with col_insights2:
         st.markdown("**Optimization Summary**")
         
-        # Stopping reason
+        # Stopping reason with explanations
         stopping_reason = optimization_results.get('stopping_reason', 'Unknown')
-        st.markdown(f"**Stopping Reason:** {stopping_reason}")
+        
+        # Create user-friendly explanations
+        reason_explanations = {
+            'adaptive_stopping': '🎯 Adaptive stopping - optimal point detected',
+            'converged': '✅ Converged - improvements stabilized with good performance',
+            'poor_performance_convergence': '⚠️ Converged with poor performance',
+            'max_iterations_reached': '🔄 Maximum iterations reached',
+            'below_threshold': '⏹️ Improvement below threshold',
+            'max_retries_reached': '⚠️ Maximum retry attempts reached',
+            'Unknown': '❓ Unknown stopping condition'
+        }
+        
+        reason_display = reason_explanations.get(stopping_reason, f"❓ {stopping_reason}")
+        st.markdown(f"**Stopping Reason:** {reason_display}")
         
         # Total iterations vs max
         total_iterations = optimization_results.get('total_iterations', 0)
@@ -1203,8 +1216,21 @@ def show_past_reports():
         st.metric("Completed", len(completed))
     with col3:
         if completed:
-            avg_improvement = sum(opt.get('improvement', 0) for opt in completed) / len(completed)
-            st.metric("Avg Improvement", f"{avg_improvement:.1f}%")
+            # Fix average improvement calculation - handle decimal vs percentage format
+            improvements = []
+            for opt in completed:
+                improvement = opt.get('improvement', 0)
+                if improvement > 0:
+                    # Convert to percentage if it's in decimal format
+                    if improvement <= 1:
+                        improvement = improvement * 100
+                    improvements.append(improvement)
+            
+            if improvements:
+                avg_improvement = sum(improvements) / len(improvements)
+                st.metric("Avg Improvement", f"{avg_improvement:.1f}%")
+            else:
+                st.metric("Avg Improvement", "N/A")
         else:
             st.metric("Avg Improvement", "N/A")
     
@@ -1225,7 +1251,8 @@ def show_past_reports():
                 status_icon = status_colors.get(opt['status'], '⚪')
                 
                 st.markdown(f"**{status_icon} Optimization {i+1}**")
-                st.caption(f"ID: {opt['request_id'][:12]}...")
+                # Make ID more readable by showing full ID in smaller font
+                st.markdown(f"<small><code>{opt['request_id']}</code></small>", unsafe_allow_html=True)
                 
                 try:
                     created = datetime.fromisoformat(opt['created'].replace('Z', '+00:00'))
@@ -1234,14 +1261,21 @@ def show_past_reports():
                     st.caption(f"Created: {opt.get('created', 'Unknown')[:16]}")
             
             with col_metrics:
-                if opt.get('improvement', 0) > 0:
-                    st.metric("Improvement", f"{opt['improvement']:.1f}%")
+                # Fix improvement calculation - multiply by 100 to convert from decimal to percentage
+                improvement_value = opt.get('improvement', 0)
+                if improvement_value > 0:
+                    # If the value is already > 1, it's probably already in percentage format
+                    if improvement_value > 1:
+                        st.metric("Improvement", f"{improvement_value:.1f}%")
+                    else:
+                        # Convert decimal to percentage
+                        st.metric("Improvement", f"{improvement_value * 100:.1f}%")
                 else:
                     st.metric("Improvement", "N/A")
                 st.caption(f"Iterations: {opt.get('iterations', 0)}")
             
             with col_action:
-                if st.button("View Report", key=f"view_{opt['request_id'][:8]}"):
+                if st.button("View Report", key=f"view_{opt['request_id']}"):
                     with st.spinner("Loading report..."):
                         results, load_error = make_api_call(f"/optimize/{opt['request_id']}/results")
                         

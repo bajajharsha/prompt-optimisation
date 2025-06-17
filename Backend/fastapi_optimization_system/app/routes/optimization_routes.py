@@ -208,15 +208,50 @@ async def list_optimization_results() -> Dict[str, Any]:
                     if optimization_info["status"] == "unknown":
                         optimization_info["status"] = "optimization_completed"
                     
-                    # Try to read optimization results for iteration count
+                    # Try to read optimization results for iteration count and consistent improvement
                     try:
                         import json
                         with open(optimization_results_file, "r") as f:
                             opt_data = json.load(f)
                             optimization_info["iterations"] = opt_data.get("total_iterations", 0)
-                            if "best_candidate" in opt_data:
-                                best_candidate = opt_data["best_candidate"]
-                                optimization_info["improvement"] = best_candidate.get("improvement_over_baseline", 0.0)
+                            
+                            # Calculate Dev A improvement for consistency with detailed results
+                            # Try to get the same improvement calculation as the detailed results page
+                            final_metrics = opt_data.get("final_metrics", {})
+                            
+                            # Check if we can read dev_a_baseline_metrics from same directory
+                            dev_a_baseline_file = os.path.join(item_path, "dev_a_baseline_metrics.json")
+                            if os.path.exists(dev_a_baseline_file) and final_metrics:
+                                try:
+                                    with open(dev_a_baseline_file, "r") as baseline_f:
+                                        dev_a_baseline = json.load(baseline_f)
+                                        
+                                    # Calculate the same Dev A improvement as shown in detailed results
+                                    baseline_acc = dev_a_baseline.get('overall_accuracy', 0)
+                                    optimized_acc = final_metrics.get('overall_accuracy', 0)
+                                    dev_a_improvement = optimized_acc - baseline_acc
+                                    
+                                    if dev_a_improvement != 0:
+                                        optimization_info["improvement"] = dev_a_improvement
+                                        optimization_info["improvement_type"] = "dev_a"
+                                    else:
+                                        # Fallback to best_candidate improvement
+                                        if "best_candidate" in opt_data:
+                                            best_candidate = opt_data["best_candidate"]
+                                            optimization_info["improvement"] = best_candidate.get("improvement_over_baseline", 0.0)
+                                            optimization_info["improvement_type"] = "best_candidate"
+                                except:
+                                    # Fallback to best_candidate improvement
+                                    if "best_candidate" in opt_data:
+                                        best_candidate = opt_data["best_candidate"]
+                                        optimization_info["improvement"] = best_candidate.get("improvement_over_baseline", 0.0)
+                                        optimization_info["improvement_type"] = "best_candidate"
+                            else:
+                                # Fallback to best_candidate improvement
+                                if "best_candidate" in opt_data:
+                                    best_candidate = opt_data["best_candidate"]
+                                    optimization_info["improvement"] = best_candidate.get("improvement_over_baseline", 0.0)
+                                    optimization_info["improvement_type"] = "best_candidate"
                     except:
                         pass
                 
