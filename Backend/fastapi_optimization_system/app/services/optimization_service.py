@@ -844,9 +844,9 @@ class OptimizationService:
                     problematic_fields=hf_summary.get('problematic_fields', [])
                 )
         
-        # Run final evaluation and deployment decision (same as complete system)
+        # Run final evaluation and deployment decision (using Dev A as primary target)
         final_improvement, deployment_recommendation = self._make_deployment_decision(
-            optimization_results, results['baseline_metrics'], results['test_metrics']
+            optimization_results, results['dev_a_baseline_metrics'], results['test_metrics']
         )
         
         # Save final prompt with deployment decision
@@ -876,67 +876,82 @@ class OptimizationService:
     def _make_deployment_decision(
         self,
         optimization_results: Dict[str, Any],
-        baseline_metrics: Dict[str, Any],
+        dev_a_baseline_metrics: Dict[str, Any],
         test_metrics: Dict[str, Any]
     ) -> Tuple[float, str]:
         """
-        Make deployment decision based on comprehensive evaluation (same logic as complete system)
+        Make deployment decision based on Dev A comparison (primary optimization target)
         """
         best_candidate = optimization_results.get('best_candidate', {})
         
         if not best_candidate:
             return 0.0, "baseline"
         
-        # Calculate comprehensive improvements on test data
-        baseline_accuracy = baseline_metrics['overall_accuracy']
-        test_accuracy = test_metrics['overall_accuracy']
-        accuracy_improvement = test_accuracy - baseline_accuracy
+        # Get Dev A optimized metrics from the best candidate
+        dev_a_optimized_metrics = best_candidate.get('dev_a_metrics', {})
+        if not dev_a_optimized_metrics:
+            return 0.0, "baseline"
         
-        baseline_f1 = baseline_metrics['summary']['average_enum_macro_f1']
-        test_f1 = test_metrics['summary']['average_enum_macro_f1']
-        f1_improvement = test_f1 - baseline_f1
+        # Calculate Dev A improvements (primary optimization target)
+        dev_a_baseline_accuracy = dev_a_baseline_metrics['overall_accuracy']
+        dev_a_optimized_accuracy = dev_a_optimized_metrics['overall_accuracy']
+        dev_a_accuracy_improvement = dev_a_optimized_accuracy - dev_a_baseline_accuracy
         
-        baseline_valid_json = baseline_metrics['validation_metrics']['valid_json_accuracy']
-        test_valid_json = test_metrics['validation_metrics']['valid_json_accuracy']
-        valid_json_improvement = test_valid_json - baseline_valid_json
+        dev_a_baseline_f1 = dev_a_baseline_metrics['summary']['average_enum_macro_f1']
+        dev_a_optimized_f1 = dev_a_optimized_metrics['summary']['average_enum_macro_f1']
+        dev_a_f1_improvement = dev_a_optimized_f1 - dev_a_baseline_f1
         
-        baseline_failed_cases = len(baseline_metrics['detailed_failed_cases']['wrong_classifications'])
-        test_failed_cases = len(test_metrics['detailed_failed_cases']['wrong_classifications'])
-        failed_cases_reduction = baseline_failed_cases - test_failed_cases
+        dev_a_baseline_valid_json = dev_a_baseline_metrics['validation_metrics']['valid_json_accuracy']
+        dev_a_optimized_valid_json = dev_a_optimized_metrics['validation_metrics']['valid_json_accuracy']
+        dev_a_valid_json_improvement = dev_a_optimized_valid_json - dev_a_baseline_valid_json
         
-        # Calculate comprehensive score (same weights as complete system)
-        comprehensive_score = (
-            accuracy_improvement * 3.0 +      # Primary metric (weight: 3)
-            f1_improvement * 2.0 +            # F1 score (weight: 2)
-            valid_json_improvement * 1.5 +    # JSON validity (weight: 1.5)
-            (failed_cases_reduction / max(baseline_failed_cases, 1)) * 1.0  # Failed cases reduction (weight: 1)
+        dev_a_baseline_failed_cases = len(dev_a_baseline_metrics['detailed_failed_cases']['wrong_classifications'])
+        dev_a_optimized_failed_cases = len(dev_a_optimized_metrics['detailed_failed_cases']['wrong_classifications'])
+        dev_a_failed_cases_reduction = dev_a_baseline_failed_cases - dev_a_optimized_failed_cases
+        
+        # Calculate Dev A comprehensive score (primary metric for deployment decision)
+        dev_a_comprehensive_score = (
+            dev_a_accuracy_improvement * 3.0 +      # Primary metric (weight: 3)
+            dev_a_f1_improvement * 2.0 +            # F1 score (weight: 2)
+            dev_a_valid_json_improvement * 1.5 +    # JSON validity (weight: 1.5)
+            (dev_a_failed_cases_reduction / max(dev_a_baseline_failed_cases, 1)) * 1.0  # Failed cases reduction (weight: 1)
         )
         
-        # Enhanced deployment decision based on comprehensive score (same logic as complete system)
-        if comprehensive_score > 0.01:  # Positive comprehensive improvement
+        # Enhanced deployment decision based on Dev A comprehensive score (primary target)
+        if dev_a_comprehensive_score > 0.01:  # Positive comprehensive improvement on Dev A
             deployment_decision = "deploy"
-            print("✅ RECOMMENDATION: Deploy optimized prompt (comprehensive improvement)")
-        elif accuracy_improvement > 0.005:  # Small but positive accuracy improvement
+            print("✅ RECOMMENDATION: Deploy optimized prompt (Dev A comprehensive improvement)")
+        elif dev_a_accuracy_improvement > 0.005:  # Small but positive accuracy improvement on Dev A
             deployment_decision = "deploy"
-            print("✅ RECOMMENDATION: Deploy optimized prompt (accuracy improvement)")
-        elif f1_improvement > 0.02 and valid_json_improvement >= 0:  # Good F1 improvement with no JSON regression
+            print("✅ RECOMMENDATION: Deploy optimized prompt (Dev A accuracy improvement)")
+        elif dev_a_f1_improvement > 0.02 and dev_a_valid_json_improvement >= 0:  # Good F1 improvement with no JSON regression on Dev A
             deployment_decision = "deploy"
-            print("✅ RECOMMENDATION: Deploy optimized prompt (F1 improvement)")
-        elif failed_cases_reduction > 0 and accuracy_improvement >= -0.01:  # Fewer failures with minimal accuracy loss
+            print("✅ RECOMMENDATION: Deploy optimized prompt (Dev A F1 improvement)")
+        elif dev_a_failed_cases_reduction > 0 and dev_a_accuracy_improvement >= -0.01:  # Fewer failures with minimal accuracy loss on Dev A
             deployment_decision = "deploy"
-            print("✅ RECOMMENDATION: Deploy optimized prompt (fewer failed cases)")
+            print("✅ RECOMMENDATION: Deploy optimized prompt (Dev A fewer failed cases)")
         else:
             deployment_decision = "baseline"
-            print("⚠️  RECOMMENDATION: Keep baseline prompt (no significant improvement)")
+            print("⚠️  RECOMMENDATION: Keep baseline prompt (no significant Dev A improvement)")
         
-        print(f"\n📈 Final Test Results:")
-        print(f"   Accuracy Improvement: {accuracy_improvement:+.3f}")
-        print(f"   F1 Score Improvement: {f1_improvement:+.3f}")
-        print(f"   Valid JSON Improvement: {valid_json_improvement:+.3f}")
-        print(f"   Failed Cases Reduction: {failed_cases_reduction:+d}")
-        print(f"   Comprehensive Score: {comprehensive_score:+.3f}")
+        print(f"\n📈 Dev A Optimization Results (Primary Target):")
+        print(f"   Baseline Dev A Accuracy: {dev_a_baseline_accuracy:.3f}")
+        print(f"   Optimized Dev A Accuracy: {dev_a_optimized_accuracy:.3f}")
+        print(f"   Dev A Accuracy Improvement: {dev_a_accuracy_improvement:+.3f}")
+        print(f"   Dev A F1 Score Improvement: {dev_a_f1_improvement:+.3f}")
+        print(f"   Dev A Valid JSON Improvement: {dev_a_valid_json_improvement:+.3f}")
+        print(f"   Dev A Failed Cases Reduction: {dev_a_failed_cases_reduction:+d}")
+        print(f"   Dev A Comprehensive Score: {dev_a_comprehensive_score:+.3f}")
         
-        return comprehensive_score, deployment_decision
+        # Also show test results for comparison (hidden validation)
+        if test_metrics:
+            test_accuracy = test_metrics.get('overall_accuracy', 0)
+            test_f1 = test_metrics.get('summary', {}).get('average_enum_macro_f1', 0)
+            print(f"\n📊 Test Data Results (Hidden Validation):")
+            print(f"   Test Accuracy: {test_accuracy:.3f}")
+            print(f"   Test F1 Score: {test_f1:.3f}")
+        
+        return dev_a_comprehensive_score, deployment_decision
     
     async def _update_progress(
         self,

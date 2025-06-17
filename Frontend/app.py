@@ -95,18 +95,31 @@ def make_api_call(endpoint, method="GET", data=None, files=None):
     """Make API calls with error handling"""
     try:
         url = f"{API_BASE_URL}{endpoint}"
-        if method == "GET":
-            response = requests.get(url, timeout=30)
+        
+        # Use longer timeout for results endpoint
+        timeout = 30
+        if '/results' in endpoint:
+            timeout = 120  # 2 minutes for large result files
         elif method == "POST":
             if files:
-                response = requests.post(url, data=data, files=files, timeout=60)
+                timeout = 60
             else:
-                response = requests.post(url, json=data, timeout=300)
+                timeout = 300
+        
+        if method == "GET":
+            response = requests.get(url, timeout=timeout)
+        elif method == "POST":
+            if files:
+                response = requests.post(url, data=data, files=files, timeout=timeout)
+            else:
+                response = requests.post(url, json=data, timeout=timeout)
         
         if response.status_code in [200, 201]:
             return response.json(), None
         else:
             return None, f"API Error: {response.status_code} - {response.text}"
+    except requests.exceptions.Timeout:
+        return None, f"Request timeout after {timeout} seconds. Large optimization results may take time to load - please try again."
     except Exception as e:
         return None, f"Connection Error: {str(e)}"
 
@@ -544,7 +557,7 @@ def show_config_step():
                             st.success(f"Optimization started! Request ID: {st.session_state.request_id}")
                     
                     # Force page rerun to show timer
-                    st.rerun()
+                            st.rerun()
                 elif not schema:
                     st.error("Please add at least one schema field with values")
                 else:
@@ -601,91 +614,559 @@ def check_optimization_status():
 
 # Results Page
 def show_results():
-    st.header("Optimization Results")
+    st.header("📊 Comprehensive Optimization Analysis")
     
     if not st.session_state.optimization_results:
         st.warning("No optimization results available.")
         return
     
-    # Load from optimized_results.json structure
-    data = st.session_state.optimization_results.get('data', {})
+    # Load from complete results structure - check both nested and direct access
+    if 'data' in st.session_state.optimization_results:
+        data = st.session_state.optimization_results.get('data', {})
+    else:
+        data = st.session_state.optimization_results
     
-    # Key metrics
-    st.subheader("Performance Summary")
-    
+    # Extract all available metrics
     final_results = data.get('final_results', {})
-    baseline_metrics = data.get('train_baseline_metrics', {})
+    train_baseline_metrics = data.get('train_baseline_metrics', {})
+    dev_a_baseline_metrics = data.get('dev_a_baseline_metrics', {})
+    optimization_results = data.get('optimization_results', {})
+    # The final_metrics in optimization_results IS the Dev A optimized metrics
+    dev_a_optimized_metrics = optimization_results.get('final_metrics', {})
     test_metrics = data.get('test_metrics', {})
+    iterations_data = data.get('iterations', [])
+    
+    # === TOP LEVEL SUMMARY ===
+    st.subheader("Executive Summary")
     
     col1, col2, col3, col4, col5 = st.columns(5)
     
     with col1:
-        improvement = final_results.get('test_improvement', 0) * 100
-        st.metric("Improvement", f"{improvement:.1f}%", delta=f"{improvement:.1f}%")
+        # Overall improvement (convert to percentage) - now using Dev A metrics
+        if dev_a_baseline_metrics and dev_a_optimized_metrics:
+            baseline_acc = dev_a_baseline_metrics.get('overall_accuracy', 0)
+            optimized_acc = dev_a_optimized_metrics.get('overall_accuracy', 0)
+            improvement = (optimized_acc - baseline_acc) * 100
+        else:
+            improvement = final_results.get('dev_a_improvement', final_results.get('dev_a_accuracy_improvement', 0)) * 100
+        st.metric("Dev A Improvement", f"{improvement:.1f}%", 
+                 delta=f"{improvement:+.1f}%" if improvement != 0 else None)
     
     with col2:
-        if test_metrics:
-            accuracy = test_metrics.get('overall_accuracy', 0)
-            st.metric("Final Accuracy", f"{accuracy:.3f}")
+        # Final accuracy (convert to percentage) - now using Dev A metrics
+        if dev_a_optimized_metrics and dev_a_baseline_metrics:
+            final_accuracy = dev_a_optimized_metrics.get('overall_accuracy', 0) * 100
+            baseline_accuracy = dev_a_baseline_metrics.get('overall_accuracy', 0) * 100
+            delta_accuracy = final_accuracy - baseline_accuracy
+            st.metric("Dev A Optimized Accuracy", f"{final_accuracy:.1f}%", 
+                     delta=f"{delta_accuracy:+.1f}%" if delta_accuracy != 0 else None)
         else:
-            st.metric("Final Accuracy", "N/A")
+            st.metric("Dev A Optimized Accuracy", "N/A")
     
     with col3:
-        opt_results = data.get('optimization_results', {})
-        iterations = opt_results.get('total_iterations', 0)
+        # Iterations completed
+        iterations = optimization_results.get('total_iterations', 0)
         st.metric("Iterations", iterations)
     
     with col4:
+        # Duration - calculate from timestamps if available
         duration = st.session_state.get('optimization_duration', 'N/A')
-        st.metric("⏱️ Duration", duration)
-    
-    with col5:
-        decision = final_results.get('deployment_decision', 'unknown')
-        color = "🟢" if decision == "deploy" else "🟡"
-        st.metric("Recommendation", f"{color} {decision.title()}")
-    
-    # Comparison chart
-    if baseline_metrics and test_metrics:
-        st.subheader("Baseline vs Optimized Comparison")
         
-        comparison_data = {
-            'Metric': ['Overall Accuracy', 'Valid JSON Rate'],
-            'Baseline': [
-                baseline_metrics.get('overall_accuracy', 0),
-                baseline_metrics.get('validation_metrics', {}).get('valid_json_accuracy', 0)
-            ],
-            'Optimized': [
-                test_metrics.get('overall_accuracy', 0),
-                test_metrics.get('validation_metrics', {}).get('valid_json_accuracy', 0)
-            ]
+        # If no duration from session, try to calculate from timestamps in data
+        if duration == 'N/A' and data:
+            try:
+                # Get baseline timestamp
+                baseline_timestamp = data.get('baseline_prompt', {}).get('timestamp')
+                
+                # Get final timestamp from optimization results
+                optimization_results = data.get('optimization_results', {})
+                final_metrics = optimization_results.get('final_metrics', {})
+                
+                # Look for the latest timestamp in the final metrics
+                latest_timestamp = None
+                if 'detailed_failed_cases' in final_metrics:
+                    failed_cases = final_metrics['detailed_failed_cases'].get('wrong_classifications', [])
+                    if failed_cases:
+                        # Get the latest timestamp from failed cases
+                        timestamps = [case.get('timestamp') for case in failed_cases if case.get('timestamp')]
+                        if timestamps:
+                            latest_timestamp = max(timestamps)
+                
+                # Calculate duration if both timestamps available
+                if baseline_timestamp and latest_timestamp:
+                    from datetime import datetime
+                    start_time = datetime.fromisoformat(baseline_timestamp.replace('Z', '+00:00') if baseline_timestamp.endswith('Z') else baseline_timestamp)
+                    end_time = datetime.fromisoformat(latest_timestamp.replace('Z', '+00:00') if latest_timestamp.endswith('Z') else latest_timestamp)
+                    
+                    elapsed = end_time - start_time
+                    total_seconds = int(elapsed.total_seconds())
+                    
+                    hours = total_seconds // 3600
+                    minutes = (total_seconds % 3600) // 60
+                    seconds = total_seconds % 60
+                    
+                    if hours > 0:
+                        duration = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
+                    else:
+                        duration = f"{minutes:02d}:{seconds:02d}"
+            except Exception as e:
+                pass  # Keep duration as 'N/A' if calculation fails
+        
+        st.metric("Duration", duration)
+    
+    st.divider()
+    
+    # === DETAILED METRICS COMPARISON ===
+    st.subheader("Dev A Optimization Analysis (Primary Target)")
+    
+    if dev_a_baseline_metrics and dev_a_optimized_metrics:
+        # Core metrics comparison using Dev A data
+        tab1, tab2, tab3, tab4 = st.tabs(["📊 Dev A Metrics", "🎯 F1 Scores", "📊 Test Data Validation", "🔄 Iteration History"])
+        
+        with tab1:
+            st.markdown("**Dev A Performance Metrics**")
+            
+            # Prepare comprehensive metrics data using Dev A
+            metrics_data = []
+            
+            # Overall accuracy
+            baseline_acc = dev_a_baseline_metrics.get('overall_accuracy', 0)
+            optimized_acc = dev_a_optimized_metrics.get('overall_accuracy', 0)
+            metrics_data.append({
+                'Metric': 'Overall Accuracy',
+                'Baseline': f"{baseline_acc * 100:.1f}%",
+                'Optimized': f"{optimized_acc * 100:.1f}%",
+                'Improvement': f"{(optimized_acc - baseline_acc) * 100:+.1f}%",
+                'Raw_Baseline': baseline_acc,
+                'Raw_Optimized': optimized_acc
+            })
+            
+            # Valid JSON Rate
+            baseline_json = dev_a_baseline_metrics.get('validation_metrics', {}).get('valid_json_accuracy', 0)
+            optimized_json = dev_a_optimized_metrics.get('validation_metrics', {}).get('valid_json_accuracy', 0)
+            metrics_data.append({
+                'Metric': 'Valid JSON Rate',
+                'Baseline': f"{baseline_json * 100:.1f}%",
+                'Optimized': f"{optimized_json * 100:.1f}%", 
+                'Improvement': f"{(optimized_json - baseline_json) * 100:+.1f}%",
+                'Raw_Baseline': baseline_json,
+                'Raw_Optimized': optimized_json
+            })
+            
+            # Average F1 Score
+            baseline_f1 = dev_a_baseline_metrics.get('summary', {}).get('average_enum_macro_f1', 0)
+            optimized_f1 = dev_a_optimized_metrics.get('summary', {}).get('average_enum_macro_f1', 0)
+            metrics_data.append({
+                'Metric': 'Average F1 Score',
+                'Baseline': f"{baseline_f1 * 100:.1f}%",
+                'Optimized': f"{optimized_f1 * 100:.1f}%",
+                'Improvement': f"{(optimized_f1 - baseline_f1) * 100:+.1f}%",
+                'Raw_Baseline': baseline_f1,
+                'Raw_Optimized': optimized_f1
+            })
+            
+            # Failed cases
+            baseline_failed = len(dev_a_baseline_metrics.get('detailed_failed_cases', {}).get('wrong_classifications', []))
+            optimized_failed = len(dev_a_optimized_metrics.get('detailed_failed_cases', {}).get('wrong_classifications', []))
+            metrics_data.append({
+                'Metric': 'Failed Cases',
+                'Baseline': str(baseline_failed),
+                'Optimized': str(optimized_failed),
+                'Improvement': f"{optimized_failed - baseline_failed:+d}" if baseline_failed > 0 else "0",
+                'Raw_Baseline': baseline_failed,
+                'Raw_Optimized': optimized_failed
+            })
+            
+            # Create DataFrame for display
+            df_metrics = pd.DataFrame(metrics_data)
+            
+            # Display metrics table
+            st.dataframe(
+                df_metrics[['Metric', 'Baseline', 'Optimized', 'Improvement']],
+                use_container_width=True,
+                hide_index=True
+            )
+            
+            # Visualization - Single comprehensive chart
+            chart_data = []
+            
+            # Add percentage metrics (convert to percentage)
+            for metric in metrics_data[:3]:  # First 3 are percentage metrics
+                chart_data.extend([
+                    {'Metric': metric['Metric'], 'Type': 'Baseline', 'Value': metric['Raw_Baseline'] * 100},
+                    {'Metric': metric['Metric'], 'Type': 'Optimized', 'Value': metric['Raw_Optimized'] * 100}
+                ])
+            
+            # Add failed cases metric (keep as count)
+            failed_cases_metric = metrics_data[3]  # Failed cases is the 4th metric
+            chart_data.extend([
+                {'Metric': 'Failed Cases', 'Type': 'Baseline', 'Value': failed_cases_metric['Raw_Baseline']},
+                {'Metric': 'Failed Cases', 'Type': 'Optimized', 'Value': failed_cases_metric['Raw_Optimized']}
+            ])
+            
+            df_chart = pd.DataFrame(chart_data)
+            fig1 = px.bar(
+                df_chart,
+                x='Metric', 
+                y='Value',
+                color='Type',
+                title='Performance Comparison - All Metrics',
+                barmode='group',
+                color_discrete_sequence=['#ff7f7f', '#7fbf7f']
+            )
+            
+            # Update layout to show different scales clearly
+            fig1.update_layout(
+                yaxis_title='Value (% for accuracy metrics, count for failed cases)',
+                xaxis_title='Metrics',
+                legend_title='Type'
+            )
+            
+            # Add text annotations to show exact values
+            fig1.update_traces(texttemplate='%{y}', textposition='outside')
+            
+            st.plotly_chart(fig1, use_container_width=True)
+        
+        with tab2:
+            st.markdown("**Dev A F1 Score Analysis by Field**")
+            
+            # Field-specific F1 scores from Dev A data
+            baseline_enum_metrics = dev_a_baseline_metrics.get('enum_field_metrics', {})
+            optimized_enum_metrics = dev_a_optimized_metrics.get('enum_field_metrics', {})
+            
+            if baseline_enum_metrics or optimized_enum_metrics:
+                # Combine all fields
+                all_fields = set(baseline_enum_metrics.keys()) | set(optimized_enum_metrics.keys())
+                
+                f1_data = []
+                for field in sorted(all_fields):
+                    baseline_f1 = baseline_enum_metrics.get(field, {}).get('macro_f1', 0)
+                    optimized_f1 = optimized_enum_metrics.get(field, {}).get('macro_f1', 0)
+                    improvement = optimized_f1 - baseline_f1
+                    
+                    f1_data.append({
+                        'Field': field,
+                        'Baseline F1': f"{baseline_f1 * 100:.1f}%",
+                        'Optimized F1': f"{optimized_f1 * 100:.1f}%",
+                        'Improvement': f"{improvement * 100:+.1f}%",
+                        'Raw_Baseline': baseline_f1,
+                        'Raw_Optimized': optimized_f1
+                    })
+                
+                df_f1 = pd.DataFrame(f1_data)
+                st.dataframe(df_f1[['Field', 'Baseline F1', 'Optimized F1', 'Improvement']], 
+                           use_container_width=True, hide_index=True)
+                
+                # F1 Score visualization
+                chart_data = []
+                for _, row in df_f1.iterrows():
+                    chart_data.extend([
+                        {'Field': row['Field'], 'Type': 'Baseline', 'F1 Score': row['Raw_Baseline'] * 100},
+                        {'Field': row['Field'], 'Type': 'Optimized', 'F1 Score': row['Raw_Optimized'] * 100}
+                    ])
+                
+                df_f1_chart = pd.DataFrame(chart_data)
+                fig_f1 = px.bar(
+                    df_f1_chart,
+                    x='Field',
+                    y='F1 Score',
+                    color='Type',
+                    title='F1 Scores by Field',
+                    barmode='group',
+                    color_discrete_sequence=['#ff7f7f', '#7fbf7f']
+                )
+                fig_f1.update_layout(yaxis_title='F1 Score (%)')
+                st.plotly_chart(fig_f1, use_container_width=True)
+            else:
+                st.info("No field-wise F1 score data available")
+        
+        with tab3:
+            st.markdown("**Test Data Validation (Hidden Data)**")
+            
+            if test_metrics:
+                # Show test data performance for validation
+                st.info("📊 Test data results are used for hidden validation only - optimization targets Dev A metrics.")
+                
+                col_test1, col_test2 = st.columns(2)
+                
+                with col_test1:
+                    # Test accuracy comparison
+                    if train_baseline_metrics:
+                        test_baseline_acc = train_baseline_metrics.get('overall_accuracy', 0)  # Use train as baseline reference
+                        test_optimized_acc = test_metrics.get('overall_accuracy', 0)
+                        test_improvement = test_optimized_acc - test_baseline_acc
+                        
+                        st.metric(
+                            "Test Accuracy", 
+                            f"{test_optimized_acc * 100:.1f}%",
+                            delta=f"{test_improvement * 100:+.1f}%"
+                        )
+                
+                with col_test2:
+                    # Test F1 score
+                    if train_baseline_metrics:
+                        test_baseline_f1 = train_baseline_metrics.get('summary', {}).get('average_enum_macro_f1', 0)
+                        test_optimized_f1 = test_metrics.get('summary', {}).get('average_enum_macro_f1', 0)
+                        test_f1_improvement = test_optimized_f1 - test_baseline_f1
+                        
+                        st.metric(
+                            "Test F1 Score", 
+                            f"{test_optimized_f1 * 100:.1f}%",
+                            delta=f"{test_f1_improvement * 100:+.1f}%"
+                        )
+                
+                st.markdown("**Test vs Dev A Comparison**")
+                
+                # Create comparison table
+                comparison_data = []
+                if dev_a_optimized_metrics:
+                    dev_a_acc = dev_a_optimized_metrics.get('overall_accuracy', 0)
+                    test_acc = test_metrics.get('overall_accuracy', 0)
+                    
+                    dev_a_f1 = dev_a_optimized_metrics.get('summary', {}).get('average_enum_macro_f1', 0)
+                    test_f1 = test_metrics.get('summary', {}).get('average_enum_macro_f1', 0)
+                    
+                    comparison_data = [
+                        {"Metric": "Overall Accuracy", "Dev A": f"{dev_a_acc * 100:.1f}%", "Test": f"{test_acc * 100:.1f}%", "Difference": f"{(test_acc - dev_a_acc) * 100:+.1f}%"},
+                        {"Metric": "Average F1 Score", "Dev A": f"{dev_a_f1 * 100:.1f}%", "Test": f"{test_f1 * 100:.1f}%", "Difference": f"{(test_f1 - dev_a_f1) * 100:+.1f}%"}
+                    ]
+                    
+                    st.dataframe(pd.DataFrame(comparison_data), use_container_width=True, hide_index=True)
+            else:
+                st.warning("No test data results available.")
+        
+        with tab4:
+            st.markdown("**Dev A Error and Validation Analysis**")
+            
+            col_err1, col_err2 = st.columns(2)
+            
+            with col_err1:
+                st.markdown("**Dev A Validation Metrics**")
+                
+                validation_data = []
+                
+                # JSON validity using Dev A data
+                baseline_val = dev_a_baseline_metrics.get('validation_metrics', {})
+                optimized_val = dev_a_optimized_metrics.get('validation_metrics', {})
+                
+                for metric_name, display_name in [
+                    ('valid_json_accuracy', 'Valid JSON Rate'),
+                    ('schema_compliance_accuracy', 'Schema Compliance'),
+                    ('all_fields_present_accuracy', 'All Fields Present')
+                ]:
+                    baseline_val_metric = baseline_val.get(metric_name, 0)
+                    optimized_val_metric = optimized_val.get(metric_name, 0)
+                    
+                    validation_data.append({
+                        'Metric': display_name,
+                        'Baseline': f"{baseline_val_metric * 100:.1f}%",
+                        'Optimized': f"{optimized_val_metric * 100:.1f}%",
+                        'Improvement': f"{(optimized_val_metric - baseline_val_metric) * 100:+.1f}%"
+                    })
+                
+                if validation_data:
+                    df_val = pd.DataFrame(validation_data)
+                    st.dataframe(df_val, use_container_width=True, hide_index=True)
+            
+            with col_err2:
+                st.markdown("**Dev A Failed Cases Analysis**")
+                
+                baseline_failed = len(dev_a_baseline_metrics.get('detailed_failed_cases', {}).get('wrong_classifications', []))
+                optimized_failed = len(dev_a_optimized_metrics.get('detailed_failed_cases', {}).get('wrong_classifications', []))
+                total_cases = dev_a_baseline_metrics.get('evaluation_metadata', {}).get('num_samples', 1)
+                
+                failure_data = [
+                    {
+                        'Stage': 'Dev A Baseline',
+                        'Failed Cases': baseline_failed,
+                        'Success Rate': f"{((total_cases - baseline_failed) / total_cases) * 100:.1f}%"
+                    },
+                    {
+                        'Stage': 'Dev A Optimized', 
+                        'Failed Cases': optimized_failed,
+                        'Success Rate': f"{((total_cases - optimized_failed) / total_cases) * 100:.1f}%"
+                    }
+                ]
+                
+                df_failures = pd.DataFrame(failure_data)
+                st.dataframe(df_failures, use_container_width=True, hide_index=True)
+                
+                # Failure reduction metric
+                if baseline_failed > 0:
+                    reduction = ((baseline_failed - optimized_failed) / baseline_failed) * 100
+                    st.metric("Failure Reduction", f"{reduction:.1f}%",
+                            delta=f"{optimized_failed - baseline_failed:+d} cases")
+    
+    elif iterations_data:  # Show iteration history even if detailed metrics are missing
+        st.subheader("🔄 Iteration History")
+        tab1, = st.tabs(["Iteration Progress"])
+        
+        with tab1:
+            st.markdown("**Dev A Iteration-by-Iteration Progress**")
+            
+            # Process iteration data
+            iteration_progress = []
+            
+            selected_iterations = [iter_data for iter_data in iterations_data if iter_data.get('type') == 'selected']
+            selected_iterations.sort(key=lambda x: x.get('iteration', 0))
+            
+            for iter_data in selected_iterations:
+                if 'selected_prompt' in iter_data:
+                    selected = iter_data['selected_prompt']
+                    iteration_progress.append({
+                        'Iteration': iter_data.get('iteration', 0),
+                        'Accuracy': f"{selected.get('dev_a_metrics', {}).get('overall_accuracy', 0) * 100:.1f}%",
+                        'F1 Score': f"{selected.get('dev_a_metrics', {}).get('summary', {}).get('average_enum_macro_f1', 0) * 100:.1f}%",
+                        'Valid JSON': f"{selected.get('dev_a_metrics', {}).get('validation_metrics', {}).get('valid_json_accuracy', 0) * 100:.1f}%",
+                        'Improvement': f"{selected.get('improvement_over_baseline', 0) * 100:+.1f}%"
+                    })
+            
+            if iteration_progress:
+                df_iter = pd.DataFrame(iteration_progress)
+                st.dataframe(df_iter, use_container_width=True, hide_index=True)
+                
+                # Iteration progress chart
+                chart_data = []
+                for i, iter_data in enumerate(selected_iterations):
+                    if 'selected_prompt' in iter_data:
+                        selected = iter_data['selected_prompt']
+                        metrics = selected.get('dev_a_metrics', {})
+                        
+                        chart_data.append({
+                            'Iteration': iter_data.get('iteration', 0),
+                            'Accuracy': metrics.get('overall_accuracy', 0) * 100,
+                            'F1 Score': metrics.get('summary', {}).get('average_enum_macro_f1', 0) * 100,
+                            'Valid JSON': metrics.get('validation_metrics', {}).get('valid_json_accuracy', 0) * 100
+                        })
+                
+                if chart_data:
+                    df_progress = pd.DataFrame(chart_data)
+                    fig_progress = px.line(
+                        df_progress,
+                        x='Iteration',
+                        y=['Accuracy', 'F1 Score', 'Valid JSON'],
+                        title='Dev A Progress Across Iterations',
+                        markers=True
+                    )
+                    fig_progress.update_layout(yaxis_title='Percentage (%)')
+                    st.plotly_chart(fig_progress, use_container_width=True)
+            else:
+                st.info("No iteration progress data available")
+    
+    else:
+        st.warning("Insufficient data for detailed analysis. Some metrics may be missing.")
+    
+    st.divider()
+    
+    # === OPTIMIZATION INSIGHTS ===
+    st.subheader("🔍 Dev A Optimization Insights")
+    
+    col_insights1, col_insights2 = st.columns(2)
+    
+    with col_insights1:
+        st.markdown("**Key Dev A Improvements**")
+        insights = []
+        
+        if dev_a_baseline_metrics and dev_a_optimized_metrics:
+            # Accuracy improvement on Dev A
+            acc_improvement = (dev_a_optimized_metrics.get('overall_accuracy', 0) - dev_a_baseline_metrics.get('overall_accuracy', 0)) * 100
+            if acc_improvement > 0:
+                insights.append(f"✅ **Dev A Accuracy increased by {acc_improvement:.1f}%**")
+            elif acc_improvement < 0:
+                insights.append(f"⚠️ **Dev A Accuracy decreased by {abs(acc_improvement):.1f}%**")
+            
+            # F1 improvement on Dev A
+            baseline_f1 = dev_a_baseline_metrics.get('summary', {}).get('average_enum_macro_f1', 0)
+            optimized_f1 = dev_a_optimized_metrics.get('summary', {}).get('average_enum_macro_f1', 0)
+            f1_improvement = (optimized_f1 - baseline_f1) * 100
+            if f1_improvement > 0:
+                insights.append(f"✅ **Dev A F1 Score improved by {f1_improvement:.1f}%**")
+            elif f1_improvement < 0:
+                insights.append(f"⚠️ **Dev A F1 Score decreased by {abs(f1_improvement):.1f}%**")
+            
+            # Failed cases improvement on Dev A
+            baseline_failed = len(dev_a_baseline_metrics.get('detailed_failed_cases', {}).get('wrong_classifications', []))
+            optimized_failed = len(dev_a_optimized_metrics.get('detailed_failed_cases', {}).get('wrong_classifications', []))
+            if baseline_failed > optimized_failed:
+                insights.append(f"✅ **Reduced Dev A failed cases by {baseline_failed - optimized_failed}**")
+            elif optimized_failed > baseline_failed:
+                insights.append(f"⚠️ **Dev A failed cases increased by {optimized_failed - baseline_failed}**")
+            
+            # JSON validity on Dev A
+            json_improvement = (optimized_json - baseline_json) * 100
+            if json_improvement > 0:
+                insights.append(f"✅ **Dev A JSON validity improved by {json_improvement:.1f}%**")
+            elif json_improvement < 0:
+                insights.append(f"⚠️ **Dev A JSON validity decreased by {abs(json_improvement):.1f}%**")
+        
+        if insights:
+            for insight in insights:
+                st.markdown(insight)
+        else:
+            st.info("No significant improvements detected")
+    
+    with col_insights2:
+        st.markdown("**Optimization Summary**")
+        
+        # Stopping reason
+        stopping_reason = optimization_results.get('stopping_reason', 'Unknown')
+        st.markdown(f"**Stopping Reason:** {stopping_reason}")
+        
+        # Total iterations vs max
+        total_iterations = optimization_results.get('total_iterations', 0)
+        st.markdown(f"**Iterations Used:** {total_iterations}")
+        
+        # Best iteration
+        best_candidate = optimization_results.get('best_candidate', {})
+        if best_candidate:
+            best_improvement = best_candidate.get('improvement_over_baseline', 0) * 100
+            st.markdown(f"**Best Improvement:** {best_improvement:+.1f}%")
+        
+        # Human feedback insights
+        human_feedback = optimization_results.get('human_feedback_summary', {})
+        if human_feedback and isinstance(human_feedback, dict):
+            cases_reviewed = human_feedback.get('total_cases_reviewed', 0)
+            if cases_reviewed > 0:
+                st.markdown(f"**Human Feedback:** {cases_reviewed} cases reviewed")
+    
+    st.divider()
+    
+    # === PROMPTS COMPARISON ===
+    st.subheader("📝 Prompt Analysis")
+    
+    col_prompts1, col_prompts2 = st.columns(2)
+    
+    with col_prompts1:
+        st.markdown("**Baseline Prompt**")
+        baseline_prompt = data.get('baseline_prompt', 'No baseline prompt available').get("enhanced_system_prompt")
+        st.code(baseline_prompt, language="text", line_numbers=False)
+    
+    with col_prompts2:
+        st.markdown("**Optimized Prompt**")
+        final_prompt = final_results.get('recommended_prompt', 'No optimized prompt available')
+        st.code(final_prompt, language="text", line_numbers=False)
+    
+    # === RAW DATA INSPECTION ===
+    with st.expander("🔧 Raw Data Inspection", expanded=False):
+        st.markdown("**Available Data Keys:**")
+        st.json(list(data.keys()))
+        
+        # write the data to a file
+        with open('data.json', 'w') as f:
+            json.dump(data, f)
+        
+        st.markdown("**Sample of Raw Backend Response:**")
+        # Show a subset of the raw data for debugging
+        sample_data = {
+            'final_results_keys': list(final_results.keys()) if final_results else [],
+            'train_baseline_metrics_keys': list(train_baseline_metrics.keys()) if train_baseline_metrics else [],
+            'dev_a_baseline_metrics_keys': list(dev_a_baseline_metrics.keys()) if dev_a_baseline_metrics else [],
+            'dev_a_optimized_metrics_keys': list(dev_a_optimized_metrics.keys()) if dev_a_optimized_metrics else [],
+            'test_metrics_keys': list(test_metrics.keys()) if test_metrics else [],
+            'optimization_results_keys': list(optimization_results.keys()) if optimization_results else [],
+            'iterations_count': len(iterations_data)
         }
-        
-        df = pd.DataFrame(comparison_data)
-        df['Improvement'] = df['Optimized'] - df['Baseline']
-        
-        # Chart
-        fig = px.bar(
-            df, 
-            x='Metric', 
-            y=['Baseline', 'Optimized'],
-            title='Performance Comparison',
-            barmode='group',
-            color_discrete_sequence=['#ff7f7f', '#7fbf7f']
-        )
-        st.plotly_chart(fig, use_container_width=True)
-        
-        # Table
-        st.dataframe(df.style.format({
-            'Baseline': '{:.3f}',
-            'Optimized': '{:.3f}',
-            'Improvement': '{:+.3f}'
-        }), use_container_width=True)
-    
-    # Final prompt
-    st.subheader("Optimized Prompt")
-    final_prompt = final_results.get('recommended_prompt', 'No prompt available')
-    st.markdown(f"**Final Prompt:**")
-    st.code(final_prompt, language="text")
+        st.json(sample_data)
 
 # Past Reports
 def show_past_reports():
