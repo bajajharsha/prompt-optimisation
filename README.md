@@ -1,17 +1,31 @@
-# Auto Prompt Optimization System
+# Prompt Optimization System
 
-A comprehensive system for automated prompt optimization using multiple LLM providers with human feedback integration and rigorous evaluation metrics.
+## **System Overview**
 
-## 🚀 Overview
+The Prompt Optimization System is an automated system that optimizes prompts for JSON classification tasks. It uses a multi-stage evaluation process with human feedback integration to iteratively improve prompt performance across different model providers.
 
-This system automatically optimizes prompts for JSON classification tasks through:
-- **Multi-Model Support**: OpenAI, Anthropic, Groq, and Google models
-- **Human Feedback Integration**: LangFuse-powered annotation and feedback collection
-- **Rigorous Evaluation**: Train/Dev A/Dev B/Test data splitting with comprehensive metrics
-- **FastAPI Backend**: RESTful API with real-time progress tracking
-- **Streamlit Frontend**: User-friendly web interface
+### **Key Features:**
 
-## 📁 Project Structure
+- **Multi-Model Support**: Supports OpenAI, Anthropic, Google, and Groq models
+- **Stratified Data Splitting**: Intelligent 25/35/20/20 train/dev_a/dev_b/test splits
+- **Intent Analysis**: Understanding of classification goals using Claude.
+- **Human-in-the-Loop**: LangFuse integration for human feedback collection
+- **Comprehensive Metrics**: 15+ evaluation metrics with field-specific analysis
+
+### **Complete Optimization Workflow**
+
+The system follows a structured 5-step optimization process:
+
+<!-- add image -->
+![Optimization Workflow](images/download.svg)
+
+## Results
+
+![Results Image 1](images/results_1.png)
+![Results Image 2](images/results_2.png)
+![Results Image 3](images/results_3.png)
+
+## Project Structure
 
 ```
 PERSONAL_PROJECT/
@@ -32,7 +46,7 @@ PERSONAL_PROJECT/
 └── README.md                       # This file
 ```
 
-## 🛠️ Setup Instructions
+## Setup Instructions
 
 ### Prerequisites
 
@@ -112,3 +126,11 @@ The web interface will be available at: http://localhost:8501
 2. Create project
 3. Get public/secret keys from settings
 4. Add to `.env` as `LANGFUSE_PUBLIC_KEY` and `LANGFUSE_SECRET_KEY`
+
+## **Conclusion**
+
+The Prompt Optimization System represents a comprehensive solution for automated prompt improvement with human oversight. The architecture balances automation with human expertise, providing robust evaluation metrics and intelligent optimization strategies.
+
+## Documentation Link
+
+For detailed documentation, please refer to the [Prompt Optimization System Documentation](https://ionized-saxophone-5b4.notion.site/Prompt-Optimization-System-Comprehensive-Approach-Document-21d0cbade2d980f8ae86d8fc07ef6173?source=copy_link).
