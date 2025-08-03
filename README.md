@@ -57,8 +57,7 @@ PERSONAL_PROJECT/
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd PERSONAL_PROJECT
+git clone https://github.com/bajajharsha/prompt-optimisation/tree/final
 ```
 
 ### 2. Backend Setup
